@@ -1,0 +1,10 @@
+zaman,kaynak,ilan_sayisi,durum,detay
+2026-09-27,22:42:36,İlan.gov.tr,0,HATA,"HTTPSConnectionPool(host='www.ilan.gov.tr', port=443): Max retries exceeded with url: /api/api/services/app/Ad/AdsByFilter (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1016)')))"
+2026-09-27,22:42:36,Resmî Gazete,0,HATA,"HTTPSConnectionPool(host='www.resmigazete.gov.tr', port=443): Read timed out. (read timeout=30)"
+2026-09-27,22:43:07,ÇŞB,0,OK,
+2026-09-27,22:43:07,SBB Kamu İlan,0,OK,
+2026-09-27,22:43:08,Kariyer Kapısı,0,HATA,"Page.goto: net::ERR_NAME_NOT_RESOLVED at https://isealimkariyerkapisi.cbiko.gov.tr/
+Call log:
+navigating to ""https://isealimkariyerkapisi.cbiko.gov.tr/"", waiting until ""load""
+"
+2026-09-27,22:43:09,İŞKUR,0,OK,
