@@ -8,3 +8,12 @@ Call log:
 navigating to ""https://isealimkariyerkapisi.cbiko.gov.tr/"", waiting until ""load""
 "
 2026-09-27,22:43:09,İŞKUR,0,OK,
+2026-09-27,23:04:52,İlan.gov.tr,17,17,0,OK,"API çalışmadı, sayfa linkleri okundu"
+2026-09-27,23:06:26,Resmî Gazete,1,1,0,OK,"tek sayfa, bloklara bölündü"
+2026-09-27,23:06:27,Kariyer Kapısı,2,2,0,OK,"tablo bulunamadı, yedek link toplama"
+2026-09-27,23:07:55,SBB Kamu İlan,1,1,0,OK,sayfa linkleri (yapı doğrulanmadı)
+2026-09-27,23:08:06,İŞKUR (e-şube),16,16,0,OK,sonuç tablosu satırları (yapı doğrulanmadı)
+2026-09-27,23:08:25,ÇŞB Yerel Yönetimler,0,0,0,HATA,"Page.goto: Timeout 90000ms exceeded.
+Call log:
+navigating to ""https://yerelyonetimler.csb.gov.tr/duyurular"", waiting until ""load""
+"

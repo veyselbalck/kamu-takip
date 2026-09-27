@@ -1,23 +1,30 @@
 <!DOCTYPE html><html lang="tr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Günlük Kamu İlan Raporu</title><style>
-    body{font-family:system-ui,Arial,sans-serif;background:#f5f6fa;margin:0;padding:24px;color:#1f2430}
+    body{font-family:system-ui,Arial,sans-serif;background:#f5f6fa;margin:0;padding:24px;color:#1f2430;max-width:1000px;margin:auto}
     h1{font-size:22px} h2{font-size:18px;margin-top:32px}
     .card{background:#fff;border-radius:12px;padding:16px 20px;margin:12px 0;box-shadow:0 1px 4px rgba(0,0,0,.08)}
-    .card a{color:#2a5bd7;text-decoration:none;font-weight:600}
-    .meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+    .top a{color:#2a5bd7;text-decoration:none;font-weight:700;font-size:16px}
+    .new{background:#16a34a;color:#fff;border-radius:6px;padding:2px 8px;font-size:12px;margin-left:8px}
+    .kurum{color:#555;margin-top:2px}
+    .meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
     .tag{background:#eef1fb;color:#33418f;padding:3px 10px;border-radius:20px;font-size:12px}
-    .warn{background:#fff3cd;color:#7a5b00;padding:2px 8px;border-radius:6px;font-size:11px}
-    .logbox{font-size:12px;color:#555;margin-top:40px}
+    .tag.red{background:#fde8e8;color:#9b1c1c} .tag.src{background:#e8f5e9;color:#1b5e20}
+    .warn{background:#fff3cd;color:#7a5b00;padding:4px 10px;border-radius:6px;font-size:12px;margin-top:8px}
+    .kanit{font-size:11px;color:#777;font-style:italic;margin-top:4px}
+    .btn{display:inline-block;margin-top:8px;font-size:12px;color:#2a5bd7}
+    .logbox{font-size:12px;color:#555;margin-top:40px;overflow-x:auto}
     table{border-collapse:collapse;width:100%;font-size:12px}
     td,th{border:1px solid #ddd;padding:4px 8px;text-align:left}
     </style></head><body>
-<h1>📋 Günlük Kamu İlan Raporu — 27.09.2026 22:43</h1>
-<h2>🎯 Bölümüme Özel (Bilgisayar/Yazılım Mühendisliği)</h2>
-<p>Bugün bu kategoride yeni ilan bulunamadı.</p>
-<h2>🎓 Tüm Lisans Mezunlarına Açık</h2>
-<p>Bugün bu kategoride yeni ilan bulunamadı.</p>
-<div class="logbox"><h2>🔍 Bugünkü Veri Çekim Doğrulama Kaydı</h2><table><tr><th>Zaman</th><th>Kaynak</th><th>İlan Sayısı</th><th>Durum</th><th>Detay</th></tr><tr><td>22:42:36</td><td>İlan.gov.tr</td><td>0</td><td>HATA</td><td>HTTPSConnectionPool(host='www.ilan.gov.tr', port=443): Max retries exceeded with url: /api/api/services/app/Ad/AdsByFilter (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1016)')))</td></tr><tr><td>22:42:36</td><td>Resmî Gazete</td><td>0</td><td>HATA</td><td>HTTPSConnectionPool(host='www.resmigazete.gov.tr', port=443): Read timed out. (read timeout=30)</td></tr><tr><td>22:43:07</td><td>ÇŞB</td><td>0</td><td>OK</td><td></td></tr><tr><td>22:43:07</td><td>SBB Kamu İlan</td><td>0</td><td>OK</td><td></td></tr><tr><td>22:43:08</td><td>Kariyer Kapısı</td><td>0</td><td>HATA</td><td>Page.goto: net::ERR_NAME_NOT_RESOLVED at https://isealimkariyerkapisi.cbiko.gov.tr/
+<h1>📋 Günlük Kamu İlan Raporu — 27.09.2026 23:09</h1>
+<p>Bugün yeni eklenen ilgili ilan: <b>0</b></p>
+<h2>🎯 Bölümüme Özel (Bilgisayar/Yazılım Mühendisliği) — 0 ilan</h2>
+<p>Şu an bu kategoride aktif ilan bulunamadı.</p>
+<h2>🎓 Tüm Lisans Mezunlarına Açık — 0 ilan</h2>
+<p>Şu an bu kategoride aktif ilan bulunamadı.</p>
+<div class="logbox"><h2>🔍 Veri Çekim Doğrulama Kaydı</h2><table><tr><th>Saat</th><th>Kaynak</th><th>Ham kayıt</th><th>Detay okunan</th><th>İlgili</th><th>Durum</th><th>Not</th></tr><tr><td>23:04:52</td><td>İlan.gov.tr</td><td>17</td><td>17</td><td>0</td><td>OK</td><td>API çalışmadı, sayfa linkleri okundu</td></tr><tr><td>23:06:26</td><td>Resmî Gazete</td><td>1</td><td>1</td><td>0</td><td>OK</td><td>tek sayfa, bloklara bölündü</td></tr><tr><td>23:06:27</td><td>Kariyer Kapısı</td><td>2</td><td>2</td><td>0</td><td>OK</td><td>tablo bulunamadı, yedek link toplama</td></tr><tr><td>23:07:55</td><td>SBB Kamu İlan</td><td>1</td><td>1</td><td>0</td><td>OK</td><td>sayfa linkleri (yapı doğrulanmadı)</td></tr><tr><td>23:08:06</td><td>İŞKUR (e-şube)</td><td>16</td><td>16</td><td>0</td><td>OK</td><td>sonuç tablosu satırları (yapı doğrulanmadı)</td></tr><tr><td>23:08:25</td><td>ÇŞB Yerel Yönetimler</td><td>0</td><td>0</td><td>0</td><td>HATA</td><td>Page.goto: Timeout 90000ms exceeded.
 Call log:
-navigating to "https://isealimkariyerkapisi.cbiko.gov.tr/", waiting until "load"
-</td></tr><tr><td>22:43:09</td><td>İŞKUR</td><td>0</td><td>OK</td><td></td></tr></table></div>
+navigating to &quot;https://yerelyonetimler.csb.gov.tr/duyurular&quot;, waiting until &quot;load&quot;
+</td></tr></table></div>
 </body></html>
