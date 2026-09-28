@@ -26,3 +26,18 @@ navigating to ""https://yerelyonetimler.csb.gov.tr/duyurular"", waiting until ""
 Call log:
 navigating to ""https://yerelyonetimler.csb.gov.tr/duyurular"", waiting until ""load""
 "
+2026-09-28,13:01:24,İlan.gov.tr,182,182,0,OK,"sitede toplam: 182, okunan: 182, sayfalama: currentPage"
+2026-09-28,13:23:17,Resmî Gazete,0,0,0,ŞÜPHELİ (0 ham kayıt),"sayfa uzunluğu 995 karakter, 0 personel bloğu"
+2026-09-28,13:23:19,Kariyer Kapısı,0,0,0,ŞÜPHELİ (0 ham kayıt),ilan/tablo bulunamadı — tanı sayfasına bak
+2026-09-28,13:24:19,SBB Kamu İlan,1,1,0,OK,sayfa linkleri (yapı doğrulanmadı — tanı sayfasına bak)
+2026-09-28,13:24:31,ÇŞB Yerel Yönetimler,0,0,0,HATA,"erişilemedi (zaman aşımı). GitHub sunucusunun yurt dışı IP'si engelleniyor olabilir. Çözüm: Türkiye'deki bilgisayarında self-hosted runner. Ayrıntı: Page.goto: Timeout 60000ms exceeded.
+Call log:
+navigating to ""https://yerelyonetimler.csb.gov.tr/duyurular"", waiting unt"
+2026-09-28,13:26:44,İŞKUR (kamu memur ilanları),0,0,0,HATA,"Page.goto: Navigation to ""https://www.iskur.gov.tr/ilanlar/kamu-memur-alim-ilanlari/"" is interrupted by another navigation to ""chrome-error://chromewebdata/""
+Call log:
+navigating to ""https://www.iskur.gov.tr/ilanlar/kamu-memur-alim-ilanlari/"", waiting until ""domcontentloaded""
+"
+2026-09-28,13:26:45,İŞKUR (e-şube),0,0,0,HATA,"Page.goto: Navigation to ""https://esube.iskur.gov.tr/Istihdam/AcikIsIlanAra.aspx"" is interrupted by another navigation to ""https://www.iskur.gov.tr/ilanlar/kamu-memur-alim-ilanlari/""
+Call log:
+navigating to ""https://esube.iskur.gov.tr/Istihdam/AcikIsIlanAra.aspx"", waiting until ""domcontentloaded""
+"
