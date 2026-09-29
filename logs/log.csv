@@ -41,3 +41,12 @@ navigating to ""https://www.iskur.gov.tr/ilanlar/kamu-memur-alim-ilanlari/"", wa
 Call log:
 navigating to ""https://esube.iskur.gov.tr/Istihdam/AcikIsIlanAra.aspx"", waiting until ""domcontentloaded""
 "
+2026-09-29,12:20:24,İlan.gov.tr,177,168,0,OK,"sitede toplam: 177, okunan: 177, sayfalama: currentPage"
+2026-09-29,12:30:44,Resmî Gazete,0,0,0,ŞÜPHELİ (0 ham kayıt),"sayfa uzunluğu 1018 karakter, 0 personel bloğu"
+2026-09-29,12:30:45,Kariyer Kapısı,0,0,0,ŞÜPHELİ (0 ham kayıt),ilan/tablo bulunamadı — tanı sayfasına bak
+2026-09-29,12:31:45,SBB Kamu İlan,1,1,0,OK,sayfa linkleri (yapı doğrulanmadı — tanı sayfasına bak)
+2026-09-29,12:31:53,ÇŞB Yerel Yönetimler,0,0,0,HATA,"erişilemedi (zaman aşımı). GitHub sunucusunun yurt dışı IP'si engelleniyor olabilir. Çözüm: Türkiye'deki bilgisayarında self-hosted runner. Ayrıntı: Page.goto: Timeout 60000ms exceeded.
+Call log:
+navigating to ""https://yerelyonetimler.csb.gov.tr/duyurular"", waiting unt"
+2026-09-29,12:34:06,İŞKUR (kamu memur ilanları),2,2,0,OK,İŞKUR kamu memur ilan linkleri (yapı doğrulanmadı)
+2026-09-29,12:34:26,İŞKUR (e-şube),12,12,0,OK,sonuç tablosu satırları (yapı doğrulanmadı)
