@@ -31,7 +31,7 @@ import hashlib
 import html as htmllib
 import datetime
 from zoneinfo import ZoneInfo
-from urllib.parse import urljoin
+from urllib.parse import urljoin, urlparse
 
 import requests
 import urllib3
@@ -42,7 +42,6 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 # ---------------- AYARLAR ----------------
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
 GROQ_MODEL = "llama-3.3-70b-versatile"      # ayrıntılı analiz
-TRIAGE_MODEL = "llama-3.1-8b-instant"       # ön eleme (bulunamazsa ana modele düşer)
 DIAGNOSE = os.environ.get("DIAGNOSE", "1") == "1"
 
 MAX_RUNTIME_MIN = 300
@@ -60,7 +59,11 @@ BROWSER_UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
               "(KHTML, like Gecko) Chrome/120.0 Safari/537.36")
 
 ADAY_ANAHTAR = re.compile(
-    r"lisans|mühendis|bilişim|bilgisayar|yazılım|4 yıllık|dört yıllık|fakülte", re.I)
+    r"bilgisayar|yazılım|bilişim|programcı|programlama|bilgi işlem|siber güvenlik|"
+    r"herhangi bir.{0,30}lisans|tüm lisans|lisans mezunu|"
+    r"(?:4|dört) yıllık lisans|lisans programlarının.{0,60}birinden mezun", re.I)
+AKADEMIK_BASLIK = re.compile(
+    r"öğretim üyesi alım|öğretim elemanı alım|öğretim görevlisi alım|araştırma görevlisi", re.I)
 SOSYAL = ("twitter.com", "facebook.com", "instagram.com", "linkedin.com",
           "youtube.com", "//x.com", "wa.me", "t.me")
 
@@ -224,12 +227,14 @@ def fetch_resmi_gazete(page):
     d = TR_NOW.date()
     url = (f"https://www.resmigazete.gov.tr/ilanlar/eskiilanlar/{d.year}/"
            f"{d.month:02d}/{d.strftime('%Y%m%d')}-4.htm")
-    r = request_with_retry("get", url)
-    if r.status_code != 200:
-        return [], 0, f"bugünkü ilan sayfası yok (HTTP {r.status_code}) (normal olabilir)"
-    text = re.sub(r"<script.*?</script>|<style.*?</style>", " ", r.text, flags=re.S | re.I)
-    text = re.sub(r"<[^>]+>", "\n", text)
-    text = htmllib.unescape(re.sub(r"[ \t]+", " ", re.sub(r"\n\s*\n+", "\n", text)))
+    response = page.goto(url, timeout=60000, wait_until="domcontentloaded")
+    if response and response.status != 200:
+        return [], 0, f"bugünkü ilan sayfası yok (HTTP {response.status}) (normal olabilir)"
+    try:
+        page.wait_for_load_state("networkidle", timeout=15000)
+    except Exception:
+        pass
+    text = page.inner_text("body") or ""
     pat = re.compile(r"alınacaktır|alım ilanı|personel alım|sözleşmeli personel|KPSS|"
                      r"işçi alım|memur alım|öğretim (?:üyesi|görevlisi|elemanı)", re.I)
     spans = []
@@ -249,7 +254,8 @@ def fetch_resmi_gazete(page):
                            if re.search(r"Başkanlığ|Rektörlüğ|Müdürlüğ|Bakanlığ|Valiliğ|Belediye", ln)),
                           chunk.split("\n")[0])[:150]
             key = hashlib.md5(chunk[:400].encode()).hexdigest()[:10]
-            entries.append({"title": baslik, "link": f"{url}#{key}", "content": chunk, "kurum": baslik})
+            entries.append({"title": baslik, "link": f"{url}#{key}", "content": chunk,
+                            "kurum": baslik, "detail_level": "Resmî Gazete sayfa metni"})
     return entries, len(entries), f"sayfa uzunluğu {len(text)} karakter, {len(entries)} personel bloğu"
 
 
@@ -284,14 +290,21 @@ def fetch_kariyer_kapisi(page):
     body = (page.inner_text("body") or "").lower()
     if "aktif bir ilan bulunmamaktadır" in body:
         return [], 0, "site 'aktif ilan yok' diyor (normal) — tanı sayfasındaki ekran görüntüsünü kontrol et"
+    if "aktif ilanlar" in body and "kurum/birim" in body:
+        return [], 0, "aktif ilan tablosu boş (normal olabilir); sayfada yalnızca tablo başlıkları var"
     return [], 0, "ilan/tablo bulunamadı — tanı sayfasına bak"
 
 
 def fetch_sbb_kamu_ilan(page):
     url = "https://kamuilan.sbb.gov.tr/"
     goto_safe(page, url, settle=4)
-    entries = links_matching(page, url, min_text=8)
-    return entries[:MAX_LINKS_PER_SOURCE], len(entries), "sayfa linkleri (yapı doğrulanmadı — tanı sayfasına bak)"
+    body = (page.inner_text("body") or "").lower()
+    if "geographic restriction" in body or "access denied" in body or "access restricted" in body:
+        raise Exception("SBB sitesi bu çalıştırma ortamını coğrafi erişim kuralıyla engelledi")
+    host = urlparse(url).hostname
+    entries = [e for e in links_matching(page, url, min_text=8)
+               if urlparse(e["link"]).hostname == host]
+    return entries[:MAX_LINKS_PER_SOURCE], len(entries), "aynı alan adındaki sayfa linkleri (yapı doğrulanmadı)"
 
 
 def fetch_csb_yerel(page):
@@ -350,8 +363,19 @@ def fetch_iskur_esube(page):
         t = (tr.inner_text() or "").strip().replace("\n", " | ")
         if len(t) > 25:
             key = hashlib.md5(t.encode()).hexdigest()[:10]
-            entries.append({"title": t[:150], "content": t, "link": f"{url}#{key}"})
-    return entries[:MAX_LINKS_PER_SOURCE], len(entries), "sonuç tablosu satırları (yapı doğrulanmadı)"
+            href = next((a.get_attribute("href") for a in tr.query_selector_all("a")
+                         if a.get_attribute("href") and not a.get_attribute("href").startswith(
+                             ("#", "javascript:"))), None)
+            if href:
+                entries.append({"title": t[:150], "link": urljoin(url, href),
+                                "detail_level": "İlan detay bağlantısı"})
+            else:
+                entries.append({"title": t[:150], "content": t, "link": f"{url}#row-{key}",
+                                "detail_level": "Satır düzeyi; detay bağlantısı bulunamadı"})
+    detail_count = sum(1 for e in entries if e["detail_level"] == "İlan detay bağlantısı")
+    note = (f"sonuç tablosu: {len(entries)} satır, {detail_count} ilan detay bağlantısı; "
+            f"{len(entries) - detail_count} satır düzeyi kayıt")
+    return entries[:MAX_LINKS_PER_SOURCE], len(entries), note
 
 
 SOURCES = [
@@ -369,7 +393,7 @@ SOURCES = [
 def groq_call(model, prompt):
     """JSON dict | None (geçici/kalıcı hata) | 'MODEL_HATA'."""
     global GROQ_DEAD
-    if GROQ_DEAD:
+    if GROQ_DEAD or not GROQ_API_KEY:
         return None
     for deneme in range(1, 4):
         try:
@@ -419,20 +443,6 @@ KATEGORI_KURALI = (
 )
 
 
-def triage(baslik, metin):
-    global TRIAGE_MODEL
-    prompt = ("Bir kamu personel alım ilanını sınıflandır. SADECE JSON döndür: "
-              '{"kategori":"BOLUM"|"TUM_LISANS"|"ILGISIZ","kanit":"metinden kısa birebir alıntı"}\n'
-              "Kararsızsan ILGISIZ değil, ilgili kategoriyi seç (elemeyi ayrıntılı aşama yapacak).\n"
-              + KATEGORI_KURALI + "\nBAŞLIK: " + baslik + "\n\nMETİN:\n" + metin[:5500])
-    res = groq_call(TRIAGE_MODEL, prompt)
-    if res == "MODEL_HATA":
-        print("Ön eleme modeli bulunamadı, ana model kullanılacak.")
-        TRIAGE_MODEL = GROQ_MODEL
-        res = groq_call(GROQ_MODEL, prompt)
-    return res if isinstance(res, dict) else None
-
-
 SEMA = """{
   "kategori": "BOLUM" | "TUM_LISANS" | "ILGISIZ",
   "kanit": "kategoriyi destekleyen METİNDEN birebir kısa alıntı (max 200 karakter)",
@@ -442,8 +452,10 @@ SEMA = """{
   "basvuruBaslangic": string | null,
   "basvuruBitis": string | null,
   "degerlendirmeSekli": "örn: %100 KPSS | KPSS + sözlü mülakat | KPSS + yazılı sınav | belirtilmemiş",
+    "kpssDurumu": "Zorunlu" | "Tercih sebebi" | "Aranmıyor" | "Belirtilmemiş",
   "kpssTuru": "örn: KPSS-P3 en az 70 puan | belirtilmemiş",
   "ekSinav": boolean,
+    "ekSinavDetay": "sınav türü ve puan şartı; yoksa Yok veya Belirtilmemiş",
   "ikametSarti": "Yok" | "Belirtilmemiş" | "Var: <il/ilçe>",
   "ekSartlar": "boy/kilo/yaş sınırı, yabancı dil puanı, ehliyet, deneyim, askerlik vb. yoksa 'Yok'",
   "kisaOzet": "en fazla 2 cümle"
@@ -455,8 +467,10 @@ def analiz(baslik, metin):
               "mezunu bir aday açısından sınıflandır ve bilgileri çıkar. SADECE geçerli JSON döndür.\n"
               + KATEGORI_KURALI +
               "\nKESİN KURALLAR: Metinde yazmayan bilgiyi UYDURMA; yoksa null / 'Belirtilmemiş' yaz. "
-              "'kanit' metinden birebir alıntı olmalı. İkamet şartı için 'ikamet', 'oturmak', "
-              "'ilinde ikamet eden' gibi ifadelere bak; varsa yeri yaz.\n\nJSON ŞEMASI:\n" + SEMA +
+              "'kanit' metinden birebir alıntı olmalı. KPSS için zorunlu, tercih sebebi, aranmıyor "
+              "ve belirtilmemiş durumlarını ayır; türü ve taban puanı yaz. Ek sınavın türünü ve "
+              "varsa puanını belirt. İkamet şartı için 'ikamet', 'oturmak', 'ilinde ikamet eden' "
+              "gibi ifadelere bak; şart varsa il/ilçeyi yaz.\n\nJSON ŞEMASI:\n" + SEMA +
               "\n\nBAŞLIK: " + baslik + "\n\nMETİN:\n" + metin[:8000])
     res = groq_call(GROQ_MODEL, prompt)
     return res if isinstance(res, dict) else None
@@ -472,6 +486,7 @@ def card_html(a):
     cls = "tag red" if str(ikamet).startswith("Var") else "tag"
     ek = a.get("ekSartlar") or "Yok"
     ek_html = "" if str(ek).strip().lower() == "yok" else f'<div class="warn">⚠ Ek şart: {E(ek)}</div>'
+    ek_sinav = a.get("ekSinavDetay") or ("Var (ayrıntı belirtilmemiş)" if a.get("ekSinav") else "Yok")
     tarih = ""
     if a.get("basvuruBaslangic") or a.get("basvuruBitis"):
         tarih = f'<span class="tag">📅 {E(a.get("basvuruBaslangic") or "?")} → {E(a.get("basvuruBitis") or "?")}</span>'
@@ -482,8 +497,8 @@ def card_html(a):
   <div class="meta">
     <span class="tag src">{E(a.get('_kaynak'))}</span>{tarih}
     <span class="tag">🧾 {E(a.get('degerlendirmeSekli'))}</span>
-    <span class="tag">KPSS: {E(a.get('kpssTuru') or 'belirtilmemiş')}</span>
-    {'<span class="tag">Ek sınav var</span>' if a.get('ekSinav') else ''}
+        <span class="tag">KPSS {E(a.get('kpssDurumu') or 'Belirtilmemiş')}: {E(a.get('kpssTuru') or 'belirtilmemiş')}</span>
+        <span class="tag">Ek sınav: {E(ek_sinav)}</span>
     <span class="{cls}">📍 İkamet: {E(ikamet)}</span>
   </div>
   {ek_html}
@@ -524,17 +539,20 @@ def build_report(bolum, tum, log_rows, yeni_sayisi, okunanlar, groq_notu):
     log_html = ("<table><tr><th>Saat</th><th>Kaynak</th><th>Ham kayıt</th><th>Detay okunan (bugün)</th>"
                 "<th>İlgili</th><th>Durum</th><th>Not</th></tr>")
     for r in log_rows:
-        cls = ' class="bad"' if str(r[5]).startswith(("HATA", "ŞÜPHELİ")) else ""
+        cls = ' class="bad"' if str(r[5]).startswith(("HATA", "ŞÜPHELİ", "KISMİ")) else ""
         log_html += f"<tr{cls}>" + "".join(f"<td>{E(c)}</td>" for c in r) + "</tr>"
     log_html += "</table>"
 
-    okunan_html = ("<table><tr><th>Kaynak</th><th>Başlık</th><th>Metin uzunluğu</th><th>Sonuç</th></tr>")
+    okunan_html = ("<table><tr><th>Kaynak</th><th>Başlık</th><th>Metin uzunluğu</th>"
+                   "<th>Okuma düzeyi</th><th>Sonuç</th></tr>")
     for o in okunanlar:
         kisa = isinstance(o["len"], int) and o["len"] < 300
         cls = ' class="bad"' if kisa or o["sonuc"].startswith("BEKLEMEDE") else ""
+        yeni = '<span class="new">🆕 Bugün eklendi</span>' if o.get("yeni") else ""
         okunan_html += (f"<tr{cls}><td>{E(o['kaynak'])}</td>"
-                        f"<td><a href=\"{E(o['link'])}\" target=\"_blank\">{E(o['baslik'])[:140]}</a></td>"
-                        f"<td>{E(o['len'])}{' ⚠ kısa' if kisa else ''}</td><td>{E(o['sonuc'])}</td></tr>")
+                        f"<td><a href=\"{E(o['link'])}\" target=\"_blank\">{E(o['baslik'])[:140]}</a>{yeni}</td>"
+                        f"<td>{E(o['len'])}{' ⚠ kısa' if kisa else ''}</td>"
+                        f"<td>{E(o['duzey'])}</td><td>{E(o['sonuc'])}</td></tr>")
     okunan_html += "</table>"
 
     return f"""<!DOCTYPE html><html lang="tr"><head><meta charset="utf-8">
@@ -594,18 +612,48 @@ def snapshot(page, idx, name, note):
 
 # ---------------- ANA AKIŞ ----------------
 def sonuc_metni(k):
+    if not k.get("detail_checked"):
+        if k.get("sonuc") == "DETAY OKUNAMADI":
+            return "DETAY OKUNAMADI (yeniden denenecek)"
+        if k.get("sonuc") == "DETAY LİNKİ BULUNAMADI":
+            return "DETAY LİNKİ BULUNAMADI (manuel kontrol gerekli)"
+        return "BEKLEMEDE (detay kuyruğu)"
     an = k.get("analiz")
     if an:
         return an.get("kategori", "?")
     if k.get("bitti"):
         return k.get("sonuc", "bitti")
-    return "BEKLEMEDE (Groq kotası/hata — yarın denenecek)"
+    if k.get("sonuc") == "DETAY OKUNAMADI":
+        return "DETAY OKUNAMADI (yeniden denenecek)"
+    if k.get("metin"):
+        return "BEKLEMEDE (Groq analizi)"
+    return "BEKLEMEDE (detay kuyruğu)"
+
+
+def ilan_hash(baslik, metin):
+    return hashlib.sha256(f"{baslik}\n{metin}".encode("utf-8")).hexdigest()
+
+
+def kaynak_durumu(ham, note):
+    if note.startswith("HATA:"):
+        return "HATA"
+    if "EKSİK" in note:
+        return "ŞÜPHELİ (eksik okundu)"
+    match = re.search(r"sitede toplam:\s*(\d+), okunan:\s*(\d+)", note)
+    if match:
+        return "OK" if match.group(1) == match.group(2) else "ŞÜPHELİ (eksik okundu)"
+    if "bugünkü ilan sayfası yok" in note:
+        return "BOŞ (sayfa yok; kontrol edin)"
+    if "aktif ilan tablosu boş" in note:
+        return "KISMİ (boş tablo; doğrulanmalı)"
+    if "aktif ilan yok" in note:
+        return "BOŞ (site ilan olmadığını bildiriyor)"
+    if ham == 0:
+        return "ŞÜPHELİ (0 ham kayıt)"
+    return "KISMİ (tamlık doğrulanmadı)"
 
 
 def main():
-    if not GROQ_API_KEY:
-        raise RuntimeError("GROQ_API_KEY tanımlı değil (GitHub Secrets kontrol et).")
-
     state = load_state()
     ads = state["ads"]
     log_rows, bugun = [], set()
@@ -636,7 +684,9 @@ def main():
         ctx = browser.new_context(user_agent=BROWSER_UA, ignore_https_errors=True, locale="tr-TR")
         ctx.on("response", on_resp)
         list_page, detail_page = ctx.new_page(), ctx.new_page()
+        source_batches = []
 
+        # Stage 1: collect every source before spending time or quota on analysis.
         for idx, (name, fn) in enumerate(SOURCES):
             saat = datetime.datetime.now(ZoneInfo("Europe/Istanbul")).strftime("%H:%M:%S")
             CAPTURE.update(on=True, name=name)
@@ -644,47 +694,70 @@ def main():
                 entries, ham, note = fn(list_page)
             except Exception as e:
                 CAPTURE["on"] = False
-                snapshot(list_page, idx, name, f"HATA: {str(e)[:200]}")
-                log_rows.append([saat, name, 0, 0, 0, "HATA", str(e)[:300]])
+                entries, ham = [], 0
+                note = f"HATA: {str(e)[:200]}"
                 print(f"HATA ({name}): {e}")
-                continue
             CAPTURE["on"] = False
             snapshot(list_page, idx, name, note)
-
-            okunan = ilgili = 0
+            source_batches.append({"idx": idx, "name": name, "entries": entries,
+                                  "ham": ham, "note": note, "saat": saat})
             for e in entries:
                 key = e["link"]
                 bugun.add(key)
+                k = ads.get(key) or {"first_seen": TODAY, "kaynak": name,
+                                     "baslik": e.get("title", ""), "kurum": e.get("kurum", "")}
+                k.update(last_seen=TODAY, kaynak=name, baslik=e.get("title", k.get("baslik", "")))
+                k["detail_level"] = e.get("detail_level", "İlan detay sayfası")
+                k["detail_checked"] = False
+                if e.get("kurum"):
+                    k["kurum"] = e["kurum"]
+                if e.get("content") and not (k.get("bitti") or k.get("analiz")):
+                    k["metin"] = e["content"][:8000]
+                ads[key] = k
+            save_state(state)
+
+        # Stage 2: read details and classify the already-collected listings.
+        for batch in source_batches:
+            idx, name, entries = batch["idx"], batch["name"], batch["entries"]
+            okunan = ilgili = 0
+            for e in entries:
+                key = e["link"]
                 k = ads.get(key)
-                if k and (k.get("bitti") or k.get("analiz")):
-                    k["last_seen"] = TODAY
-                    continue
+                baslik = e.get("title", "")
                 if zaman_doldu():
-                    bugun.discard(key)
+                    continue
+                if e.get("detail_level", "").startswith("Satır düzeyi"):
+                    k = ads[key]
+                    k.update(detail_checked=False, sonuc="DETAY LİNKİ BULUNAMADI")
                     continue
 
-                metin = e.get("content") or (k or {}).get("metin") or read_detail(detail_page, key)
+                metin = e.get("content") or read_detail(detail_page, key)
                 if not metin:
-                    bugun.discard(key)   # okunamadı: kaydetme, yarın tekrar denensin
+                    k = k or {"first_seen": TODAY, "kaynak": name, "baslik": baslik}
+                    k.update(last_seen=TODAY, detail_checked=False, sonuc="DETAY OKUNAMADI")
+                    ads[key] = k
                     continue
                 okunan += 1
-                k = k or {"first_seen": TODAY, "kaynak": name, "baslik": e.get("title", ""),
+                k = k or {"first_seen": TODAY, "kaynak": name, "baslik": baslik,
                           "kurum": e.get("kurum", "")}
-                k.update({"last_seen": TODAY, "metin_len": len(metin)})
+                metin_hash = ilan_hash(baslik, metin)
+                degisti = k.get("metin_hash") != metin_hash
+                k.update({"last_seen": TODAY, "metin_len": len(metin), "metin_hash": metin_hash,
+                          "detail_checked": True})
+                k.pop("detail_error", None)
+                if not degisti and (k.get("bitti") or k.get("analiz")):
+                    continue
+                k.pop("analiz", None)
+                k.pop("bitti", None)
+                k.pop("sonuc", None)
                 ads[key] = k
 
-                if not ADAY_ANAHTAR.search(metin + " " + e.get("title", "")):
-                    k.update(bitti=True, sonuc="ADAY DEĞİL (anahtar kelime yok)")
+                if AKADEMIK_BASLIK.search(baslik):
+                    k.update(bitti=True, sonuc="ILGISIZ (akademik kadro)")
                     k.pop("metin", None)
                     continue
-
-                tri = triage(e.get("title", ""), metin)
-                time.sleep(GROQ_SLEEP_SEC)
-                if not tri:
-                    k["metin"] = metin[:8000]        # beklemede
-                    continue
-                if tri.get("kategori") == "ILGISIZ":
-                    k.update(bitti=True, sonuc="ILGISIZ (ön eleme)", kanit=tri.get("kanit", ""))
+                if not ADAY_ANAHTAR.search(metin + " " + e.get("title", "")):
+                    k.update(bitti=True, sonuc="ADAY DEĞİL (anahtar kelime yok)")
                     k.pop("metin", None)
                     continue
 
@@ -699,10 +772,8 @@ def main():
                 if sonuc.get("kategori") in ("BOLUM", "TUM_LISANS"):
                     ilgili += 1
 
-            durum = "OK" if (ham > 0 or "normal" in note) else "ŞÜPHELİ (0 ham kayıt)"
-            if "EKSİK" in note:
-                durum = "ŞÜPHELİ (eksik okundu)"
-            log_rows.append([saat, name, ham, okunan, ilgili, durum, note])
+            durum = kaynak_durumu(batch["ham"], batch["note"])
+            log_rows.append([batch["saat"], name, batch["ham"], okunan, ilgili, durum, batch["note"]])
             save_state(state)
 
         browser.close()
@@ -714,9 +785,11 @@ def main():
         if not k:
             continue
         okunanlar.append({"kaynak": k.get("kaynak"), "baslik": k.get("baslik"), "link": key,
-                          "len": k.get("metin_len", "?"), "sonuc": sonuc_metni(k)})
+                          "len": k.get("metin_len", "?"), "duzey": k.get("detail_level", "?"),
+                          "sonuc": sonuc_metni(k),
+                          "yeni": k.get("first_seen") == TODAY and TODAY != state.get("first_run")})
         an = k.get("analiz")
-        if an and an.get("kategori") in ("BOLUM", "TUM_LISANS"):
+        if k.get("detail_checked") and an and an.get("kategori") in ("BOLUM", "TUM_LISANS"):
             a = dict(an)
             a.update({"link": key, "_kaynak": k.get("kaynak"), "_baslik": k.get("baslik"),
                       "_yeni": k.get("first_seen") == TODAY and TODAY != state.get("first_run")})
@@ -724,7 +797,12 @@ def main():
             (bolum if a["kategori"] == "BOLUM" else tum).append(a)
     okunanlar.sort(key=lambda o: (o["kaynak"] or "", o["sonuc"]))
     bekleyen = sum(1 for o in okunanlar if o["sonuc"].startswith("BEKLEMEDE"))
-    groq_notu = f"— ⏳ {bekleyen} ilan Groq kotası nedeniyle beklemede, yarın işlenecek." if bekleyen else ""
+    if bekleyen and not GROQ_API_KEY:
+        groq_notu = f"— ⏳ {bekleyen} ilan analiz kuyruğunda; GROQ_API_KEY tanımlı değil."
+    elif bekleyen:
+        groq_notu = f"— ⏳ {bekleyen} ilan Groq kotası/hatası nedeniyle analiz kuyruğunda."
+    else:
+        groq_notu = ""
 
     yeni_dosya = not os.path.isfile(LOG_PATH)
     with open(LOG_PATH, "a", newline="", encoding="utf-8") as f:
