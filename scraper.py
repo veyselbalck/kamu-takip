@@ -27,6 +27,7 @@ import re
 import csv
 import json
 import time
+import io
 import hashlib
 import html as htmllib
 import datetime
@@ -36,6 +37,7 @@ from urllib.parse import urljoin, urlparse
 import requests
 import urllib3
 from playwright.sync_api import sync_playwright
+from pypdf import PdfReader
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -61,7 +63,7 @@ BROWSER_UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
 ADAY_ANAHTAR = re.compile(
     r"bilgisayar|yazılım|bilişim|programcı|programlama|bilgi işlem|siber güvenlik|"
     r"herhangi bir.{0,30}lisans|tüm lisans|lisans mezunu|"
-    r"(?:4|dört) yıllık lisans|lisans programlarının.{0,60}birinden mezun", re.I)
+    r"(?:4|dört) yıllık lisans|lisans programlarının.{0,60}birinden mezun", re.I | re.S)
 AKADEMIK_BASLIK = re.compile(
     r"öğretim üyesi alım|öğretim elemanı alım|öğretim görevlisi alım|araştırma görevlisi", re.I)
 SOSYAL = ("twitter.com", "facebook.com", "instagram.com", "linkedin.com",
@@ -223,40 +225,68 @@ def fetch_ilan_gov_tr(page):
     return entries[:MAX_LINKS_PER_SOURCE * 2], len(entries), note
 
 
+RG_PERSONEL = re.compile(r"alım|alin|alınacak|personel|kadro|sözleşmeli|işçi|memur|KPSS|öğretim", re.I)
+
+
+def _rg_pdf_metni(url):
+    r = request_with_retry("GET", url, retries=2, timeout=60)
+    if r.status_code != 200 or not r.content.startswith(b"%PDF"):
+        return None
+    reader = PdfReader(io.BytesIO(r.content))
+    return "\n".join((pg.extract_text() or "") for pg in reader.pages)
+
+
 def fetch_resmi_gazete(page):
     d = TR_NOW.date()
-    url = (f"https://www.resmigazete.gov.tr/ilanlar/eskiilanlar/{d.year}/"
-           f"{d.month:02d}/{d.strftime('%Y%m%d')}-4.htm")
-    response = page.goto(url, timeout=60000, wait_until="domcontentloaded")
+    ymd = d.strftime("%Y%m%d")
+    klasor = f"https://www.resmigazete.gov.tr/ilanlar/eskiilanlar/{d.year}/{d.month:02d}/"
+    index = f"{klasor}{ymd}-4.htm"
+    response = page.goto(index, timeout=60000, wait_until="domcontentloaded")
     if response and response.status != 200:
         return [], 0, f"bugünkü ilan sayfası yok (HTTP {response.status}) (normal olabilir)"
     try:
         page.wait_for_load_state("networkidle", timeout=15000)
     except Exception:
         pass
-    text = page.inner_text("body") or ""
-    pat = re.compile(r"alınacaktır|alım ilanı|personel alım|sözleşmeli personel|KPSS|"
-                     r"işçi alım|memur alım|öğretim (?:üyesi|görevlisi|elemanı)", re.I)
-    spans = []
-    for m in pat.finditer(text):
-        s, e = max(0, m.start() - 1500), min(len(text), m.end() + 2500)
-        if spans and s <= spans[-1][1]:
-            spans[-1][1] = max(spans[-1][1], e)
-        else:
-            spans.append([s, e])
-    entries = []
-    for s, e in spans:
-        for i in range(s, e, 6000):
-            chunk = text[i:min(i + 6500, e)].strip()
-            if len(chunk) < 200:
-                continue
-            baslik = next((ln for ln in chunk.split("\n")
-                           if re.search(r"Başkanlığ|Rektörlüğ|Müdürlüğ|Bakanlığ|Valiliğ|Belediye", ln)),
-                          chunk.split("\n")[0])[:150]
-            key = hashlib.md5(chunk[:400].encode()).hexdigest()[:10]
-            entries.append({"title": baslik, "link": f"{url}#{key}", "content": chunk,
-                            "kurum": baslik, "detail_level": "Resmî Gazete sayfa metni"})
-    return entries, len(entries), f"sayfa uzunluğu {len(text)} karakter, {len(entries)} personel bloğu"
+
+    # 1) Dizin sayfasındaki PDF linkleri
+    pdfs = {e["link"] for e in links_matching(page, index, rf"{ymd}-4-\d+\.pdf$")}
+    kaynak = "dizin linkleri"
+
+    # 2) Link bulunamazsa numarayı sırayla dene (art arda 3 boş = son)
+    if not pdfs:
+        kaynak = "numara denemesi"
+        bos = 0
+        for n in range(1, 500):
+            u = f"{klasor}{ymd}-4-{n}.pdf"
+            try:
+                if request_with_retry("GET", u, retries=1, timeout=30).status_code == 200:
+                    pdfs.add(u); bos = 0
+                else:
+                    bos += 1
+            except Exception:
+                bos += 1
+            if bos >= 3:
+                break
+
+    entries, okunan = [], 0
+    for u in sorted(pdfs, key=lambda x: int(re.search(r"-4-(\d+)\.pdf", x).group(1))):
+        try:
+            txt = _rg_pdf_metni(u)
+        except Exception as e:
+            print("Resmî Gazete PDF okunamadı:", u, str(e)[:100]); continue
+        if not txt or len(txt.strip()) < 100:      # taranmış/boş PDF: okunamadı say
+            continue
+        okunan += 1
+        if not RG_PERSONEL.search(txt[:3000]):
+            continue
+        satirlar = [s.strip() for s in txt.split("\n") if s.strip()]
+        baslik = " ".join(satirlar[:2])[:150]
+        entries.append({"title": baslik, "link": u, "content": txt[:14000], "kurum": baslik,
+                        "detail_level": "Resmî Gazete ilan PDF'si (tam metin)"})
+    note = (f"sitede toplam: {len(pdfs)}, okunan: {okunan}, personel ilanı: {len(entries)}, "
+            f"PDF bulma: {kaynak}")
+    return entries, len(pdfs), note
 
 
 def fetch_kariyer_kapisi(page):
@@ -462,6 +492,37 @@ SEMA = """{
 }"""
 
 
+KIRP_ANAHTAR = re.compile(
+    r"KPSS|lisans|mezun|bölüm|mühendis|bilgisayar|bilişim|yazılım|ikamet|oturan|başvuru|"
+    r"tarih|sınav|mülakat|puan|yaş|boy|kilo|deneyim|kadro|pozisyon|unvan", re.I)
+
+
+def kirp_metin(metin, limit=3500, bas=1000, pencere=350):
+    """Groq token tüketimini düşürmek için: ilan başı + anahtar kelime çevresindeki pasajlar."""
+    metin = re.sub(r"[ \t]+", " ", metin)
+    metin = re.sub(r"\n{2,}", "\n", metin)
+    if len(metin) <= limit:
+        return metin
+    araliklar = [[0, bas]]
+    for m in KIRP_ANAHTAR.finditer(metin):
+        s, e = max(0, m.start() - pencere // 2), min(len(metin), m.end() + pencere)
+        if s <= araliklar[-1][1]:
+            araliklar[-1][1] = max(araliklar[-1][1], e)
+        else:
+            araliklar.append([s, e])
+    parca, toplam = [], 0
+    for s, e in araliklar:
+        p = metin[s:e]
+        if toplam + len(p) > limit:
+            p = p[:max(0, limit - toplam)]
+        if p:
+            parca.append(p)
+            toplam += len(p)
+        if toplam >= limit:
+            break
+    return "\n[...]\n".join(parca)
+
+
 def analiz(baslik, metin):
     prompt = ("Aşağıda bir Türkiye kamu personeli alım ilanının tam metni var. Bilgisayar mühendisliği "
               "mezunu bir aday açısından sınıflandır ve bilgileri çıkar. SADECE geçerli JSON döndür.\n"
@@ -471,7 +532,7 @@ def analiz(baslik, metin):
               "ve belirtilmemiş durumlarını ayır; türü ve taban puanı yaz. Ek sınavın türünü ve "
               "varsa puanını belirt. İkamet şartı için 'ikamet', 'oturmak', 'ilinde ikamet eden' "
               "gibi ifadelere bak; şart varsa il/ilçeyi yaz.\n\nJSON ŞEMASI:\n" + SEMA +
-              "\n\nBAŞLIK: " + baslik + "\n\nMETİN:\n" + metin[:8000])
+              "\n\nBAŞLIK: " + baslik + "\n\nMETİN (ilgili bölümler):\n" + kirp_metin(metin))
     res = groq_call(GROQ_MODEL, prompt)
     return res if isinstance(res, dict) else None
 
@@ -762,7 +823,8 @@ def main():
                     continue
 
                 sonuc = analiz(e.get("title", ""), metin)
-                time.sleep(GROQ_SLEEP_SEC)
+                if not GROQ_DEAD:
+                    time.sleep(GROQ_SLEEP_SEC)
                 if not sonuc:
                     k["metin"] = metin[:8000]
                     continue
