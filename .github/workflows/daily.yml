@@ -2,7 +2,7 @@ name: Günlük İlan Taraması
 
 on:
   schedule:
-    - cron: "0 3 * * *"   # UTC 03:00 = TR 06:00 (bilgisayar o sırada açıksa)
+    - cron: "0 7 * * *"   # UTC 07:00 = TR 10:00  
   workflow_dispatch: {}     # Actions sekmesinden elle başlatabilirsin
 
 permissions:
