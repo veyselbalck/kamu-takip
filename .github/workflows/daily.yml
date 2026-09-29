@@ -18,13 +18,20 @@ jobs:
     timeout-minutes: 350
     defaults:
       run:
-        shell: cmd            # PowerShell script çalıştırma politikasına takılmamak için
+        shell: cmd
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
+      - name: Python yolunu ekle
+        run: |
+          >>"%GITHUB_PATH%" echo C:\Program Files\Python311
+          >>"%GITHUB_PATH%" echo C:\Program Files\Python311\Scripts
+
+      - name: Python kontrolü
+        run: |
+          whoami
+          where python
+          python --version
 
       - name: Bağımlılıkları kur
         run: |
