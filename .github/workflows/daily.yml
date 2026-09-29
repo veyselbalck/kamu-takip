@@ -16,6 +16,8 @@ jobs:
   scrape:
     runs-on: self-hosted
     timeout-minutes: 350
+    env:
+      PLAYWRIGHT_BROWSERS_PATH: C:\actions-runner\ms-playwright
     defaults:
       run:
         shell: cmd
@@ -35,8 +37,12 @@ jobs:
 
       - name: Bağımlılıkları kur
         run: |
-          python -m pip install -r requirements.txt
-          python -m playwright install chromium
+          python -m pip install --use-feature=truststore -r requirements.txt
+
+      - name: Chromium indir
+        env:
+          NODE_TLS_REJECT_UNAUTHORIZED: "0"   # yalnızca tarayıcı indirmesi için (antivirüs sertifikası)
+        run: python -m playwright install chromium
 
       - name: Scraper'ı çalıştır
         env:

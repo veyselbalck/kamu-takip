@@ -34,6 +34,14 @@ import datetime
 from zoneinfo import ZoneInfo
 from urllib.parse import urljoin, urlparse
 
+# Windows'ta antivirüs/proxy HTTPS'i araya girip tarıyorsa Python'un kendi sertifika
+# listesi güvenmez. truststore, Windows sertifika deposunu kullanmasını sağlar.
+try:
+    import truststore
+    truststore.inject_into_ssl()
+except Exception:
+    pass
+
 import requests
 import urllib3
 from playwright.sync_api import sync_playwright
