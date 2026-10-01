@@ -51,7 +51,9 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # ---------------- AYARLAR ----------------
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
-GROQ_MODEL = "llama-3.3-70b-versatile"      # ayrıntılı analiz
+GROQ_MODELS = ["llama-3.3-70b-versatile", "openai/gpt-oss-120b", "openai/gpt-oss-20b", "llama-3.1-8b-instant"]
+GROQ_MODEL = GROQ_MODELS[0]                 # ana model; kotası dolarsa sıradakine geçilir
+GROQ_DEAD_MODELS = set()                    # bugün kotası bitmiş / kullanılamayan modeller
 DIAGNOSE = os.environ.get("DIAGNOSE", "1") == "1"
 
 MAX_RUNTIME_MIN = 300
@@ -307,7 +309,16 @@ def fetch_kariyer_kapisi(page):
         pass
     detay = links_matching(page, url, r"IlanDetay")
     if detay:
-        return detay, len(detay), "IlanDetay linkleri doğrudan bulundu"
+        body = page.inner_text("body") or ""
+        sayilar = re.findall(r"\((\d+)\s*İLAN\)", body)
+        harici = sum(1 for a in page.query_selector_all("a") if (a.inner_text() or "").strip() == "İlana Git")
+        if sayilar:
+            toplam = sum(int(x) for x in sayilar) - harici
+            note = (f"IlanDetay linkleri doğrudan bulundu; sitede toplam: {toplam}, okunan: {len(detay)}, "
+                    f"harici siteye giden (İlana Git): {harici}")
+        else:
+            note = "IlanDetay linkleri doğrudan bulundu"
+        return detay, len(detay), note
     kurum_satirlari = []
     for tr in page.query_selector_all("table tr"):
         a = tr.query_selector("a")
@@ -342,7 +353,21 @@ def fetch_sbb_kamu_ilan(page):
     host = urlparse(url).hostname
     entries = [e for e in links_matching(page, url, min_text=8)
                if urlparse(e["link"]).hostname == host]
-    return entries[:MAX_LINKS_PER_SOURCE], len(entries), "aynı alan adındaki sayfa linkleri (yapı doğrulanmadı)"
+    # Manşet/kaydırıcıdaki tekrarları ele: aynı metinli bağlantı aynı ilandır
+    tekil, gorulen = [], set()
+    for e in entries:
+        t = re.sub(r"\s+", " ", e["title"]).strip().lower()
+        if t in gorulen:
+            continue
+        gorulen.add(t)
+        tekil.append(e)
+    m = re.search(r"TÜM İLANLAR\s*(\d+)\s*ilan", page.inner_text("body") or "", re.I)
+    if m:
+        note = (f"sitede toplam: {m.group(1)}, okunan: {len(tekil)} "
+                f"(ham bağlantı: {len(entries)}, tekrarlar elendi)")
+    else:
+        note = "aynı alan adındaki sayfa linkleri (yapı doğrulanmadı)"
+    return tekil[:MAX_LINKS_PER_SOURCE], len(tekil), note
 
 
 def fetch_csb_yerel(page):
@@ -376,7 +401,12 @@ def fetch_iskur_memur(page):
     entries = links_matching(page, url, min_text=10)
     ilanli = [e for e in entries if re.search(r"alım|alim|ilan|personel|memur|sözleşmeli", e["title"], re.I)]
     entries = ilanli or entries
-    return entries[:MAX_LINKS_PER_SOURCE], len(entries), "İŞKUR kamu memur ilan linkleri (yapı doğrulanmadı)"
+    sayilar = [int(x) for x in re.findall(r"^\((\d+)\)\s*$", page.inner_text("body") or "", re.M)]
+    note = "İŞKUR kamu memur ilan linkleri (yapı doğrulanmadı)"
+    if sayilar and sum(sayilar) > len(entries):
+        note = (f"EKSİK: haritada {sum(sayilar)} ilan görünüyor ({len(sayilar)} il), "
+                f"{len(entries)} bağlantı okundu — iller tek tek gezilmeli. " + note)
+    return entries[:MAX_LINKS_PER_SOURCE], len(entries), note
 
 
 def fetch_iskur_esube(page):
@@ -428,11 +458,25 @@ SOURCES = [
 
 
 # ---------------- GROQ ----------------
+ONCELIK_YUKSEK = re.compile(r"bilişim|bilgisayar|yazılım|bilgi işlem|programcı|siber|veri |sistem|mühendis", re.I)
+ONCELIK_ORTA = re.compile(r"uzman yardımcısı|sözleşmeli|memur|meslek personeli|uzman|müfettiş|denetçi|kurum", re.I)
+
+
+def oncelik(baslik, metin=""):
+    """Küçük sayı = önce analiz edilir (kota sınırlıyken en umut verici ilanlar öne)."""
+    if ONCELIK_YUKSEK.search(baslik):
+        return 0
+    if ONCELIK_ORTA.search(baslik):
+        return 1
+    return 2
+
+
 def groq_call(model, prompt):
     """JSON dict | None (geçici/kalıcı hata) | 'MODEL_HATA'."""
-    global GROQ_DEAD
-    if GROQ_DEAD or not GROQ_API_KEY:
+    if not GROQ_API_KEY:
         return None
+    if model in GROQ_DEAD_MODELS:
+        return "KOTA"
     for deneme in range(1, 4):
         try:
             r = requests.post(
@@ -451,13 +495,14 @@ def groq_call(model, prompt):
             except ValueError:
                 bekle = 20
             if bekle > 90:
-                GROQ_DEAD = True
-                print(f"Groq günlük kota doldu (retry-after {bekle:.0f}s). Kalanlar yarına.")
-                return None
+                GROQ_DEAD_MODELS.add(model)
+                print(f"Groq günlük kota doldu ({model}, retry-after {bekle:.0f}s).")
+                return "KOTA"
             print(f"Groq 429, {bekle:.0f}s bekleniyor")
             time.sleep(bekle + 2)
             continue
-        if r.status_code in (400, 404) and "model" in r.text.lower():
+        if r.status_code in (400, 404):
+            print("Groq model/istek hatası:", model, r.status_code, r.text[:150])
             return "MODEL_HATA"
         if r.status_code != 200:
             print("Groq hata:", r.status_code, r.text[:200])
@@ -467,6 +512,27 @@ def groq_call(model, prompt):
         except Exception as e:
             print("Groq JSON okunamadı:", e)
             return None
+    return None
+
+
+def groq_zincir(prompt):
+    """Modelleri sırayla dener; kotası biten/kullanılamayan modeli atlar."""
+    global GROQ_DEAD
+    for model in GROQ_MODELS:
+        if model in GROQ_DEAD_MODELS:
+            continue
+        res = groq_call(model, prompt)
+        if res == "MODEL_HATA":
+            GROQ_DEAD_MODELS.add(model)
+            continue
+        if res == "KOTA":
+            continue
+        if isinstance(res, dict):
+            res["_model"] = model
+        return res
+    if all(m in GROQ_DEAD_MODELS for m in GROQ_MODELS):
+        GROQ_DEAD = True
+        print("Tüm Groq modellerinin bugünkü kotası doldu; kalanlar yarına.")
     return None
 
 
@@ -541,7 +607,7 @@ def analiz(baslik, metin):
               "varsa puanını belirt. İkamet şartı için 'ikamet', 'oturmak', 'ilinde ikamet eden' "
               "gibi ifadelere bak; şart varsa il/ilçeyi yaz.\n\nJSON ŞEMASI:\n" + SEMA +
               "\n\nBAŞLIK: " + baslik + "\n\nMETİN (ilgili bölümler):\n" + kirp_metin(metin))
-    res = groq_call(GROQ_MODEL, prompt)
+    res = groq_zincir(prompt)
     return res if isinstance(res, dict) else None
 
 
@@ -569,6 +635,7 @@ def card_html(a):
         <span class="tag">KPSS {E(a.get('kpssDurumu') or 'Belirtilmemiş')}: {E(a.get('kpssTuru') or 'belirtilmemiş')}</span>
         <span class="tag">Ek sınav: {E(ek_sinav)}</span>
     <span class="{cls}">📍 İkamet: {E(ikamet)}</span>
+    {'<span class="tag">🤖 yedek model: ' + E(a.get('_model')) + ' (doğrula)</span>' if a.get('_model') and a.get('_model') != GROQ_MODELS[0] else ''}
   </div>
   {ek_html}
   <p>{E(a.get('kisaOzet'))}</p>
@@ -710,7 +777,7 @@ def kaynak_durumu(ham, note):
         return "ŞÜPHELİ (eksik okundu)"
     match = re.search(r"sitede toplam:\s*(\d+), okunan:\s*(\d+)", note)
     if match:
-        return "OK" if match.group(1) == match.group(2) else "ŞÜPHELİ (eksik okundu)"
+        return "OK" if int(match.group(2)) >= int(match.group(1)) else "ŞÜPHELİ (eksik okundu)"
     if "bugünkü ilan sayfası yok" in note:
         return "BOŞ (sayfa yok; kontrol edin)"
     if "aktif ilan tablosu boş" in note:
@@ -754,6 +821,7 @@ def main():
         ctx.on("response", on_resp)
         list_page, detail_page = ctx.new_page(), ctx.new_page()
         source_batches = []
+        analiz_kuyrugu, log_by_name = [], {}
 
         # Stage 1: collect every source before spending time or quota on analysis.
         for idx, (name, fn) in enumerate(SOURCES):
@@ -830,20 +898,34 @@ def main():
                     k.pop("metin", None)
                     continue
 
-                sonuc = analiz(e.get("title", ""), metin)
-                if not GROQ_DEAD:
-                    time.sleep(GROQ_SLEEP_SEC)
-                if not sonuc:
-                    k["metin"] = metin[:8000]
-                    continue
-                k["analiz"] = sonuc
-                k["bitti"] = True
-                k.pop("metin", None)
-                if sonuc.get("kategori") in ("BOLUM", "TUM_LISANS"):
-                    ilgili += 1
+                k["metin"] = metin[:8000]          # analiz edilene kadar saklanır
+                analiz_kuyrugu.append((oncelik(baslik, metin), key, baslik, metin, name))
 
             durum = kaynak_durumu(batch["ham"], batch["note"])
             log_rows.append([batch["saat"], name, batch["ham"], okunan, ilgili, durum, batch["note"]])
+            log_by_name[name] = log_rows[-1]
+            save_state(state)
+
+        # Stage 3: kota sınırlıyken en umut verici ilanlardan başlayarak analiz et
+        if GROQ_API_KEY:
+            analiz_kuyrugu.sort(key=lambda x: x[0])
+            print(f"Analiz kuyruğu: {len(analiz_kuyrugu)} ilan")
+            for sayac, (_, key, baslik, metin, name) in enumerate(analiz_kuyrugu, 1):
+                if GROQ_DEAD or zaman_doldu():
+                    break
+                sonuc = analiz(baslik, metin)
+                if not GROQ_DEAD:
+                    time.sleep(GROQ_SLEEP_SEC)
+                if not sonuc:
+                    continue
+                k = ads[key]
+                k["analiz"] = sonuc
+                k["bitti"] = True
+                k.pop("metin", None)
+                if sonuc.get("kategori") in ("BOLUM", "TUM_LISANS") and name in log_by_name:
+                    log_by_name[name][4] += 1
+                if sayac % 10 == 0:
+                    save_state(state)
             save_state(state)
 
         browser.close()
