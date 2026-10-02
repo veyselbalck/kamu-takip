@@ -80,3 +80,10 @@ navi"
 2026-10-01,17:19:30,ÇŞB Yerel Yönetimler,17,17,0,KISMİ (tamlık doğrulanmadı),duyuru linkleri (yapı doğrulanmadı — tanı sayfasına bak)
 2026-10-01,17:19:35,İŞKUR (kamu memur ilanları),2,2,0,ŞÜPHELİ (eksik okundu),"EKSİK: haritada 37 ilan görünüyor (22 il), 2 bağlantı okundu — iller tek tek gezilmeli. İŞKUR kamu memur ilan linkleri (yapı doğrulanmadı)"
 2026-10-01,17:19:43,İŞKUR (e-şube),12,0,0,KISMİ (tamlık doğrulanmadı),"sonuç tablosu: 12 satır, 0 ilan detay bağlantısı; 12 satır düzeyi kayıt"
+2026-10-02,17:24:07,İlan.gov.tr,193,193,1,OK,"sitede toplam: 192, okunan: 193, sayfalama: currentPage"
+2026-10-02,17:25:01,Resmî Gazete,23,16,2,ŞÜPHELİ (eksik okundu),"sitede toplam: 23, okunan: 20, personel ilanı: 16, PDF bulma: dizin linkleri"
+2026-10-02,17:25:16,Kariyer Kapısı,21,21,5,OK,"IlanDetay linkleri doğrudan bulundu; sitede toplam: 21, okunan: 21, harici siteye giden (İlana Git): 2"
+2026-10-02,17:25:24,SBB Kamu İlan,171,171,0,OK,"sitede toplam: 140, okunan: 171 (ham bağlantı: 171, tekrarlar elendi)"
+2026-10-02,17:25:33,ÇŞB Yerel Yönetimler,17,17,0,KISMİ (tamlık doğrulanmadı),duyuru linkleri (yapı doğrulanmadı — tanı sayfasına bak)
+2026-10-02,17:25:38,İŞKUR (kamu memur ilanları),2,2,0,ŞÜPHELİ (eksik okundu),"EKSİK: haritada 29 ilan görünüyor (14 il), 2 bağlantı okundu — iller tek tek gezilmeli. İŞKUR kamu memur ilan linkleri (yapı doğrulanmadı)"
+2026-10-02,17:25:46,İŞKUR (e-şube),14,0,0,KISMİ (tamlık doğrulanmadı),"sonuç tablosu: 14 satır, 0 ilan detay bağlantısı; 14 satır düzeyi kayıt"
