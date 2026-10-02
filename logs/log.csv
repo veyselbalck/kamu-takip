@@ -87,3 +87,21 @@ navi"
 2026-10-02,17:25:33,ÇŞB Yerel Yönetimler,17,17,0,KISMİ (tamlık doğrulanmadı),duyuru linkleri (yapı doğrulanmadı — tanı sayfasına bak)
 2026-10-02,17:25:38,İŞKUR (kamu memur ilanları),2,2,0,ŞÜPHELİ (eksik okundu),"EKSİK: haritada 29 ilan görünüyor (14 il), 2 bağlantı okundu — iller tek tek gezilmeli. İŞKUR kamu memur ilan linkleri (yapı doğrulanmadı)"
 2026-10-02,17:25:46,İŞKUR (e-şube),14,0,0,KISMİ (tamlık doğrulanmadı),"sonuç tablosu: 14 satır, 0 ilan detay bağlantısı; 14 satır düzeyi kayıt"
+2026-10-02,18:33:58,İlan.gov.tr,0,0,0,HATA,"HATA: Page.goto: net::ERR_INTERNET_DISCONNECTED at https://www.ilan.gov.tr/ilan/tum-ilanlar/personel-alimi?ats=5&currentPage=3
+Call log:
+navigating to ""https://www.ilan.gov.tr/ilan/tum-ilanlar/personel-alim"
+2026-10-02,18:34:14,Resmî Gazete,0,0,0,HATA,"HATA: Page.goto: net::ERR_INTERNET_DISCONNECTED at https://www.resmigazete.gov.tr/ilanlar/eskiilanlar/2026/10/20261002-4.htm
+Call log:
+navigating to ""https://www.resmigazete.gov.tr/ilanlar/eskiilanlar/2026/"
+2026-10-02,18:34:15,Kariyer Kapısı,0,0,0,HATA,"HATA: Page.goto: net::ERR_INTERNET_DISCONNECTED at https://kariyerkapisi.gov.tr/isealim
+Call log:
+navigating to ""https://kariyerkapisi.gov.tr/isealim"", waiting until ""domcontentloaded""
+"
+2026-10-02,18:34:15,SBB Kamu İlan,0,0,0,HATA,"HATA: Page.goto: net::ERR_INTERNET_DISCONNECTED at https://kamuilan.sbb.gov.tr/
+Call log:
+navigating to ""https://kamuilan.sbb.gov.tr/"", waiting until ""domcontentloaded""
+"
+2026-10-02,18:34:15,ÇŞB Yerel Yönetimler,0,0,0,HATA,HATA: erişilemedi (zaman aşımı). GitHub sunucusunun yurt dışı IP'si engelleniyor olabilir. Çözüm: Türkiye'deki bilgisayarında self-hosted runner. Ayrıntı: Page.goto: net::ERR_INTERNET_DISCONNECTED at https:
+2026-10-02,18:34:15,İŞKUR (e-şube),0,0,0,HATA,"HATA: Page.goto: net::ERR_INTERNET_DISCONNECTED at https://esube.iskur.gov.tr/Istihdam/AcikIsIlanAra.aspx
+Call log:
+navigating to ""https://esube.iskur.gov.tr/Istihdam/AcikIsIlanAra.aspx"", waiting until ""dom"
