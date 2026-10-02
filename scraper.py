@@ -395,20 +395,6 @@ def fetch_csb_yerel(page):
     return entries[:MAX_LINKS_PER_SOURCE], len(entries), "duyuru linkleri (yapı doğrulanmadı — tanı sayfasına bak)"
 
 
-def fetch_iskur_memur(page):
-    url = "https://www.iskur.gov.tr/ilanlar/kamu-memur-alim-ilanlari/"
-    goto_safe(page, url, settle=3)
-    entries = links_matching(page, url, min_text=10)
-    ilanli = [e for e in entries if re.search(r"alım|alim|ilan|personel|memur|sözleşmeli", e["title"], re.I)]
-    entries = ilanli or entries
-    sayilar = [int(x) for x in re.findall(r"^\((\d+)\)\s*$", page.inner_text("body") or "", re.M)]
-    note = "İŞKUR kamu memur ilan linkleri (yapı doğrulanmadı)"
-    if sayilar and sum(sayilar) > len(entries):
-        note = (f"EKSİK: haritada {sum(sayilar)} ilan görünüyor ({len(sayilar)} il), "
-                f"{len(entries)} bağlantı okundu — iller tek tek gezilmeli. " + note)
-    return entries[:MAX_LINKS_PER_SOURCE], len(entries), note
-
-
 def fetch_iskur_esube(page):
     url = "https://esube.iskur.gov.tr/Istihdam/AcikIsIlanAra.aspx"
     goto_safe(page, url, settle=3)
@@ -416,33 +402,33 @@ def fetch_iskur_esube(page):
     if "reddedildi" in body or "istek id" in body:
         raise Exception("İŞKUR güvenlik duvarı isteği reddetti (bot / yurt dışı IP). "
                         "Self-hosted runner çözebilir.")
-    for txt in ("Kamu",):
-        try:
-            page.get_by_text(txt, exact=True).first.click(timeout=6000)
-        except Exception as e:
-            print(f"İŞKUR '{txt}' tıklanamadı: {str(e)[:80]}")
+
+    kamu = page.locator("#ctl04_kamuRadio")
+    if not kamu.is_checked():
+        kamu.check(timeout=6000)
     try:
-        page.get_by_text("Ara", exact=True).first.click(timeout=6000)
+        page.locator("a[href*='CommandItem_Search']").click(timeout=6000)
         page.wait_for_load_state("networkidle", timeout=30000)
     except Exception as e:
-        print(f"İŞKUR 'Ara' tıklanamadı: {str(e)[:80]}")
+        raise Exception(f"İŞKUR e-Şube kamu araması başarısız: {str(e)[:120]}") from e
+
     entries = []
-    for tr in page.query_selector_all("table tr"):
+    grid = page.locator("#ctl04_ctlGridAcikIslerListeDetail")
+    for tr in grid.locator("tr").all():
+        detail_link = tr.locator("a[href^='javascript:PopupJobDetails']")
+        if detail_link.count() == 0:
+            continue
         t = (tr.inner_text() or "").strip().replace("\n", " | ")
-        if len(t) > 25:
-            key = hashlib.md5(t.encode()).hexdigest()[:10]
-            href = next((a.get_attribute("href") for a in tr.query_selector_all("a")
-                         if a.get_attribute("href") and not a.get_attribute("href").startswith(
-                             ("#", "javascript:"))), None)
-            if href:
-                entries.append({"title": t[:150], "link": urljoin(url, href),
-                                "detail_level": "İlan detay bağlantısı"})
-            else:
-                entries.append({"title": t[:150], "content": t, "link": f"{url}#row-{key}",
-                                "detail_level": "Satır düzeyi; detay bağlantısı bulunamadı"})
-    detail_count = sum(1 for e in entries if e["detail_level"] == "İlan detay bağlantısı")
-    note = (f"sonuç tablosu: {len(entries)} satır, {detail_count} ilan detay bağlantısı; "
-            f"{len(entries) - detail_count} satır düzeyi kayıt")
+        href = detail_link.first.get_attribute("href") or ""
+        match = re.search(r"PopupJobDetails\('([^']+)'\s*,\s*'Kamu'", href)
+        if not match:
+            continue
+        ilan_no = match.group(1)
+        detail_url = urljoin(url, f"AcikIsIlanDetay.aspx?uiID={ilan_no}&isyeriTuru=Kamu")
+        entries.append({"title": t[:220], "link": detail_url,
+                        "detail_level": "İlan detay sayfası"})
+
+    note = f"Kamu seçilerek arandı; {len(entries)} ilan bulundu, detay sayfaları açılacak"
     return entries[:MAX_LINKS_PER_SOURCE], len(entries), note
 
 
@@ -452,7 +438,6 @@ SOURCES = [
     ("Kariyer Kapısı", fetch_kariyer_kapisi),
     ("SBB Kamu İlan", fetch_sbb_kamu_ilan),
     ("ÇŞB Yerel Yönetimler", fetch_csb_yerel),
-    ("İŞKUR (kamu memur ilanları)", fetch_iskur_memur),
     ("İŞKUR (e-şube)", fetch_iskur_esube),
 ]
 
