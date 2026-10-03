@@ -75,7 +75,9 @@ ADAY_ANAHTAR = re.compile(
     r"herhangi bir.{0,30}lisans|tüm lisans|lisans mezunu|"
     r"(?:4|dört) yıllık lisans|lisans programlarının.{0,60}birinden mezun", re.I | re.S)
 AKADEMIK_BASLIK = re.compile(
-    r"öğretim üyesi alım|öğretim elemanı alım|öğretim görevlisi alım|araştırma görevlisi", re.I)
+    r"öğretim\s+(?:üyesi|görevlisi|elemanı)|öğr\.?\s*(?:üyesi|görevlisi|gör\b)|"
+    r"araştırma\s+görevlisi|okutman|profesör|doçent", re.I)
+PROMPT_VERSION = 2
 SOSYAL = ("twitter.com", "facebook.com", "instagram.com", "linkedin.com",
           "youtube.com", "//x.com", "wa.me", "t.me")
 
@@ -456,6 +458,104 @@ def oncelik(baslik, metin=""):
     return 2
 
 
+# ---------------- SONUÇ DOĞRULAMA / TARİH / TEKRAR BİRLEŞTİRME ----------------
+OGRENCI_SARTI = re.compile(
+    r"[34]\.?\s*(?:veya|ya da|ve)\s*[34]\.?\s*sınıf|öğrenim görecek|öğrenim görmekte", re.I)
+IC_TERFI = re.compile(r"yeterlik\s+sınav|görevde\s+yükselme|unvan\s+değişikliği", re.I)
+LISE_ONLISANS_POZ = re.compile(
+    r"teknisyen|tekniker|hizmetli|şoför|aşçı|bekçi|temizlik|koruma ve güvenlik|"
+    r"güvenlik görevlisi|işçi|çaycı|odacı", re.I)
+AYLAR = {"ocak": 1, "şubat": 2, "mart": 3, "nisan": 4, "mayıs": 5, "haziran": 6, "temmuz": 7,
+         "ağustos": 8, "eylül": 9, "ekim": 10, "kasım": 11, "aralık": 12}
+
+
+def tarih_ayrisir(s):
+    """'19.10.2026 17:00' | '12/10/2026' | '12 Ekim 2026' | '2026-10-12' -> date | None"""
+    if not s:
+        return None
+    s = str(s).replace("İ", "i").replace("I", "ı").lower()
+    try:
+        m = re.search(r"(\d{4})-(\d{2})-(\d{2})", s)
+        if m:
+            return datetime.date(int(m.group(1)), int(m.group(2)), int(m.group(3)))
+        m = re.search(r"(\d{1,2})\s*[./-]\s*(\d{1,2})\s*[./-]\s*(\d{4})", s)
+        if m:
+            return datetime.date(int(m.group(3)), int(m.group(2)), int(m.group(1)))
+        m = re.search(r"(\d{1,2})\s+([a-zçğıöşü]+)\s+(\d{4})", s)
+        if m and m.group(2) in AYLAR:
+            return datetime.date(int(m.group(3)), AYLAR[m.group(2)], int(m.group(1)))
+    except ValueError:
+        return None
+    return None
+
+
+def dogrula(an, baslik=""):
+    """LLM 'BOLUM/TUM_LISANS' demiş ama kurallara aykırıysa ILGISIZ'e çevirir. (analiz, neden)"""
+    if not an or an.get("kategori") not in ("BOLUM", "TUM_LISANS"):
+        return an, None
+    poz = an.get("pozisyon") or ""
+    metin = " ".join(str(an.get(x) or "") for x in ("kanit", "kisaOzet", "ekSartlar", "ekSinavDetay"))
+    neden = None
+    if AKADEMIK_BASLIK.search(poz) or AKADEMIK_BASLIK.search(baslik or ""):
+        neden = "akademik kadro"
+    elif OGRENCI_SARTI.search(metin):
+        neden = "öğrenciye yönelik ilan"
+    elif IC_TERFI.search(metin):
+        neden = "iç terfi / yeterlik sınavı"
+    elif LISE_ONLISANS_POZ.search(poz):
+        neden = "lise/önlisans kadrosu"
+    if neden:
+        an = dict(an)
+        an["kategori"] = "ILGISIZ"
+        an["_neden"] = neden
+    return an, neden
+
+
+KURUM_GENEL = {"ve", "ile", "başkanlığı", "başkanlığına", "müdürlüğü", "müdürlüğüne", "genel", "bakanlığı",
+               "rektörlüğü", "rektörlüğünden", "belediye", "belediyesi", "daire", "il", "kurumu",
+               "türkiye", "cumhuriyeti", "kurum", "üniversitesi", "üniversite", "valiliği", "valilik",
+               "belediyesi", "büyükşehir", "kalkınma", "ajansı"}
+
+
+def _kelimeler(s, genel=()):
+    s = re.sub(r"\(.*?\)", " ", (s or "").replace("İ", "i").replace("I", "ı").lower())
+    return {w for w in re.findall(r"[a-zçğıöşü0-9]+", s) if len(w) > 1 and w not in genel}
+
+
+def _kapsama(x, y):
+    if not x or not y:
+        return 0.0
+    return len(x & y) / min(len(x), len(y))
+
+
+def ayni_ilan(a, b):
+    ka, kb = a.get("kadroSayisi"), b.get("kadroSayisi")
+    if ka and kb and str(ka) != str(kb):
+        return False
+    return (_kapsama(_kelimeler(a.get("kurum"), KURUM_GENEL), _kelimeler(b.get("kurum"), KURUM_GENEL)) >= 0.6
+            and _kapsama(_kelimeler(a.get("pozisyon") or a.get("_baslik")),
+                         _kelimeler(b.get("pozisyon") or b.get("_baslik"))) >= 0.6)
+
+
+def birlestir(items):
+    """Aynı ilanın farklı kaynaklardaki kopyalarını tek karta indirir (diğer linkler korunur)."""
+    gruplar = []
+    for a in items:
+        for g in gruplar:
+            if ayni_ilan(g[0], a):
+                g.append(a)
+                break
+        else:
+            gruplar.append([a])
+    out = []
+    for g in gruplar:
+        g.sort(key=lambda x: -sum(1 for v in x.values() if v not in (None, "", "Belirtilmemiş", "belirtilmemiş")))
+        ana = dict(g[0])
+        ana["_digerleri"] = [(x.get("_kaynak"), x.get("link")) for x in g[1:]]
+        out.append(ana)
+    return out
+
+
 def groq_call(model, prompt):
     """JSON dict | None (geçici/kalıcı hata) | 'MODEL_HATA'."""
     if not GROQ_API_KEY:
@@ -526,8 +626,11 @@ KATEGORI_KURALI = (
     "- BOLUM: kabul edilen bölümler arasında Bilgisayar/Yazılım Mühendisliği veya bilişim bölümleri "
     "açıkça sayılıyor ('Bilişim Personeli' kadrosu dahil).\n"
     "- TUM_LISANS: bölüm kısıtı YOK, herhangi bir lisans (4 yıllık) mezunu başvurabiliyor.\n"
-    "- ILGISIZ: yalnızca başka bölümler, akademik kadro (öğretim üyesi/görevlisi), lise/önlisans, "
-    "işçi, iptal/düzeltme ilanı vb.; bilgisayar mühendisi başvuramıyor.\n"
+    "- ILGISIZ: yalnızca başka bölümler, akademik kadro (öğretim üyesi/görevlisi/araştırma görevlisi), "
+    "lise/önlisans/meslek lisesi kadroları (teknisyen, tekniker, hizmetli, şoför...), işçi, iptal/düzeltme ilanı; "
+    "öğrencilere yönelik (3./4. sınıf öğrenimi sürenler) ilanlar; yalnızca belirli bir kadroda görev yapmış "
+    "kişilere açık yeterlik sınavı / iç terfi ilanları; yüksek lisans veya doktora zorunlu ilanlar. "
+    "Bu durumlarda bilgisayar mühendisi lisans mezunu başvuramaz.\n"
     "Bir metinde birden çok kadro varsa bilgisayar mühendisinin başvurabildiği kadroyu esas al.\n"
 )
 
@@ -593,7 +696,10 @@ def analiz(baslik, metin):
               "gibi ifadelere bak; şart varsa il/ilçeyi yaz.\n\nJSON ŞEMASI:\n" + SEMA +
               "\n\nBAŞLIK: " + baslik + "\n\nMETİN (ilgili bölümler):\n" + kirp_metin(metin))
     res = groq_zincir(prompt)
-    return res if isinstance(res, dict) else None
+    if isinstance(res, dict):
+        res["_pv"] = PROMPT_VERSION
+        return res
+    return None
 
 
 # ---------------- RAPOR ----------------
@@ -611,6 +717,19 @@ def card_html(a):
     if a.get("basvuruBaslangic") or a.get("basvuruBitis"):
         tarih = f'<span class="tag">📅 {E(a.get("basvuruBaslangic") or "?")} → {E(a.get("basvuruBitis") or "?")}</span>'
     kadro = f' — {E(a["kadroSayisi"])} kadro' if a.get("kadroSayisi") else ""
+    kalan = ""
+    if a.get("_bitis"):
+        g = (a["_bitis"] - TR_NOW.date()).days
+        kalan = (f'<span class="tag red">⏰ bugün son gün!</span>' if g == 0 else
+                 f'<span class="tag{" red" if g <= 3 else ""}">⏰ {g} gün kaldı</span>')
+    zayif = ""
+    if not re.search(r"lisans|bilgisayar|bilişim|yazılım|herhangi|mühendis", str(a.get("kanit") or ""), re.I):
+        zayif = '<span class="tag red">⚠ kanıt zayıf — ilanı elle kontrol et</span>'
+    diger = ""
+    if a.get("_digerleri"):
+        diger = ('<div class="kanit">🔗 Aynı ilan başka kaynakta da: '
+                 + " · ".join(f'<a href="{E(l)}" target="_blank">{E(k)}</a>' for k, l in a["_digerleri"])
+                 + "</div>")
     return f"""<div class="card">
   <div class="top"><a href="{E(a.get('link'))}" target="_blank">{E(a.get('pozisyon') or a.get('_baslik'))}</a>{yeni}</div>
   <div class="kurum">{E(a.get('kurum'))}{kadro}</div>
@@ -619,12 +738,12 @@ def card_html(a):
     <span class="tag">🧾 {E(a.get('degerlendirmeSekli'))}</span>
         <span class="tag">KPSS {E(a.get('kpssDurumu') or 'Belirtilmemiş')}: {E(a.get('kpssTuru') or 'belirtilmemiş')}</span>
         <span class="tag">Ek sınav: {E(ek_sinav)}</span>
-    <span class="{cls}">📍 İkamet: {E(ikamet)}</span>
+    <span class="{cls}">📍 İkamet: {E(ikamet)}</span>{kalan}{zayif}
     {'<span class="tag">🤖 yedek model: ' + E(a.get('_model')) + ' (doğrula)</span>' if a.get('_model') and a.get('_model') != GROQ_MODELS[0] else ''}
   </div>
   {ek_html}
   <p>{E(a.get('kisaOzet'))}</p>
-  <div class="kanit">Kanıt: “{E(a.get('kanit'))}”</div>
+  <div class="kanit">Kanıt: “{E(a.get('kanit'))}”</div>{diger}
   <a class="btn" href="{E(a.get('link'))}" target="_blank">İlana git ↗</a>
 </div>"""
 
@@ -650,11 +769,11 @@ pre{white-space:pre-wrap;background:#fff;padding:8px;border:1px solid #ddd;font-
 """
 
 
-def build_report(bolum, tum, log_rows, yeni_sayisi, okunanlar, groq_notu):
+def build_report(bolum, tum, log_rows, yeni_sayisi, okunanlar, groq_notu, dolmus=()):
     def section(items):
         if not items:
             return "<p>Şu an bu kategoride aktif ilan bulunamadı.</p>"
-        items = sorted(items, key=lambda x: (not x.get("_yeni"), x.get("_kaynak", "")))
+        items = sorted(items, key=lambda x: (x.get("_bitis") is None, x.get("_bitis") or datetime.date.max))
         return "\n".join(card_html(a) for a in items)
 
     log_html = ("<table><tr><th>Saat</th><th>Kaynak</th><th>Ham kayıt</th><th>Detay okunan (bugün)</th>"
@@ -676,6 +795,13 @@ def build_report(bolum, tum, log_rows, yeni_sayisi, okunanlar, groq_notu):
                         f"<td>{E(o['duzey'])}</td><td>{E(o['sonuc'])}</td></tr>")
     okunan_html += "</table>"
 
+    dolmus_html = ""
+    if dolmus:
+        satirlar = "".join(
+            f'<li><a href="{E(a.get("link"))}" target="_blank">{E(a.get("pozisyon") or a.get("_baslik"))}</a>'
+            f' — {E(a.get("kurum"))} (son gün: {a["_bitis"].strftime("%d.%m.%Y")})</li>' for a in dolmus)
+        dolmus_html = (f'<div class="box"><details><summary><b>⌛ Süresi dolmuş, gizlenen ilanlar '
+                       f'({len(dolmus)})</b></summary><ul>{satirlar}</ul></details></div>')
     return f"""<!DOCTYPE html><html lang="tr"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Günlük Kamu İlan Raporu</title><style>{STYLE}</style></head><body>
@@ -685,6 +811,7 @@ def build_report(bolum, tum, log_rows, yeni_sayisi, okunanlar, groq_notu):
 {section(bolum)}
 <h2>🎓 Tüm Lisans Mezunlarına Açık — {len(tum)} ilan</h2>
 {section(tum)}
+{dolmus_html}
 <div class="box"><h2>🔍 Veri Çekim Doğrulama Kaydı</h2>{log_html}
 <p><a href="debug.html">Tanı sayfası (ekran görüntüleri, arka plan istekleri)</a></p></div>
 <div class="box"><details><summary><b>📑 Bugün listede görülen tüm ilanlar ({len(okunanlar)}) — okundu mu, sonuç ne?</b></summary>
@@ -733,7 +860,7 @@ def snapshot(page, idx, name, note):
 
 # ---------------- ANA AKIŞ ----------------
 def sonuc_metni(k):
-    if not k.get("detail_checked"):
+    if not k.get("detail_checked") and not k.get("analiz"):
         if k.get("sonuc") == "DETAY OKUNAMADI":
             return "DETAY OKUNAMADI (yeniden denenecek)"
         if k.get("sonuc") == "DETAY LİNKİ BULUNAMADI":
@@ -916,22 +1043,39 @@ def main():
         browser.close()
 
     # Rapor verileri
-    bolum, tum, yeni_sayisi, okunanlar = [], [], 0, []
+    bolum, tum, dolmus, yeni_sayisi, okunanlar = [], [], [], 0, []
+    ilgili_say = {}
+    bugun_tarih = TR_NOW.date()
     for key in bugun:
         k = ads.get(key)
         if not k:
             continue
+        yeni = k.get("first_seen") == TODAY and TODAY != state.get("first_run")
+        an, neden = dogrula(k.get("analiz"), k.get("baslik", ""))
+        sonuc = sonuc_metni(k)
+        if neden:
+            sonuc = f"ILGISIZ ({neden})"
+        ilgili = bool(an and an.get("kategori") in ("BOLUM", "TUM_LISANS"))
+        bitis = tarih_ayrisir(an.get("basvuruBitis")) if ilgili else None
+        sure_doldu = bool(bitis and bitis < bugun_tarih)
+        if ilgili and sure_doldu:
+            sonuc = f"SÜRESİ DOLMUŞ ({bitis.strftime('%d.%m.%Y')}) — {an['kategori']}"
         okunanlar.append({"kaynak": k.get("kaynak"), "baslik": k.get("baslik"), "link": key,
                           "len": k.get("metin_len", "?"), "duzey": k.get("detail_level", "?"),
-                          "sonuc": sonuc_metni(k),
-                          "yeni": k.get("first_seen") == TODAY and TODAY != state.get("first_run")})
-        an = k.get("analiz")
-        if k.get("detail_checked") and an and an.get("kategori") in ("BOLUM", "TUM_LISANS"):
+                          "sonuc": sonuc, "yeni": yeni})
+        if ilgili:
             a = dict(an)
             a.update({"link": key, "_kaynak": k.get("kaynak"), "_baslik": k.get("baslik"),
-                      "_yeni": k.get("first_seen") == TODAY and TODAY != state.get("first_run")})
-            yeni_sayisi += 1 if a["_yeni"] else 0
-            (bolum if a["kategori"] == "BOLUM" else tum).append(a)
+                      "_yeni": yeni, "_bitis": bitis})
+            if sure_doldu:
+                dolmus.append(a)
+            else:
+                ilgili_say[k.get("kaynak")] = ilgili_say.get(k.get("kaynak"), 0) + 1
+                yeni_sayisi += 1 if yeni else 0
+                (bolum if a["kategori"] == "BOLUM" else tum).append(a)
+    bolum, tum = birlestir(bolum), birlestir(tum)
+    for r in log_rows:                      # tablodaki "İlgili": bugün listede olan, süresi dolmamış ilgili ilanlar
+        r[4] = ilgili_say.get(r[1], 0)
     okunanlar.sort(key=lambda o: (o["kaynak"] or "", o["sonuc"]))
     bekleyen = sum(1 for o in okunanlar if o["sonuc"].startswith("BEKLEMEDE"))
     if bekleyen and not GROQ_API_KEY:
@@ -950,12 +1094,12 @@ def main():
             w.writerow([TODAY] + r)
 
     with open("docs/index.html", "w", encoding="utf-8") as f:
-        f.write(build_report(bolum, tum, log_rows, yeni_sayisi, okunanlar, groq_notu))
+        f.write(build_report(bolum, tum, log_rows, yeni_sayisi, okunanlar, groq_notu, dolmus))
     if DIAGNOSE:
         with open("docs/debug.html", "w", encoding="utf-8") as f:
             f.write(build_debug())
     save_state(state)
-    print(f"Bitti. Bölüm: {len(bolum)}, Tüm lisans: {len(tum)}, Yeni: {yeni_sayisi}, Beklemede: {bekleyen}")
+    print(f"Bitti. Bölüm: {len(bolum)}, Tüm lisans: {len(tum)}, Süresi dolmuş: {len(dolmus)}, Yeni: {yeni_sayisi}, Beklemede: {bekleyen}")
 
 
 if __name__ == "__main__":
