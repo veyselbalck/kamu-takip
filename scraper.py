@@ -54,6 +54,9 @@ GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
 GROQ_MODELS = ["llama-3.3-70b-versatile", "openai/gpt-oss-120b", "openai/gpt-oss-20b", "llama-3.1-8b-instant"]
 GROQ_MODEL = GROQ_MODELS[0]                 # ana model; kotası dolarsa sıradakine geçilir
 GROQ_DEAD_MODELS = set()                    # bugün kotası bitmiş / kullanılamayan modeller
+GROQ_DEAD_NEDEN = {}                        # model -> neden (rapor başlığında gösterilir)
+GROQ_ZAYIF = {"openai/gpt-oss-20b", "llama-3.1-8b-instant"}   # kartta "doğrula" uyarısı yalnız bunlar için
+SBB_ADI = "SBB Kamu İlan"
 DIAGNOSE = os.environ.get("DIAGNOSE", "1") == "1"
 
 MAX_RUNTIME_MIN = 300
@@ -174,7 +177,13 @@ def read_detail(page, url):
         if len(txt) < 400:
             page.wait_for_timeout(4500)
             txt = page.inner_text("body") or ""
-        return txt[:14000]
+        if len(txt) < 400:                      # içerik iframe içinde olabilir
+            for fr in page.frames[1:]:
+                try:
+                    txt += "\n" + (fr.inner_text("body") or "")
+                except Exception:
+                    pass
+        return txt[:40000]
     except Exception as e:
         print(f"Detay okunamadı ({url}): {str(e)[:120]}")
         return ""
@@ -528,13 +537,28 @@ def _kapsama(x, y):
     return len(x & y) / min(len(x), len(y))
 
 
+BILISIM_POZ = re.compile(r"bilişim|bilgi\s*işlem|yazılım|programc|sistem|veri", re.I)
+
+
 def ayni_ilan(a, b):
     ka, kb = a.get("kadroSayisi"), b.get("kadroSayisi")
-    if ka and kb and str(ka) != str(kb):
-        return False
-    return (_kapsama(_kelimeler(a.get("kurum"), KURUM_GENEL), _kelimeler(b.get("kurum"), KURUM_GENEL)) >= 0.6
-            and _kapsama(_kelimeler(a.get("pozisyon") or a.get("_baslik")),
-                         _kelimeler(b.get("pozisyon") or b.get("_baslik"))) >= 0.6)
+    celisir = bool(ka and kb and str(ka) != str(kb))
+    ku = _kapsama(_kelimeler(a.get("kurum"), KURUM_GENEL), _kelimeler(b.get("kurum"), KURUM_GENEL))
+    poz_a = a.get("pozisyon") or a.get("_baslik") or ""
+    poz_b = b.get("pozisyon") or b.get("_baslik") or ""
+    # 1) kurum ve pozisyon adı benzer
+    if not celisir and ku >= 0.6 and _kapsama(_kelimeler(poz_a), _kelimeler(poz_b)) >= 0.6:
+        return True
+    # 2) aynı kurum, aynı (birden büyük) kadro sayısı, başvuru bitişi çelişmiyor (başlıklar farklı yazılmış olabilir)
+    ba, bb = a.get("_bitis"), b.get("_bitis")
+    if (ku >= 0.8 and ka and kb and not celisir and str(ka) not in ("0", "1")
+            and not (ba and bb and ba != bb)):
+        return True
+    # 3) aynı kurum, ikisi de bilişim kadrosu ve aynı gün ilk kez görüldü (aynı ilanın farklı yayımı)
+    if (ku >= 0.8 and BILISIM_POZ.search(poz_a) and BILISIM_POZ.search(poz_b)
+            and a.get("_ilk") and a.get("_ilk") == b.get("_ilk") and a.get("_kaynak") != b.get("_kaynak")):
+        return True
+    return False
 
 
 def birlestir(items):
@@ -552,7 +576,71 @@ def birlestir(items):
         g.sort(key=lambda x: -sum(1 for v in x.values() if v not in (None, "", "Belirtilmemiş", "belirtilmemiş")))
         ana = dict(g[0])
         ana["_digerleri"] = [(x.get("_kaynak"), x.get("link")) for x in g[1:]]
+        ana["_ilk"] = min((x.get("_ilk") or "9999") for x in g)       # kart, en eski görülme tarihine göre "yeni" sayılır
         out.append(ana)
+    return out
+
+
+TECRUBE_RX = re.compile(r"(\d+)(?:\s*[-–]\s*\d+)?\s*yıl\w*\s+(?:\w+\s+){0,3}?(?:tecrübe|deneyim)", re.I)
+FIZIKSEL = re.compile(r"zabıta|itfaiye|bekçi|güvenlik görevlisi|\bboy\b|\bkilo", re.I)
+ILGI_BASLIK = re.compile(r"uzman|bilişim|bilgi\s*işlem|yazılım|mühendis|memur|meslek personeli|sözleşmeli|"
+                         r"müfettiş|denetçi|kontrolör|analist|programcı|personel", re.I)
+DISLA_BASLIK = re.compile(r"iptal|düzeltme|süre\s*uzat|subay|pilot|tabip|hakim|savcı|hemşire|işçi|sağlık|"
+                          r"öğretmen|bilirkişi|tercüman|zabıta|itfaiye|bekçi", re.I)
+
+
+def tecrube_yili(a):
+    """Kartta istenen asgari mesleki tecrübe yılı (yoksa 0). 'Kıdemli' unvanı en az 3 yıl sayılır."""
+    metin = " ".join(str(a.get(x) or "") for x in ("ekSartlar", "kisaOzet", "pozisyon", "_baslik"))
+    yillar = [int(m.group(1)) for m in TECRUBE_RX.finditer(metin)]
+    if yillar:
+        return min(yillar)
+    return 3 if re.search(r"kıdemli", metin, re.I) else 0
+
+
+def _sbb_parcala(baslik):
+    parcalar = [p.strip() for p in re.split(r"\||\n", baslik or "") if p.strip()]
+    return (parcalar[0] if parcalar else ""), (parcalar[1] if len(parcalar) > 1 else "")
+
+
+def sbb_yalniz(ads, bugun):
+    """SBB'de listelenen ama başka hiçbir kaynakta kurum karşılığı bulunmayan, başlığı ilgili ilanlar."""
+    diger = []
+    for key in bugun:
+        k = ads.get(key)
+        if k and k.get("kaynak") != SBB_ADI:
+            diger.append(_kelimeler((k.get("baslik") or "") + " " + str((k.get("analiz") or {}).get("kurum") or ""),
+                                    KURUM_GENEL))
+    out, gorulen = [], set()
+    for key in bugun:
+        k = ads.get(key)
+        if not k or k.get("kaynak") != SBB_ADI:
+            continue
+        kurum, ilan = _sbb_parcala(k.get("baslik"))
+        ks = _kelimeler(kurum, KURUM_GENEL)
+        if not ks or not ILGI_BASLIK.search(ilan or kurum) or DISLA_BASLIK.search(kurum + " " + ilan) \
+                or AKADEMIK_BASLIK.search(ilan):
+            continue
+        if any(len(ks & d) / len(ks) >= 0.5 for d in diger):
+            continue
+        anahtar = (frozenset(ks), " ".join(re.sub(r"\(.*", "", ilan).lower().split()))
+        if anahtar in gorulen:
+            continue
+        gorulen.add(anahtar)
+        out.append({"kaynak": SBB_ADI, "baslik": f"{kurum} — {ilan}".strip(" —"), "link": key,
+                    "neden": "yalnız SBB'de görüldü, içeriği okunamıyor"})
+    return out
+
+
+def kisa_metinliler(ads, bugun):
+    out = []
+    for key in bugun:
+        k = ads.get(key)
+        if k and str(k.get("sonuc") or "").startswith("METİN KISA") and k.get("kaynak") != SBB_ADI:
+            b = (k.get("baslik") or "").replace("\n", " | ")
+            if ILGI_BASLIK.search(b) and not DISLA_BASLIK.search(b) and not AKADEMIK_BASLIK.search(b):
+                out.append({"kaynak": k.get("kaynak"), "baslik": b[:160], "link": key,
+                            "neden": "sayfa metni alınamadı (çok kısa)"})
     return out
 
 
@@ -581,6 +669,7 @@ def groq_call(model, prompt):
                 bekle = 20
             if bekle > 90:
                 GROQ_DEAD_MODELS.add(model)
+                GROQ_DEAD_NEDEN[model] = "günlük kota doldu"
                 print(f"Groq günlük kota doldu ({model}, retry-after {bekle:.0f}s).")
                 return "KOTA"
             print(f"Groq 429, {bekle:.0f}s bekleniyor")
@@ -588,6 +677,7 @@ def groq_call(model, prompt):
             continue
         if r.status_code in (400, 404):
             print("Groq model/istek hatası:", model, r.status_code, r.text[:150])
+            GROQ_DEAD_NEDEN[model] = f"model/istek hatası {r.status_code}: {r.text[:90]}"
             return "MODEL_HATA"
         if r.status_code != 200:
             print("Groq hata:", r.status_code, r.text[:200])
@@ -659,29 +749,38 @@ KIRP_ANAHTAR = re.compile(
     r"tarih|sınav|mülakat|puan|yaş|boy|kilo|deneyim|kadro|pozisyon|unvan", re.I)
 
 
-def kirp_metin(metin, limit=3500, bas=1000, pencere=350):
-    """Groq token tüketimini düşürmek için: ilan başı + anahtar kelime çevresindeki pasajlar."""
+KIRP_GUCLU = re.compile(
+    r"bilgisayar|bilişim|yazılım|mühendis|herhangi bir.{0,30}lisans|lisans mezun|bölümlerinden|"
+    r"mezun olmak|KPSS|ikamet|oturan|tecrübe|deneyim", re.I | re.S)
+
+
+def kirp_metin(metin, limit=3500, bas=900):
+    """Groq token tüketimini düşürmek için: ilan başı + önce güçlü, sonra genel anahtar kelime pasajları."""
     metin = re.sub(r"[ \t]+", " ", metin)
     metin = re.sub(r"\n{2,}", "\n", metin)
     if len(metin) <= limit:
         return metin
-    araliklar = [[0, bas]]
-    for m in KIRP_ANAHTAR.finditer(metin):
-        s, e = max(0, m.start() - pencere // 2), min(len(metin), m.end() + pencere)
-        if s <= araliklar[-1][1]:
-            araliklar[-1][1] = max(araliklar[-1][1], e)
-        else:
-            araliklar.append([s, e])
-    parca, toplam = [], 0
-    for s, e in araliklar:
-        p = metin[s:e]
-        if toplam + len(p) > limit:
-            p = p[:max(0, limit - toplam)]
-        if p:
-            parca.append(p)
-            toplam += len(p)
-        if toplam >= limit:
-            break
+    secili = bytearray(len(metin))
+    for i in range(min(bas, len(metin))):
+        secili[i] = 1
+    butce = limit - min(bas, len(metin))
+    for rx, once, sonra in ((KIRP_GUCLU, 150, 450), (KIRP_ANAHTAR, 100, 250)):
+        for m in rx.finditer(metin):
+            for i in range(max(0, m.start() - once), min(len(metin), m.end() + sonra)):
+                if butce <= 0:
+                    break
+                if not secili[i]:
+                    secili[i] = 1
+                    butce -= 1
+    parca, bas_i = [], None
+    for i, v in enumerate(secili):
+        if v and bas_i is None:
+            bas_i = i
+        elif not v and bas_i is not None:
+            parca.append(metin[bas_i:i])
+            bas_i = None
+    if bas_i is not None:
+        parca.append(metin[bas_i:])
     return "\n[...]\n".join(parca)
 
 
@@ -722,6 +821,10 @@ def card_html(a):
         g = (a["_bitis"] - TR_NOW.date()).days
         kalan = (f'<span class="tag red">⏰ bugün son gün!</span>' if g == 0 else
                  f'<span class="tag{" red" if g <= 3 else ""}">⏰ {g} gün kaldı</span>')
+    tecr = ""
+    if a.get("_tecrube"):
+        tecr = (f'<span class="tag{" red" if a["_tecrube"] >= 3 else ""}">'
+                f'🧑‍💼 {a["_tecrube"]}+ yıl tecrübe şartı</span>')
     zayif = ""
     if not re.search(r"lisans|bilgisayar|bilişim|yazılım|herhangi|mühendis", str(a.get("kanit") or ""), re.I):
         zayif = '<span class="tag red">⚠ kanıt zayıf — ilanı elle kontrol et</span>'
@@ -738,8 +841,8 @@ def card_html(a):
     <span class="tag">🧾 {E(a.get('degerlendirmeSekli'))}</span>
         <span class="tag">KPSS {E(a.get('kpssDurumu') or 'Belirtilmemiş')}: {E(a.get('kpssTuru') or 'belirtilmemiş')}</span>
         <span class="tag">Ek sınav: {E(ek_sinav)}</span>
-    <span class="{cls}">📍 İkamet: {E(ikamet)}</span>{kalan}{zayif}
-    {'<span class="tag">🤖 yedek model: ' + E(a.get('_model')) + ' (doğrula)</span>' if a.get('_model') and a.get('_model') != GROQ_MODELS[0] else ''}
+    <span class="{cls}">📍 İkamet: {E(ikamet)}</span>{kalan}{tecr}{zayif}
+    {'<span class="tag">🤖 yedek model: ' + E(a.get('_model')) + ' (doğrula)</span>' if a.get('_model') in GROQ_ZAYIF else ''}
   </div>
   {ek_html}
   <p>{E(a.get('kisaOzet'))}</p>
@@ -769,11 +872,12 @@ pre{white-space:pre-wrap;background:#fff;padding:8px;border:1px solid #ddd;font-
 """
 
 
-def build_report(bolum, tum, log_rows, yeni_sayisi, okunanlar, groq_notu, dolmus=()):
+def build_report(bolum, tum, log_rows, yeni_sayisi, okunanlar, groq_notu, dolmus=(), elle=()):
     def section(items):
         if not items:
             return "<p>Şu an bu kategoride aktif ilan bulunamadı.</p>"
-        items = sorted(items, key=lambda x: (x.get("_bitis") is None, x.get("_bitis") or datetime.date.max))
+        items = sorted(items, key=lambda x: ((x.get("_tecrube") or 0) >= 3, x.get("_bitis") is None,
+                                             x.get("_bitis") or datetime.date.max))
         return "\n".join(card_html(a) for a in items)
 
     log_html = ("<table><tr><th>Saat</th><th>Kaynak</th><th>Ham kayıt</th><th>Detay okunan (bugün)</th>"
@@ -795,6 +899,18 @@ def build_report(bolum, tum, log_rows, yeni_sayisi, okunanlar, groq_notu, dolmus
                         f"<td>{E(o['duzey'])}</td><td>{E(o['sonuc'])}</td></tr>")
     okunan_html += "</table>"
 
+    tum_fiz = [a for a in tum if FIZIKSEL.search(str(a.get("pozisyon") or "") + " " + str(a.get("ekSartlar") or ""))]
+    tum_n = [a for a in tum if a not in tum_fiz]
+    fiz_html = ""
+    if tum_fiz:
+        fiz_html = (f'<div class="box"><details><summary><b>🚓 Fiziksel/yaş şartı aranan kadrolar — zabıta vb. '
+                    f'({len(tum_fiz)})</b></summary>{section(tum_fiz)}</details></div>')
+    elle_html = ""
+    if elle:
+        satir = "".join(f'<li><a href="{E(x["link"])}" target="_blank">{E(x["baslik"])}</a> '
+                        f'<span class="tag">{E(x["kaynak"])}</span> — {E(x["neden"])}</li>' for x in elle)
+        elle_html = (f'<div class="box"><details open><summary><b>🔎 Elle kontrol listesi ({len(elle)})</b> — '
+                     f'içeriği okunamadı ama başlığı ilgili görünüyor</summary><ul>{satir}</ul></details></div>')
     dolmus_html = ""
     if dolmus:
         satirlar = "".join(
@@ -809,8 +925,10 @@ def build_report(bolum, tum, log_rows, yeni_sayisi, okunanlar, groq_notu, dolmus
 <p>Bugün yeni eklenen ilgili ilan: <b>{yeni_sayisi}</b> {E(groq_notu)}</p>
 <h2>🎯 Bölümüme Özel (Bilgisayar/Yazılım Mühendisliği) — {len(bolum)} ilan</h2>
 {section(bolum)}
-<h2>🎓 Tüm Lisans Mezunlarına Açık — {len(tum)} ilan</h2>
-{section(tum)}
+<h2>🎓 Tüm Lisans Mezunlarına Açık — {len(tum_n)} ilan</h2>
+{section(tum_n)}
+{fiz_html}
+{elle_html}
 {dolmus_html}
 <div class="box"><h2>🔍 Veri Çekim Doğrulama Kaydı</h2>{log_html}
 <p><a href="debug.html">Tanı sayfası (ekran görüntüleri, arka plan istekleri)</a></p></div>
@@ -860,6 +978,8 @@ def snapshot(page, idx, name, note):
 
 # ---------------- ANA AKIŞ ----------------
 def sonuc_metni(k):
+    if k.get("kaynak") == SBB_ADI:
+        return "SBB: yalnız liste kaydı (detay okunmuyor)"
     if not k.get("detail_checked") and not k.get("analiz"):
         if k.get("sonuc") == "DETAY OKUNAMADI":
             return "DETAY OKUNAMADI (yeniden denenecek)"
@@ -979,6 +1099,16 @@ def main():
                     k = ads[key]
                     k.update(detail_checked=False, sonuc="DETAY LİNKİ BULUNAMADI")
                     continue
+                if name == SBB_ADI:
+                    # SBB detay sayfaları 133 karakterlik iskelet metin dönüyor (içerik okunamıyor) ve her ilan
+                    # birkaç kez listeleniyor. Sayfa açmak yerine yalnız liste kaydı tutulur; başka kaynakta
+                    # karşılığı olmayanlar raporda "elle kontrol" listesine düşer.
+                    k = k or {"first_seen": TODAY, "kaynak": name, "baslik": baslik}
+                    k.update(last_seen=TODAY, detail_checked=False, bitti=True,
+                             sonuc="SBB: yalnız liste (detay okunmuyor)")
+                    k.pop("metin", None)
+                    ads[key] = k
+                    continue
 
                 metin = e.get("content") or read_detail(detail_page, key)
                 if not metin:
@@ -1006,13 +1136,19 @@ def main():
                     k.pop("metin", None)
                     continue
                 if not ADAY_ANAHTAR.search(metin + " " + e.get("title", "")):
-                    k.update(bitti=True, sonuc="ADAY DEĞİL (anahtar kelime yok)")
+                    if len(metin) < 300 and not e.get("content"):
+                        # çok kısa metin = sayfa gerçekten okunamadı; "ilgisiz" demek yanlış olur
+                        k.update(bitti=True, sonuc="METİN KISA — OKUNAMADI")
+                    else:
+                        k.update(bitti=True, sonuc="ADAY DEĞİL (anahtar kelime yok)")
                     k.pop("metin", None)
                     continue
 
                 k["metin"] = metin[:8000]          # analiz edilene kadar saklanır
                 analiz_kuyrugu.append((oncelik(baslik, metin), key, baslik, metin, name))
 
+            if name == SBB_ADI:
+                batch["note"] += " — detay okunmuyor (yalnız liste); başka kaynaklarla eşleştirildi"
             durum = kaynak_durumu(batch["ham"], batch["note"])
             log_rows.append([batch["saat"], name, batch["ham"], okunan, ilgili, durum, batch["note"]])
             log_by_name[name] = log_rows[-1]
@@ -1052,6 +1188,8 @@ def main():
             continue
         yeni = k.get("first_seen") == TODAY and TODAY != state.get("first_run")
         an, neden = dogrula(k.get("analiz"), k.get("baslik", ""))
+        if k.get("kaynak") == SBB_ADI:      # SBB'de detay okunmuyor; eski başlık-tabanlı analizler güvenilmez
+            an, neden = None, None
         sonuc = sonuc_metni(k)
         if neden:
             sonuc = f"ILGISIZ ({neden})"
@@ -1066,14 +1204,18 @@ def main():
         if ilgili:
             a = dict(an)
             a.update({"link": key, "_kaynak": k.get("kaynak"), "_baslik": k.get("baslik"),
-                      "_yeni": yeni, "_bitis": bitis})
+                      "_yeni": yeni, "_bitis": bitis, "_ilk": k.get("first_seen")})
             if sure_doldu:
                 dolmus.append(a)
             else:
                 ilgili_say[k.get("kaynak")] = ilgili_say.get(k.get("kaynak"), 0) + 1
-                yeni_sayisi += 1 if yeni else 0
                 (bolum if a["kategori"] == "BOLUM" else tum).append(a)
     bolum, tum = birlestir(bolum), birlestir(tum)
+    for c in bolum + tum:      # "yeni": kartın en eski kaynağı bugün görülmüşse; sayı da kartlar üzerinden
+        c["_yeni"] = c.get("_ilk") == TODAY and TODAY != state.get("first_run")
+        c["_tecrube"] = tecrube_yili(c)
+    yeni_sayisi = sum(1 for c in bolum + tum if c["_yeni"])
+    elle = sbb_yalniz(ads, bugun) + kisa_metinliler(ads, bugun)
     for r in log_rows:                      # tablodaki "İlgili": bugün listede olan, süresi dolmamış ilgili ilanlar
         r[4] = ilgili_say.get(r[1], 0)
     okunanlar.sort(key=lambda o: (o["kaynak"] or "", o["sonuc"]))
@@ -1084,6 +1226,8 @@ def main():
         groq_notu = f"— ⏳ {bekleyen} ilan Groq kotası/hatası nedeniyle analiz kuyruğunda."
     else:
         groq_notu = ""
+    if GROQ_DEAD_NEDEN:
+        groq_notu += " — ⚠ Groq: " + "; ".join(f"{m}: {n}" for m, n in GROQ_DEAD_NEDEN.items())
 
     yeni_dosya = not os.path.isfile(LOG_PATH)
     with open(LOG_PATH, "a", newline="", encoding="utf-8") as f:
@@ -1094,12 +1238,12 @@ def main():
             w.writerow([TODAY] + r)
 
     with open("docs/index.html", "w", encoding="utf-8") as f:
-        f.write(build_report(bolum, tum, log_rows, yeni_sayisi, okunanlar, groq_notu, dolmus))
+        f.write(build_report(bolum, tum, log_rows, yeni_sayisi, okunanlar, groq_notu, dolmus, elle))
     if DIAGNOSE:
         with open("docs/debug.html", "w", encoding="utf-8") as f:
             f.write(build_debug())
     save_state(state)
-    print(f"Bitti. Bölüm: {len(bolum)}, Tüm lisans: {len(tum)}, Süresi dolmuş: {len(dolmus)}, Yeni: {yeni_sayisi}, Beklemede: {bekleyen}")
+    print(f"Bitti. Bölüm: {len(bolum)}, Tüm lisans: {len(tum)}, Süresi dolmuş: {len(dolmus)}, Yeni: {yeni_sayisi}, Elle kontrol: {len(elle)}, Beklemede: {bekleyen}")
 
 
 if __name__ == "__main__":
