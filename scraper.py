@@ -57,6 +57,13 @@ GROQ_DEAD_MODELS = set()                    # bugün kotası bitmiş / kullanıl
 GROQ_DEAD_NEDEN = {}                        # model -> neden (rapor başlığında gösterilir)
 GROQ_ZAYIF = {"openai/gpt-oss-20b", "llama-3.1-8b-instant"}   # kartta "doğrula" uyarısı yalnız bunlar için
 SBB_ADI = "SBB Kamu İlan"
+# Groq'ta kaldırılmış model olursa listeden elenir; bu adaylar (varsa) 120b'den sonra zincire eklenir
+GROQ_ADAY_MODELLER = ["meta-llama/llama-4-maverick-17b-128e-instruct", "meta-llama/llama-4-scout-17b-16e-instruct",
+                      "moonshotai/kimi-k2-instruct"]
+GROQ_MODEL_KONTROL = {"yapildi": False}
+
+# Kişisel profil (uygunluk filtresi için). Değişirse buradan güncelle.
+PROFIL = {"kpss": 71, "kpss_turu": "P3", "yas": 26}
 DIAGNOSE = os.environ.get("DIAGNOSE", "1") == "1"
 
 MAX_RUNTIME_MIN = 300
@@ -598,6 +605,27 @@ def tecrube_yili(a):
     return 3 if re.search(r"kıdemli", metin, re.I) else 0
 
 
+def uygunluk(a):
+    """Kişisel profile göre kesin elenen ilan için neden (yoksa None). Emin olunmayan durumda None döner."""
+    kt = str(a.get("kpssTuru") or "")
+    ek = " ".join(str(a.get(x) or "") for x in ("ekSartlar", "kisaOzet", "kpssTuru"))
+    if re.search(r"\(\s*[BC]\s*\)\s*grubu|\b[BC]\s*grubu", kt, re.I):
+        return "KPSS (B/C) grubu — önlisans/lise düzeyi"
+    m = re.search(r"(?:en az|asgari|minimum)\s*(\d{2,3})(?:[.,]\d+)?|(\d{2,3})(?:[.,]\d+)?\s*(?:puan|ve üzeri|ve üstü|ve yukarı)", kt, re.I)
+    if m:
+        puan = int(m.group(1) or m.group(2))
+        if 40 <= puan <= 100 and puan > PROFIL["kpss"]:
+            return f"KPSS puanın ({PROFIL['kpss']}) yetmez — en az {puan} isteniyor"
+    turler = set(re.findall(r"P\s*-?\s*(\d{1,2})\b", kt))
+    if turler and PROFIL["kpss_turu"].lstrip("P") not in turler:
+        return (f"puan türün (KPSS-{PROFIL['kpss_turu']}) istenen türler arasında yok "
+                f"({', '.join('P' + t for t in sorted(turler, key=int))})")
+    y = re.search(r"(\d{2})\s*yaş\w*\s+(?:\w+\s+){0,2}?(?:doldurmamış|aşmamış)", ek, re.I)
+    if y and PROFIL["yas"] >= int(y.group(1)):
+        return f"yaş sınırı ({y.group(1)}) aşılmış"
+    return None
+
+
 def _sbb_parcala(baslik):
     parcalar = [p.strip() for p in re.split(r"\||\n", baslik or "") if p.strip()]
     return (parcalar[0] if parcalar else ""), (parcalar[1] if len(parcalar) > 1 else "")
@@ -690,9 +718,45 @@ def groq_call(model, prompt):
     return None
 
 
+def groq_modelleri_dogrula():
+    """Groq'un güncel model listesini çekip zincirden kaldırılmış modelleri çıkarır, yeni adayları ekler."""
+    global GROQ_MODELS
+    if GROQ_MODEL_KONTROL["yapildi"] or not GROQ_API_KEY:
+        return
+    GROQ_MODEL_KONTROL["yapildi"] = True
+    try:
+        r = requests.get("https://api.groq.com/openai/v1/models",
+                         headers={"Authorization": f"Bearer {GROQ_API_KEY}"}, timeout=30)
+        if r.status_code != 200:
+            print("Groq model listesi alınamadı:", r.status_code)
+            return
+        mevcut = {m.get("id") for m in r.json().get("data", []) if m.get("active", True)}
+    except Exception as e:
+        print("Groq model listesi hatası:", e)
+        return
+    if not mevcut:
+        return
+    yeni = []
+    for m in GROQ_MODELS:
+        if m in mevcut:
+            yeni.append(m)
+        else:
+            GROQ_DEAD_NEDEN[m] = "Groq model listesinde yok (kaldırılmış) — zincirden çıkarıldı"
+            print("Groq'ta olmayan model çıkarıldı:", m)
+    guclu = [m for m in GROQ_ADAY_MODELLER if m in mevcut and m not in yeni]
+    if guclu:
+        i = 1 if yeni[:1] else 0
+        yeni[i:i] = guclu
+        print("Zincire eklenen yeni modeller:", guclu)
+    if yeni:
+        GROQ_MODELS = yeni
+    print("Groq model zinciri:", GROQ_MODELS)
+
+
 def groq_zincir(prompt):
     """Modelleri sırayla dener; kotası biten/kullanılamayan modeli atlar."""
     global GROQ_DEAD
+    groq_modelleri_dogrula()
     for model in GROQ_MODELS:
         if model in GROQ_DEAD_MODELS:
             continue
@@ -872,7 +936,7 @@ pre{white-space:pre-wrap;background:#fff;padding:8px;border:1px solid #ddd;font-
 """
 
 
-def build_report(bolum, tum, log_rows, yeni_sayisi, okunanlar, groq_notu, dolmus=(), elle=()):
+def build_report(bolum, tum, log_rows, yeni_sayisi, okunanlar, groq_notu, dolmus=(), elle=(), yetmeyen=()):
     def section(items):
         if not items:
             return "<p>Şu an bu kategoride aktif ilan bulunamadı.</p>"
@@ -911,6 +975,14 @@ def build_report(bolum, tum, log_rows, yeni_sayisi, okunanlar, groq_notu, dolmus
                         f'<span class="tag">{E(x["kaynak"])}</span> — {E(x["neden"])}</li>' for x in elle)
         elle_html = (f'<div class="box"><details open><summary><b>🔎 Elle kontrol listesi ({len(elle)})</b> — '
                      f'içeriği okunamadı ama başlığı ilgili görünüyor</summary><ul>{satir}</ul></details></div>')
+    yetmeyen_html = ""
+    if yetmeyen:
+        satirlar = "".join(
+            f'<li><a href="{E(a.get("link"))}" target="_blank">{E(a.get("pozisyon") or a.get("_baslik"))}</a>'
+            f' — {E(a.get("kurum"))} <span class="tag red">{E(a.get("_uygunsuz"))}</span></li>' for a in yetmeyen)
+        yetmeyen_html = (f'<div class="box"><details><summary><b>🚫 Profilinle uyuşmadığı için gizlenen ilanlar '
+                         f'({len(yetmeyen)})</b> — KPSS {PROFIL["kpss"]} ({PROFIL["kpss_turu"]}), {PROFIL["yas"]} yaş'
+                         f'</summary><ul>{satirlar}</ul></details></div>')
     dolmus_html = ""
     if dolmus:
         satirlar = "".join(
@@ -929,6 +1001,7 @@ def build_report(bolum, tum, log_rows, yeni_sayisi, okunanlar, groq_notu, dolmus
 {section(tum_n)}
 {fiz_html}
 {elle_html}
+{yetmeyen_html}
 {dolmus_html}
 <div class="box"><h2>🔍 Veri Çekim Doğrulama Kaydı</h2>{log_html}
 <p><a href="debug.html">Tanı sayfası (ekran görüntüleri, arka plan istekleri)</a></p></div>
@@ -1214,6 +1287,10 @@ def main():
     for c in bolum + tum:      # "yeni": kartın en eski kaynağı bugün görülmüşse; sayı da kartlar üzerinden
         c["_yeni"] = c.get("_ilk") == TODAY and TODAY != state.get("first_run")
         c["_tecrube"] = tecrube_yili(c)
+        c["_uygunsuz"] = uygunluk(c)
+    yetmeyen = [c for c in bolum + tum if c["_uygunsuz"]]
+    bolum = [c for c in bolum if not c["_uygunsuz"]]
+    tum = [c for c in tum if not c["_uygunsuz"]]
     yeni_sayisi = sum(1 for c in bolum + tum if c["_yeni"])
     elle = sbb_yalniz(ads, bugun) + kisa_metinliler(ads, bugun)
     for r in log_rows:                      # tablodaki "İlgili": bugün listede olan, süresi dolmamış ilgili ilanlar
@@ -1238,7 +1315,7 @@ def main():
             w.writerow([TODAY] + r)
 
     with open("docs/index.html", "w", encoding="utf-8") as f:
-        f.write(build_report(bolum, tum, log_rows, yeni_sayisi, okunanlar, groq_notu, dolmus, elle))
+        f.write(build_report(bolum, tum, log_rows, yeni_sayisi, okunanlar, groq_notu, dolmus, elle, yetmeyen))
     if DIAGNOSE:
         with open("docs/debug.html", "w", encoding="utf-8") as f:
             f.write(build_debug())
