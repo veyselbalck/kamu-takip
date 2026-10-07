@@ -63,7 +63,7 @@ GROQ_ADAY_MODELLER = ["meta-llama/llama-4-maverick-17b-128e-instruct", "meta-lla
 GROQ_MODEL_KONTROL = {"yapildi": False}
 
 # Kişisel profil (uygunluk filtresi için). Değişirse buradan güncelle.
-PROFIL = {"kpss": 71, "kpss_turu": "P3", "yas": 26, "boy": 173, "kilo": 105}
+PROFIL = {"kpss": 71, "kpss_turu": "P3", "yas": 26, "boy": 173, "kilo": 105, "tecrube_gun": 150}   # tecrübe: yalnız ~150 gün staj
 DIAGNOSE = os.environ.get("DIAGNOSE", "1") == "1"
 
 MAX_RUNTIME_MIN = 300
@@ -675,6 +675,9 @@ def uygunluk(a):
     bk = re.search(r"boy[\s\-‑–]*kilo[^.;]{0,40}?[±+]\s*/?-?\s*(\d{1,2})\s*kg", ek, re.I)
     if bk and abs(PROFIL["kilo"] - (PROFIL["boy"] - 100)) > int(bk.group(1)):
         return f"boy-kilo şartı (±{bk.group(1)} kg) — {PROFIL['boy']} cm için ideal ~{PROFIL['boy']-100} kg"
+    ty = tecrube_yili(a)
+    if ty >= 1:
+        return f"{ty}+ yıl mesleki tecrübe şartı (sende ~{PROFIL['tecrube_gun']} gün staj var)"
     y = re.search(r"(\d{2})\s*yaş\w*\s+(?:\w+\s+){0,2}?(?:doldurmamış|aşmamış)", ek, re.I)
     if y and PROFIL["yas"] >= int(y.group(1)):
         return f"yaş sınırı ({y.group(1)}) aşılmış"
