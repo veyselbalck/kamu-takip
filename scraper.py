@@ -63,7 +63,7 @@ GROQ_ADAY_MODELLER = ["meta-llama/llama-4-maverick-17b-128e-instruct", "meta-lla
 GROQ_MODEL_KONTROL = {"yapildi": False}
 
 # Kişisel profil (uygunluk filtresi için). Değişirse buradan güncelle.
-PROFIL = {"kpss": 71, "kpss_turu": "P3", "yas": 26}
+PROFIL = {"kpss": 71, "kpss_turu": "P3", "yas": 26, "boy": 173, "kilo": 105}
 DIAGNOSE = os.environ.get("DIAGNOSE", "1") == "1"
 
 MAX_RUNTIME_MIN = 300
@@ -407,10 +407,42 @@ def fetch_csb_yerel(page):
     except Exception:
         pass
     time.sleep(2)
-    entries = links_matching(page, url, min_text=12)
-    ilanli = [e for e in entries if re.search(r"ilan|alım|alim|personel|memur", e["title"], re.I)]
-    entries = ilanli or entries
-    return entries[:MAX_LINKS_PER_SOURCE], len(entries), "duyuru linkleri (yapı doğrulanmadı — tanı sayfasına bak)"
+    CSB_ILAN = re.compile(r"(?:ALIM|İLANI|İLAN)\b", re.I)
+    CSB_KURUM = re.compile(r"BELEDİY|ÜNİVERSİT|İL ÖZEL|BAŞKANLIĞ|MÜDÜRLÜĞ|KURUM|BİRLİĞ|İDARESİ|ODASI", re.I)
+
+    def duyurular():
+        out = []
+        for e in links_matching(page, url, min_text=25):
+            t = e["title"].replace("|", " ")
+            # menü/rehber bağlantıları değil, gerçek duyuru başlıkları: kurum adı + "ALIM/İLAN"
+            if CSB_ILAN.search(t) and CSB_KURUM.search(t) and urlparse(e["link"]).hostname == urlparse(url).hostname:
+                out.append(e)
+        return out
+
+    entries = duyurular()
+    # sayfalama varsa (2, 3, 4 … numaralı bağlantılar) en çok 4 ek sayfa gez
+    sayfa_linkleri = []
+    for a in page.query_selector_all("a"):
+        tx = (a.inner_text() or "").strip()
+        href = (a.get_attribute("href") or "").strip()
+        if tx.isdigit() and 2 <= int(tx) <= 9 and href and not href.startswith(("#", "javascript:")):
+            full = urljoin(url, href)
+            if full not in sayfa_linkleri and full != url:
+                sayfa_linkleri.append(full)
+    gezilen = 1
+    for sl in sayfa_linkleri[:4]:
+        try:
+            page.goto(sl, timeout=60000, wait_until="domcontentloaded")
+            time.sleep(2)
+            mevcut = {e["link"] for e in entries}
+            entries += [e for e in duyurular() if e["link"] not in mevcut]
+            gezilen += 1
+        except Exception:
+            break
+    if not entries:
+        return [], 0, "duyuru listesinde ilan başlığı bulunamadı — tanı sayfasına bak"
+    return (entries[:MAX_LINKS_PER_SOURCE], len(entries),
+            f"sitede toplam: {len(entries)}, okunan: {len(entries)} (yalnız ilan/alım başlıklı duyurular; {gezilen} sayfa gezildi)")
 
 
 def fetch_iskur_esube(page):
@@ -430,22 +462,42 @@ def fetch_iskur_esube(page):
     except Exception as e:
         raise Exception(f"İŞKUR e-Şube kamu araması başarısız: {str(e)[:120]}") from e
 
-    entries = []
-    grid = page.locator("#ctl04_ctlGridAcikIslerListeDetail")
-    for tr in grid.locator("tr").all():
-        detail_link = tr.locator("a[href^='javascript:PopupJobDetails']")
-        if detail_link.count() == 0:
-            continue
-        t = (tr.inner_text() or "").strip().replace("\n", " | ")
-        href = detail_link.first.get_attribute("href") or ""
-        match = re.search(r"PopupJobDetails\('([^']+)'\s*,\s*'Kamu'", href)
-        if not match:
-            continue
-        ilan_no = match.group(1)
-        detail_url = urljoin(url, f"AcikIsIlanDetay.aspx?uiID={ilan_no}&isyeriTuru=Kamu")
-        entries.append({"title": t[:220], "link": detail_url,
-                        "detail_level": "İlan detay sayfası"})
+    entries, gorulen_no = [], set()
+    sayfa, tamam = 1, False
+    while sayfa <= 15:
+        grid = page.locator("#ctl04_ctlGridAcikIslerListeDetail")
+        yeni_say = 0
+        for tr in grid.locator("tr").all():
+            detail_link = tr.locator("a[href^='javascript:PopupJobDetails']")
+            if detail_link.count() == 0:
+                continue
+            t = (tr.inner_text() or "").strip().replace("\n", " | ")
+            href = detail_link.first.get_attribute("href") or ""
+            match = re.search(r"PopupJobDetails\('([^']+)'\s*,\s*'Kamu'", href)
+            if not match or match.group(1) in gorulen_no:
+                continue
+            ilan_no = match.group(1)
+            gorulen_no.add(ilan_no)
+            yeni_say += 1
+            entries.append({"title": t[:220],
+                            "link": urljoin(url, f"AcikIsIlanDetay.aspx?uiID={ilan_no}&isyeriTuru=Kamu"),
+                            "detail_level": "İlan detay sayfası"})
+        # ASP.NET grid sayfalaması: __doPostBack(...,'Page$N')
+        sonraki = page.locator(f"a[href*=\"Page${sayfa + 1}'\"]")
+        if yeni_say == 0 or sonraki.count() == 0:
+            tamam = True
+            break
+        try:
+            sonraki.first.click(timeout=6000)
+            page.wait_for_load_state("networkidle", timeout=30000)
+        except Exception:
+            break
+        sayfa += 1
 
+    if entries and tamam:
+        note = (f"sitede toplam: {len(entries)}, okunan: {len(entries)} "
+                f"(Kamu seçilerek arandı; {sayfa} sayfa gezildi, sonraki sayfa yok)")
+        return entries[:MAX_LINKS_PER_SOURCE], len(entries), note
     note = f"Kamu seçilerek arandı; {len(entries)} ilan bulundu, detay sayfaları açılacak"
     return entries[:MAX_LINKS_PER_SOURCE], len(entries), note
 
@@ -620,6 +672,9 @@ def uygunluk(a):
     if turler and PROFIL["kpss_turu"].lstrip("P") not in turler:
         return (f"puan türün (KPSS-{PROFIL['kpss_turu']}) istenen türler arasında yok "
                 f"({', '.join('P' + t for t in sorted(turler, key=int))})")
+    bk = re.search(r"boy[\s\-‑–]*kilo[^.;]{0,40}?[±+]\s*/?-?\s*(\d{1,2})\s*kg", ek, re.I)
+    if bk and abs(PROFIL["kilo"] - (PROFIL["boy"] - 100)) > int(bk.group(1)):
+        return f"boy-kilo şartı (±{bk.group(1)} kg) — {PROFIL['boy']} cm için ideal ~{PROFIL['boy']-100} kg"
     y = re.search(r"(\d{2})\s*yaş\w*\s+(?:\w+\s+){0,2}?(?:doldurmamış|aşmamış)", ek, re.I)
     if y and PROFIL["yas"] >= int(y.group(1)):
         return f"yaş sınırı ({y.group(1)}) aşılmış"
