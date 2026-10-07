@@ -57,6 +57,8 @@ GROQ_DEAD_MODELS = set()                    # bugün kotası bitmiş / kullanıl
 GROQ_DEAD_NEDEN = {}                        # model -> neden (rapor başlığında gösterilir)
 GROQ_ZAYIF = {"openai/gpt-oss-20b", "llama-3.1-8b-instant"}   # kartta "doğrula" uyarısı yalnız bunlar için
 SBB_ADI = "SBB Kamu İlan"
+SBB_ANA = "https://kamuilan.sbb.gov.tr/"     # ilanDetay.aspx?kod=... bağlantıları oturuma özel; sonradan açılınca 404 veriyor
+MEMURLAR_ADI = "Memurlar.net İlan"
 # Groq'ta kaldırılmış model olursa listeden elenir; bu adaylar (varsa) 120b'den sonra zincire eklenir
 GROQ_ADAY_MODELLER = ["meta-llama/llama-4-maverick-17b-128e-instruct", "meta-llama/llama-4-scout-17b-16e-instruct",
                       "moonshotai/kimi-k2-instruct"]
@@ -397,6 +399,66 @@ def fetch_sbb_kamu_ilan(page):
     return tekil[:MAX_LINKS_PER_SOURCE], len(tekil), note
 
 
+MEMURLAR_MENU = re.compile(
+    r"^(?:4/B İlanları|Akademik İlanlar.*|Askeri İlanlar|Daimi İşçi İlanları|Engelli İlanları|Eski Hükümlü|"
+    r"Geçici İşçi İlanları|Genel İlanlar|Kalkınma Ajansı|KPSS-[AB] İlanları|Mahalli İlanlar|Öğrenci Alım İlanları|"
+    r"Özel Okul İlanları|SYDV İlanları|Terörle Mücadelede.*|Yatay Geçiş İlanları|YÖK Duyuruları|Yurt Dışı.*|"
+    r"Yüksek Lisans ve Doktora|Kategoriler|Yeni İlanlar|Çok okunanlar|Çok yorumlananlar)$", re.I)
+
+
+def read_memurlar(page, url):
+    """Memurlar.net ilan sayfası: menü/kenar çubuğu kategori adları süzgeçleri yanıltmasın diye yalnız ilan gövdesi alınır."""
+    txt = read_detail(page, url)
+    for sel in ("article", "[itemprop='articleBody']", ".ilan-detay", ".haber-detay", "#icerik", "main"):
+        try:
+            el = page.query_selector(sel)
+            if el:
+                t = el.inner_text() or ""
+                if len(t) > 400:
+                    return "\n".join(l for l in t.split("\n") if not MEMURLAR_MENU.match(l.strip()))
+        except Exception:
+            pass
+    return "\n".join(l for l in (txt or "").split("\n") if not MEMURLAR_MENU.match(l.strip()))
+
+
+MEMURLAR_KATEGORILER = ["", "kategori/engelli-ilanlari", "kategori/kpss-b-ilanlari", "kategori/kpss-a-ilanlari",
+                        "kategori/mahalli-ilanlari", "kategori/genel-ilanlar", "kategori/lakinma-ajansi",
+                        "kategori/daimi-isci-ilanlari"]
+
+
+def fetch_memurlar(page):
+    """ilan.memurlar.net: ilanların TAM metnini veren derleme site; engelli/KPSS-B/mahalli kategorileri ayrı listelenir."""
+    base = "https://ilan.memurlar.net/"
+    toplanan, gezilen, hatali = {}, 0, 0
+    for yol in MEMURLAR_KATEGORILER:
+        url = base + (yol + "/?Expire=false" if yol else "")
+        try:
+            goto_safe(page, url, settle=1)
+        except Exception as e:
+            hatali += 1
+            print("memurlar kategori hatası:", yol, str(e)[:80])
+            continue
+        gezilen += 1
+        for _ in range(3):                      # rel=next varsa en çok 3 sayfa
+            for e in links_matching(page, url, pattern=r"/ilan/\d+/", min_text=12):
+                toplanan.setdefault(e["link"], dict(e, detail_level="İlan detay sayfası"))
+            sonraki = page.locator("a[rel='next']")
+            try:
+                if sonraki.count() == 0:
+                    break
+                sonraki.first.click(timeout=5000)
+                page.wait_for_load_state("domcontentloaded", timeout=20000)
+                time.sleep(1)
+            except Exception:
+                break
+    if not gezilen:
+        raise Exception("Memurlar.net kategori sayfalarının hiçbiri açılamadı")
+    entries = list(toplanan.values())
+    return (entries[:MAX_LINKS_PER_SOURCE], len(entries),
+            f"{gezilen}/{len(MEMURLAR_KATEGORILER)} kategori sayfası gezildi (tam ilan metni); "
+            f"sitede toplam sayısı bilinmiyor (yapı doğrulanmadı)")
+
+
 def fetch_csb_yerel(page):
     url = "https://yerelyonetimler.csb.gov.tr/duyurular"
     son = None
@@ -518,6 +580,7 @@ SOURCES = [
     ("SBB Kamu İlan", fetch_sbb_kamu_ilan),
     ("ÇŞB Yerel Yönetimler", fetch_csb_yerel),
     ("İŞKUR (e-şube)", fetch_iskur_esube),
+    (MEMURLAR_ADI, fetch_memurlar),
 ]
 
 
@@ -722,8 +785,8 @@ def sbb_yalniz(ads, bugun):
         if anahtar in gorulen:
             continue
         gorulen.add(anahtar)
-        out.append({"kaynak": SBB_ADI, "baslik": f"{kurum} — {ilan}".strip(" —"), "link": key,
-                    "neden": "yalnız SBB'de görüldü, içeriği okunamıyor"})
+        out.append({"kaynak": SBB_ADI, "baslik": f"{kurum} — {ilan}".strip(" —"), "link": SBB_ANA,
+                    "neden": "yalnız SBB'de görüldü; SBB ana sayfasında başlığı arayın (ilan bağlantıları oturuma özel olduğu için doğrudan açılmıyor)"})
     return out
 
 
@@ -1178,7 +1241,7 @@ def p2_rapor(ads, bugun, state):
         t = f"{kurum} {ilan}"
         if ENGEL_BASLIK.search(t) and not re.search(r"iptal|düzeltme|süre\s*uzat", t, re.I) and t.lower() not in gorulen:
             gorulen.add(t.lower())
-            elle.append({"link": key, "baslik": t[:160], "kaynak": SBB_ADI})
+            elle.append({"link": SBB_ANA, "baslik": t[:160], "kaynak": SBB_ADI})
     return gruplar, dolmus, elle[:40], bekleyen
 
 
@@ -1395,7 +1458,8 @@ def main():
                     ads[key] = k
                     continue
 
-                metin = e.get("content") or read_detail(detail_page, key)
+                metin = e.get("content") or (read_memurlar(detail_page, key) if name == MEMURLAR_ADI
+                                             else read_detail(detail_page, key))
                 if not metin:
                     k = k or {"first_seen": TODAY, "kaynak": name, "baslik": baslik}
                     k.update(last_seen=TODAY, detail_checked=False, sonuc="DETAY OKUNAMADI")
@@ -1440,7 +1504,8 @@ def main():
                     continue
 
                 k["metin"] = metin[:8000]          # analiz edilene kadar saklanır
-                analiz_kuyrugu.append((oncelik(baslik, metin), key, baslik, metin, name))
+                analiz_kuyrugu.append((oncelik(baslik, metin) + (5 if name == MEMURLAR_ADI else 0),
+                                       key, baslik, metin, name))
 
             if name == SBB_ADI:
                 batch["note"] += " — detay okunmuyor (yalnız liste); başka kaynaklarla eşleştirildi"
@@ -1513,7 +1578,8 @@ def main():
         sure_doldu = bool(bitis and bitis < bugun_tarih)
         if ilgili and sure_doldu:
             sonuc = f"SÜRESİ DOLMUŞ ({bitis.strftime('%d.%m.%Y')}) — {an['kategori']}"
-        okunanlar.append({"kaynak": k.get("kaynak"), "baslik": k.get("baslik"), "link": key,
+        okunanlar.append({"kaynak": k.get("kaynak"), "baslik": k.get("baslik"),
+                          "link": SBB_ANA if k.get("kaynak") == SBB_ADI else key,
                           "len": k.get("metin_len", "?"), "duzey": k.get("detail_level", "?"),
                           "sonuc": sonuc, "yeni": yeni})
         if ilgili:
