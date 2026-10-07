@@ -88,6 +88,15 @@ AKADEMIK_BASLIK = re.compile(
     r"öğretim\s+(?:üyesi|görevlisi|elemanı)|öğr\.?\s*(?:üyesi|görevlisi|gör\b)|"
     r"araştırma\s+görevlisi|okutman|profesör|doçent", re.I)
 PROMPT_VERSION = 2
+
+# ---- İkinci profil (önlisans mezunu, engelli kadro/EKPSS) — ayrı rapor sayfası: docs/onlisans.html ----
+P2_VERSION = 1
+P2_MAX_ANALIZ = 40          # bir çalıştırmada ikinci profil için en çok bu kadar Groq analizi
+ADAY2_ANAHTAR = re.compile(
+    r"engelli|ekpss|ön\s?lisans|meslek\s+yüksekokul|anestezi|sağlık\s+teknik|tıbbi\s+hizmetler|"
+    r"tıbbi\s+(?:laboratuvar|görüntüleme)|ilk\s+ve\s+acil|ameliyathane", re.I)
+ENGEL_BASLIK = re.compile(r"engelli|ekpss|ön\s?lisans|anestezi|sağlık\s+teknik|tekniker|teknisyen|"
+                          r"büro|veri hazırlama|memur", re.I)
 SOSYAL = ("twitter.com", "facebook.com", "instagram.com", "linkedin.com",
           "youtube.com", "//x.com", "wa.me", "t.me")
 
@@ -923,6 +932,66 @@ def analiz(baslik, metin):
     return None
 
 
+KATEGORI2_KURALI = (
+    "KATEGORİLER (aday: ÖNLİSANS mezunu, anestezi alanı; ayrıca işitme engelli, EKPSS'si var):\n"
+    "- ENGELLI_KADRO: ilan engelli adaylara özel VEYA ilanda engelli kadrosu/kontenjanı (EKPSS) ayrıca belirtilmiş; "
+    "eğitim düzeyi önlisans, lise veya ilkokul/ortaokul olabilir (önlisans mezunu başvurabilir). Sürekli işçi, memur, "
+    "sözleşmeli personel, hepsi dahil.\n"
+    "- ANESTEZI_SAGLIK: anestezi teknikeri/teknisyeni veya önlisans düzeyi sağlık/tıbbi hizmetler kadrosu "
+    "(engelli kontenjanı yoksa).\n"
+    "- ONLISANS: önlisans mezunlarının başvurabildiği genel kadro (memur, sözleşmeli, tekniker, büro, VHKİ...), "
+    "engelli kontenjanı yok.\n"
+    "- ILGISIZ: yalnız lisans/yüksek lisans/doktora şartı, akademik kadro, belirli mesleklere kapalı (öğretmen, hâkim...), "
+    "sağlık dışı özel meslek ya da önlisans mezununun başvuramadığı, iptal/düzeltme ilanı.\n"
+    "Bir metinde birden çok kadro varsa önlisans/engelli adayın başvurabildiği kadroyu esas al; "
+    "engelli kadrosu varsa ENGELLI_KADRO seç.\n"
+)
+
+SEMA2 = """{
+  "kategori": "ENGELLI_KADRO" | "ANESTEZI_SAGLIK" | "ONLISANS" | "ILGISIZ",
+  "kanit": "kategoriyi destekleyen METİNDEN birebir kısa alıntı (max 200 karakter)",
+  "kurum": string,
+  "pozisyon": string,
+  "kadroSayisi": number | null,
+  "engelliBilgi": "engelli kadro sayısı, engel derecesi/grubu (örn. %40 ve üzeri, işitme) ve EKPSS şartı; yoksa Yok",
+  "basvuruBaslangic": string | null,
+  "basvuruBitis": string | null,
+  "degerlendirmeSekli": "örn: %100 KPSS | EKPSS | KPSS + sözlü mülakat | kura | belirtilmemiş",
+  "kpssDurumu": "Zorunlu" | "Tercih sebebi" | "Aranmıyor" | "Belirtilmemiş",
+  "kpssTuru": "örn: KPSS-B grubu en az 60 puan | EKPSS | belirtilmemiş",
+  "ekSinav": boolean,
+  "ekSinavDetay": "sınav türü ve puan şartı; yoksa Yok veya Belirtilmemiş",
+  "ikametSarti": "Yok" | "Belirtilmemiş" | "Var: <il/ilçe>",
+  "ekSartlar": "yaş sınırı, sağlık şartı, ehliyet, deneyim, askerlik vb. yoksa 'Yok'",
+  "kisaOzet": "en fazla 2 cümle"
+}"""
+
+
+def analiz2(baslik, metin):
+    prompt = ("Aşağıda bir Türkiye kamu personeli alım ilanının tam metni var. Önlisans mezunu, engelli (işitme) "
+              "bir aday açısından sınıflandır ve bilgileri çıkar. SADECE geçerli JSON döndür.\n"
+              + KATEGORI2_KURALI +
+              "\nKESİN KURALLAR: Metinde yazmayan bilgiyi UYDURMA; yoksa null / 'Belirtilmemiş' yaz. "
+              "'kanit' metinden birebir alıntı olmalı. Engelli kadrosu/kontenjanını ve istenen engel derecesini "
+              "özellikle ara. KPSS/EKPSS durumunu ve taban puanı yaz. İkamet şartı için 'ikamet', 'oturmak' "
+              "ifadelerine bak.\n\nJSON ŞEMASI:\n" + SEMA2 +
+              "\n\nBAŞLIK: " + baslik + "\n\nMETİN (ilgili bölümler):\n" + kirp_metin(metin))
+    res = groq_zincir(prompt)
+    if isinstance(res, dict) and res.get("kategori") in ("ENGELLI_KADRO", "ANESTEZI_SAGLIK", "ONLISANS", "ILGISIZ"):
+        res["_pv"] = P2_VERSION
+        return res
+    return None
+
+
+def oncelik2(baslik, metin):
+    t = f"{baslik} {metin[:3000]}"
+    if re.search(r"engelli|ekpss", t, re.I):
+        return 0
+    if re.search(r"anestezi|sağlık\s+teknik|tıbbi", t, re.I):
+        return 1
+    return 2
+
+
 # ---------------- RAPOR ----------------
 E = lambda x: htmllib.escape(str(x)) if x not in (None, "") else ""
 
@@ -948,7 +1017,10 @@ def card_html(a):
         tecr = (f'<span class="tag{" red" if a["_tecrube"] >= 3 else ""}">'
                 f'🧑‍💼 {a["_tecrube"]}+ yıl tecrübe şartı</span>')
     zayif = ""
-    if not re.search(r"lisans|bilgisayar|bilişim|yazılım|herhangi|mühendis", str(a.get("kanit") or ""), re.I):
+    eng = ""
+    if a.get("engelliBilgi") and str(a["engelliBilgi"]).strip().lower() not in ("yok", "belirtilmemiş", "none"):
+        eng = f'<span class="tag src">♿ Engelli: {E(a["engelliBilgi"])}</span>'
+    if not a.get("_p2") and not re.search(r"lisans|bilgisayar|bilişim|yazılım|herhangi|mühendis", str(a.get("kanit") or ""), re.I):
         zayif = '<span class="tag red">⚠ kanıt zayıf — ilanı elle kontrol et</span>'
     diger = ""
     if a.get("_digerleri"):
@@ -963,7 +1035,7 @@ def card_html(a):
     <span class="tag">🧾 {E(a.get('degerlendirmeSekli'))}</span>
         <span class="tag">KPSS {E(a.get('kpssDurumu') or 'Belirtilmemiş')}: {E(a.get('kpssTuru') or 'belirtilmemiş')}</span>
         <span class="tag">Ek sınav: {E(ek_sinav)}</span>
-    <span class="{cls}">📍 İkamet: {E(ikamet)}</span>{kalan}{tecr}{zayif}
+    <span class="{cls}">📍 İkamet: {E(ikamet)}</span>{kalan}{tecr}{zayif}{eng}
     {'<span class="tag">🤖 yedek model: ' + E(a.get('_model')) + ' (doğrula)</span>' if a.get('_model') in GROQ_ZAYIF else ''}
   </div>
   {ek_html}
@@ -1062,9 +1134,91 @@ def build_report(bolum, tum, log_rows, yeni_sayisi, okunanlar, groq_notu, dolmus
 {yetmeyen_html}
 {dolmus_html}
 <div class="box"><h2>🔍 Veri Çekim Doğrulama Kaydı</h2>{log_html}
-<p><a href="debug.html">Tanı sayfası (ekran görüntüleri, arka plan istekleri)</a></p></div>
+<p><a href="debug.html">Tanı sayfası (ekran görüntüleri, arka plan istekleri)</a></p>
+<p><a href="onlisans.html">♿ İkinci rapor: önlisans &amp; engelli kadro ilanları</a></p></div>
 <div class="box"><details><summary><b>📑 Bugün listede görülen tüm ilanlar ({len(okunanlar)}) — okundu mu, sonuç ne?</b></summary>
 {okunan_html}</details></div>
+</body></html>"""
+
+
+def p2_rapor(ads, bugun, state):
+    """İkinci profil (önlisans/engelli) için bugün listede olan ilanları kategorilere ayırır."""
+    bugun_tarih = TR_NOW.date()
+    gruplar = {"ENGELLI_KADRO": [], "ANESTEZI_SAGLIK": [], "ONLISANS": []}
+    dolmus, bekleyen = [], 0
+    for key in bugun:
+        k = ads.get(key)
+        if not k or k.get("kaynak") == SBB_ADI:
+            continue
+        p2 = k.get("p2") or {}
+        if p2.get("aday") and not p2.get("analiz"):
+            bekleyen += 1
+        an = p2.get("analiz")
+        if not an or an.get("kategori") not in gruplar:
+            continue
+        bitis = tarih_ayrisir(an.get("basvuruBitis"))
+        a = dict(an)
+        a.update({"link": key, "_kaynak": k.get("kaynak"), "_baslik": k.get("baslik"), "_p2": True,
+                  "_bitis": bitis, "_ilk": k.get("first_seen")})
+        if bitis and bitis < bugun_tarih:
+            dolmus.append(a)
+        else:
+            gruplar[an["kategori"]].append(a)
+    for kat in gruplar:
+        gruplar[kat] = birlestir(gruplar[kat])
+        for c in gruplar[kat]:
+            c["_yeni"] = c.get("_ilk") == TODAY and TODAY != state.get("first_run")
+    # SBB'de içerik okunmadığı için başlığı uygun görünenler elle kontrol listesi olur
+    elle, gorulen = [], set()
+    for key in bugun:
+        k = ads.get(key)
+        if not k or k.get("kaynak") != SBB_ADI:
+            continue
+        kurum, ilan = _sbb_parcala(k.get("baslik"))
+        t = f"{kurum} {ilan}"
+        if ENGEL_BASLIK.search(t) and not re.search(r"iptal|düzeltme|süre\s*uzat", t, re.I) and t.lower() not in gorulen:
+            gorulen.add(t.lower())
+            elle.append({"link": key, "baslik": t[:160], "kaynak": SBB_ADI})
+    return gruplar, dolmus, elle[:40], bekleyen
+
+
+def build_report2(gruplar, dolmus, elle, bekleyen, groq_notu):
+    def section(items):
+        if not items:
+            return "<p>Şu an bu kategoride aktif ilan bulunamadı.</p>"
+        items = sorted(items, key=lambda x: (x.get("_bitis") is None, x.get("_bitis") or datetime.date.max))
+        return "\n".join(card_html(a) for a in items)
+
+    yeni = sum(1 for g in gruplar.values() for c in g if c.get("_yeni"))
+    elle_html = ""
+    if elle:
+        satir = "".join(f'<li><a href="{E(x["link"])}" target="_blank">{E(x["baslik"])}</a> '
+                        f'<span class="tag">{E(x["kaynak"])}</span></li>' for x in elle)
+        elle_html = (f'<div class="box"><details><summary><b>🔎 SBB\'de görülen, elle kontrol edilecek ({len(elle)})</b>'
+                     f' — içeriği okunamıyor</summary><ul>{satir}</ul></details></div>')
+    dolmus_html = ""
+    if dolmus:
+        satir = "".join(f'<li><a href="{E(a["link"])}" target="_blank">{E(a.get("pozisyon") or a.get("_baslik"))}</a> '
+                        f'— {E(a.get("kurum"))} (son gün: {a["_bitis"].strftime("%d.%m.%Y")})</li>' for a in dolmus)
+        dolmus_html = (f'<div class="box"><details><summary><b>⌛ Süresi dolmuş, gizlenen ilanlar ({len(dolmus)})'
+                       f'</b></summary><ul>{satir}</ul></details></div>')
+    bekle = f" — ⏳ {bekleyen} ilan analiz kuyruğunda (sonraki çalıştırmalarda işlenecek)" if bekleyen else ""
+    return f"""<!DOCTYPE html><html lang="tr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Önlisans ve Engelli Kadro İlanları</title><style>{STYLE}</style></head><body>
+<h1>♿ Önlisans &amp; Engelli Kadro İlanları — {TR_NOW.strftime('%d.%m.%Y %H:%M')}</h1>
+<p><a href="index.html">← Ana rapora dön</a> · Bugün yeni eklenen ilgili ilan: <b>{yeni}</b>{E(bekle)}</p>
+<p style="font-size:12px;color:#555">Puana göre eleme yapılmaz; ilanlar son başvuru tarihine göre sıralıdır.
+Aynı ilanlar ana kaynaklardan (İlan.gov.tr, Resmî Gazete, Kariyer Kapısı, ÇŞB, İŞKUR) taranır.</p>
+<h2>♿ Engelli kadrosu / EKPSS'li ilanlar — {len(gruplar['ENGELLI_KADRO'])} ilan</h2>
+{section(gruplar['ENGELLI_KADRO'])}
+<h2>🩺 Anestezi / sağlık teknikeri kadroları — {len(gruplar['ANESTEZI_SAGLIK'])} ilan</h2>
+{section(gruplar['ANESTEZI_SAGLIK'])}
+<h2>🎓 Önlisans mezunlarına açık kadrolar — {len(gruplar['ONLISANS'])} ilan</h2>
+{section(gruplar['ONLISANS'])}
+{elle_html}
+{dolmus_html}
+<div class="box"><p>Not: Sağlık Bakanlığı'nın kendi KPSS tercih alımları bu kaynaklarda yer almaz; ayrıca takip edilmelidir.</p></div>
 </body></html>"""
 
 
@@ -1184,7 +1338,7 @@ def main():
         ctx.on("response", on_resp)
         list_page, detail_page = ctx.new_page(), ctx.new_page()
         source_batches = []
-        analiz_kuyrugu, log_by_name = [], {}
+        analiz_kuyrugu, log_by_name, analiz2_kuyrugu = [], {}, []
 
         # Stage 1: collect every source before spending time or quota on analysis.
         for idx, (name, fn) in enumerate(SOURCES):
@@ -1255,6 +1409,16 @@ def main():
                 k.update({"last_seen": TODAY, "metin_len": len(metin), "metin_hash": metin_hash,
                           "detail_checked": True})
                 k.pop("detail_error", None)
+                # İkinci profil (önlisans/engelli): metin burada elde olduğu için anahtar kelime süzgeci uygulanır
+                p2 = k.get("p2") or {}
+                if degisti or p2.get("v") != P2_VERSION:
+                    aday2 = bool(not AKADEMIK_BASLIK.search(baslik) and ADAY2_ANAHTAR.search(metin + " " + baslik))
+                    p2 = {"v": P2_VERSION, "aday": aday2}
+                    k["p2"] = p2
+                    k.pop("p2metin", None)
+                if p2.get("aday") and not p2.get("analiz"):
+                    k["p2metin"] = metin[:8000]
+                    analiz2_kuyrugu.append((oncelik2(baslik, metin), key, baslik, metin))
                 if not degisti and (k.get("bitti") or k.get("analiz")):
                     continue
                 k.pop("analiz", None)
@@ -1304,6 +1468,26 @@ def main():
                 if sonuc.get("kategori") in ("BOLUM", "TUM_LISANS") and name in log_by_name:
                     log_by_name[name][4] += 1
                 if sayac % 10 == 0:
+                    save_state(state)
+            save_state(state)
+
+        # Stage 3b: ikinci profil analizi (birinci profilden artan kotayla)
+        p2_denenen = 0
+        if GROQ_API_KEY:
+            analiz2_kuyrugu.sort(key=lambda x: x[0])
+            print(f"İkinci profil analiz kuyruğu: {len(analiz2_kuyrugu)} ilan")
+            for _, key, baslik, metin in analiz2_kuyrugu:
+                if GROQ_DEAD or zaman_doldu() or p2_denenen >= P2_MAX_ANALIZ:
+                    break
+                p2_denenen += 1
+                sonuc = analiz2(baslik, metin)
+                if not GROQ_DEAD:
+                    time.sleep(GROQ_SLEEP_SEC)
+                if not sonuc:
+                    continue
+                ads[key]["p2"]["analiz"] = sonuc
+                ads[key].pop("p2metin", None)
+                if p2_denenen % 10 == 0:
                     save_state(state)
             save_state(state)
 
@@ -1377,7 +1561,12 @@ def main():
     if DIAGNOSE:
         with open("docs/debug.html", "w", encoding="utf-8") as f:
             f.write(build_debug())
+    p2_bolumler, p2_dolmus, p2_elle, p2_bekleyen = p2_rapor(ads, bugun, state)
+    with open("docs/onlisans.html", "w", encoding="utf-8") as f:
+        f.write(build_report2(p2_bolumler, p2_dolmus, p2_elle, p2_bekleyen, groq_notu))
     save_state(state)
+    print(f"İkinci rapor: engelli {len(p2_bolumler['ENGELLI_KADRO'])}, sağlık {len(p2_bolumler['ANESTEZI_SAGLIK'])}, "
+          f"önlisans {len(p2_bolumler['ONLISANS'])}, beklemede {p2_bekleyen}")
     print(f"Bitti. Bölüm: {len(bolum)}, Tüm lisans: {len(tum)}, Süresi dolmuş: {len(dolmus)}, Yeni: {yeni_sayisi}, Elle kontrol: {len(elle)}, Beklemede: {bekleyen}")
 
 
