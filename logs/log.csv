@@ -153,3 +153,9 @@ navigating to ""https://esube.iskur.gov.tr/Istihdam/AcikIsIlanAra.aspx"", waitin
 2026-10-07,12:27:46,SBB Kamu İlan,153,0,0,OK,"sitede toplam: 123, okunan: 153 (ham bağlantı: 153, tekrarlar elendi) — detay okunmuyor (yalnız liste); başka kaynaklarla eşleştirildi"
 2026-10-07,12:27:55,ÇŞB Yerel Yönetimler,17,17,0,KISMİ (tamlık doğrulanmadı),duyuru linkleri (yapı doğrulanmadı — tanı sayfasına bak)
 2026-10-07,12:28:00,İŞKUR (e-şube),15,15,0,KISMİ (tamlık doğrulanmadı),"Kamu seçilerek arandı; 15 ilan bulundu, detay sayfaları açılacak"
+2026-10-07,13:26:57,İlan.gov.tr,169,169,14,OK,"sitede toplam: 168, okunan: 169, sayfalama: currentPage"
+2026-10-07,13:27:45,Resmî Gazete,13,7,1,OK,"sitede toplam: 13, okunan: 13, personel ilanı: 7, PDF bulma: dizin linkleri"
+2026-10-07,13:27:56,Kariyer Kapısı,22,22,5,OK,"IlanDetay linkleri doğrudan bulundu; sitede toplam: 22, okunan: 22, harici siteye giden (İlana Git): 5"
+2026-10-07,13:28:05,SBB Kamu İlan,153,0,0,OK,"sitede toplam: 123, okunan: 153 (ham bağlantı: 153, tekrarlar elendi) — detay okunmuyor (yalnız liste); başka kaynaklarla eşleştirildi"
+2026-10-07,13:28:13,ÇŞB Yerel Yönetimler,17,17,0,KISMİ (tamlık doğrulanmadı),duyuru linkleri (yapı doğrulanmadı — tanı sayfasına bak)
+2026-10-07,13:28:19,İŞKUR (e-şube),15,15,0,KISMİ (tamlık doğrulanmadı),"Kamu seçilerek arandı; 15 ilan bulundu, detay sayfaları açılacak"
