@@ -197,3 +197,12 @@ navigating to ""https://esube.iskur.gov.tr/Istihdam/AcikIsIlanAra.aspx"", waitin
 2026-10-08,10:13:06,ÇŞB Yerel Yönetimler,31,31,0,OK,"sitede toplam: 31, okunan: 31 (yalnız ilan/alım başlıklı duyurular; 3 sayfa gezildi)"
 2026-10-08,10:13:20,İŞKUR (e-şube),15,15,0,OK,"sitede toplam: 15, okunan: 15 (Kamu seçilerek arandı; 1 sayfa gezildi, sonraki sayfa yok)"
 2026-10-08,10:13:30,Memurlar.net İlan,64,64,21,KISMİ (tamlık doğrulanmadı),8/8 kategori sayfası gezildi (tam ilan metni); sitede toplam sayısı bilinmiyor (yapı doğrulanmadı)
+2026-10-08,11:12:49,İlan.gov.tr,164,164,14,OK,"sitede toplam: 163, okunan: 164, sayfalama: currentPage"
+2026-10-08,11:13:36,Resmî Gazete,13,3,1,ŞÜPHELİ (eksik okundu),"sitede toplam: 13, okunan: 12, personel ilanı: 3, PDF bulma: dizin linkleri — okunamayan PDF: 1 (taranmış görüntü olabilir; elle kontrol listesinde)"
+2026-10-08,11:13:51,Kariyer Kapısı,22,22,5,OK,"IlanDetay linkleri doğrudan bulundu; sitede toplam: 22, okunan: 22, harici siteye giden (İlana Git): 4"
+2026-10-08,11:14:17,SBB Kamu İlan,149,0,0,OK,"sitede toplam: 119, okunan: 149 (ham bağlantı: 149, tekrarlar elendi) — detay okunmuyor (yalnız liste); başka kaynaklarla eşleştirildi"
+2026-10-08,11:14:25,ÇŞB Yerel Yönetimler,31,31,0,OK,"sitede toplam: 31, okunan: 31 (yalnız ilan/alım başlıklı duyurular; 3 sayfa gezildi)"
+2026-10-08,11:14:38,İŞKUR (e-şube),0,0,0,HATA,"HATA: Page.goto: net::ERR_CONNECTION_TIMED_OUT at https://esube.iskur.gov.tr/Istihdam/AcikIsIlanAra.aspx
+Call log:
+navigating to ""https://esube.iskur.gov.tr/Istihdam/AcikIsIlanAra.aspx"", waiting until ""domc"
+2026-10-08,11:14:59,Memurlar.net İlan,64,64,21,KISMİ (tamlık doğrulanmadı),8/8 kategori sayfası gezildi (tam ilan metni); sitede toplam sayısı bilinmiyor (yapı doğrulanmadı)
