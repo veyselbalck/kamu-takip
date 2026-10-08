@@ -47,6 +47,8 @@ jobs:
       - name: Scraper'ı çalıştır
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GROQ_API_KEY_2: ${{ secrets.GROQ_API_KEY_2 }}   # isteğe bağlı: ikinci Groq hesabı
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}   # isteğe bağlı: Gemini yedeği
           DIAGNOSE: "1"
           PYTHONUTF8: "1"
           PYTHONIOENCODING: "utf-8"

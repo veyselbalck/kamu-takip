@@ -50,10 +50,18 @@ from pypdf import PdfReader
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # ---------------- AYARLAR ----------------
-GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
+# Birden çok Groq anahtarı (farklı hesaplar) ve isteğe bağlı Gemini yedeği: kota dolunca sıradakine geçilir
+GROQ_KEYS = [k.strip() for k in (os.environ.get("GROQ_API_KEY"), os.environ.get("GROQ_API_KEY_2"),
+                                 os.environ.get("GROQ_API_KEY_3")) if k and k.strip()]
+GEMINI_API_KEY = (os.environ.get("GEMINI_API_KEY") or "").strip()
+GEMINI_MODEL = (os.environ.get("GEMINI_MODEL") or "gemini-2.5-flash").strip()
+GEMINI_DEAD = {"v": False}
+GROQ_API_KEY = GROQ_KEYS[0] if GROQ_KEYS else ("gemini" if GEMINI_API_KEY else None)   # "yapay zekâ erişimi var mı" bayrağı
 GROQ_MODELS = ["llama-3.3-70b-versatile", "openai/gpt-oss-120b", "openai/gpt-oss-20b", "llama-3.1-8b-instant"]
 GROQ_MODEL = GROQ_MODELS[0]                 # ana model; kotası dolarsa sıradakine geçilir
 GROQ_DEAD_MODELS = set()                    # bugün kotası bitmiş / kullanılamayan modeller
+GROQ_JSON_HATA = {}                         # model -> bu çalıştırmadaki geçersiz-JSON sayısı
+GROQ_MEVCUT = []                            # Groq model listesinden gelen kimlikler (tanı için)
 GROQ_DEAD_NEDEN = {}                        # model -> neden (rapor başlığında gösterilir)
 GROQ_ZAYIF = {"openai/gpt-oss-20b", "llama-3.1-8b-instant"}   # kartta "doğrula" uyarısı yalnız bunlar için
 SBB_ADI = "SBB Kamu İlan"
@@ -92,7 +100,7 @@ AKADEMIK_BASLIK = re.compile(
 PROMPT_VERSION = 2
 
 # ---- İkinci profil (önlisans mezunu, engelli kadro/EKPSS) — ayrı rapor sayfası: docs/onlisans.html ----
-P2_VERSION = 1
+P2_VERSION = 2
 P2_MAX_ANALIZ = 40          # bir çalıştırmada ikinci profil için en çok bu kadar Groq analizi
 ADAY2_ANAHTAR = re.compile(
     r"engelli|ekpss|ön\s?lisans|meslek\s+yüksekokul|anestezi|sağlık\s+teknik|tıbbi\s+hizmetler|"
@@ -275,6 +283,9 @@ def _rg_pdf_metni(url):
     return "\n".join((pg.extract_text() or "") for pg in reader.pages)
 
 
+RG_OKUNAMAYAN = []
+
+
 def fetch_resmi_gazete(page):
     d = TR_NOW.date()
     ymd = d.strftime("%Y%m%d")
@@ -310,11 +321,17 @@ def fetch_resmi_gazete(page):
 
     entries, okunan = [], 0
     for u in sorted(pdfs, key=lambda x: int(re.search(r"-4-(\d+)\.pdf", x).group(1))):
-        try:
-            txt = _rg_pdf_metni(u)
-        except Exception as e:
-            print("Resmî Gazete PDF okunamadı:", u, str(e)[:100]); continue
-        if not txt or len(txt.strip()) < 100:      # taranmış/boş PDF: okunamadı say
+        txt = None
+        for deneme in range(3):
+            try:
+                txt = _rg_pdf_metni(u)
+                if txt and len(txt.strip()) >= 100:
+                    break
+            except Exception as e:
+                print("Resmî Gazete PDF okunamadı:", u, str(e)[:100])
+            time.sleep(2)
+        if not txt or len(txt.strip()) < 100:      # taranmış/boş PDF: okunamadı say, elle kontrol listesine yaz
+            RG_OKUNAMAYAN.append(u)
             continue
         okunan += 1
         if not RG_PERSONEL.search(txt[:3000]):
@@ -325,6 +342,8 @@ def fetch_resmi_gazete(page):
                         "detail_level": "Resmî Gazete ilan PDF'si (tam metin)"})
     note = (f"sitede toplam: {len(pdfs)}, okunan: {okunan}, personel ilanı: {len(entries)}, "
             f"PDF bulma: {kaynak}")
+    if RG_OKUNAMAYAN:
+        note += f" — okunamayan PDF: {len(RG_OKUNAMAYAN)} (taranmış görüntü olabilir; elle kontrol listesinde)"
     return entries, len(pdfs), note
 
 
@@ -712,7 +731,7 @@ def birlestir(items):
     return out
 
 
-TECRUBE_RX = re.compile(r"(\d+)(?:\s*[-–]\s*\d+)?\s*yıl\w*\s+(?:\w+\s+){0,3}?(?:tecrübe|deneyim)", re.I)
+TECRUBE_RX = re.compile(r"(\d+)(?:\s*[-–/]\s*\d+)?\s*yıl\w*[\s)]*(?:\(?[\w']+[\s)]*){0,5}?(?:tecrübe|deneyim)", re.I)
 FIZIKSEL = re.compile(r"zabıta|itfaiye|bekçi|güvenlik görevlisi|\bboy\b|\bkilo", re.I)
 ILGI_BASLIK = re.compile(r"uzman|bilişim|bilgi\s*işlem|yazılım|mühendis|memur|meslek personeli|sözleşmeli|"
                          r"müfettiş|denetçi|kontrolör|analist|programcı|personel", re.I)
@@ -802,17 +821,19 @@ def kisa_metinliler(ads, bugun):
     return out
 
 
-def groq_call(model, prompt):
-    """JSON dict | None (geçici/kalıcı hata) | 'MODEL_HATA'."""
-    if not GROQ_API_KEY:
+def groq_call(model, prompt, key=None, slot=None):
+    """JSON dict | None (geçici/kalıcı hata) | 'MODEL_HATA'. slot = 'model#anahtarNo' (kota takibi için)."""
+    key = key or GROQ_API_KEY
+    slot = slot or model
+    if not key or key == "gemini":
         return None
-    if model in GROQ_DEAD_MODELS:
+    if slot in GROQ_DEAD_MODELS:
         return "KOTA"
     for deneme in range(1, 4):
         try:
             r = requests.post(
                 "https://api.groq.com/openai/v1/chat/completions",
-                headers={"Authorization": f"Bearer {GROQ_API_KEY}", "Content-Type": "application/json"},
+                headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
                 json={"model": model, "messages": [{"role": "user", "content": prompt}],
                       "temperature": 0.0, "response_format": {"type": "json_object"}},
                 timeout=90)
@@ -826,16 +847,19 @@ def groq_call(model, prompt):
             except ValueError:
                 bekle = 20
             if bekle > 90:
-                GROQ_DEAD_MODELS.add(model)
-                GROQ_DEAD_NEDEN[model] = "günlük kota doldu"
-                print(f"Groq günlük kota doldu ({model}, retry-after {bekle:.0f}s).")
+                GROQ_DEAD_MODELS.add(slot)
+                GROQ_DEAD_NEDEN[slot] = "günlük kota doldu"
+                print(f"Groq günlük kota doldu ({slot}, retry-after {bekle:.0f}s).")
                 return "KOTA"
             print(f"Groq 429, {bekle:.0f}s bekleniyor")
             time.sleep(bekle + 2)
             continue
+        if r.status_code == 400 and re.search(r"validate JSON|json_validate_failed|failed_generation", r.text, re.I):
+            print("Groq JSON üretemedi (yalnız bu istek):", model, r.text[:100])
+            return "JSON_HATA"                 # model sağlam; bu ilan için sıradaki modele geçilir
         if r.status_code in (400, 404):
             print("Groq model/istek hatası:", model, r.status_code, r.text[:150])
-            GROQ_DEAD_NEDEN[model] = f"model/istek hatası {r.status_code}: {r.text[:90]}"
+            GROQ_DEAD_NEDEN[slot] = f"model/istek hatası {r.status_code}: {r.text[:90]}"
             return "MODEL_HATA"
         if r.status_code != 200:
             print("Groq hata:", r.status_code, r.text[:200])
@@ -851,12 +875,12 @@ def groq_call(model, prompt):
 def groq_modelleri_dogrula():
     """Groq'un güncel model listesini çekip zincirden kaldırılmış modelleri çıkarır, yeni adayları ekler."""
     global GROQ_MODELS
-    if GROQ_MODEL_KONTROL["yapildi"] or not GROQ_API_KEY:
+    if GROQ_MODEL_KONTROL["yapildi"] or not GROQ_KEYS:
         return
     GROQ_MODEL_KONTROL["yapildi"] = True
     try:
         r = requests.get("https://api.groq.com/openai/v1/models",
-                         headers={"Authorization": f"Bearer {GROQ_API_KEY}"}, timeout=30)
+                         headers={"Authorization": f"Bearer {GROQ_KEYS[0]}"}, timeout=30)
         if r.status_code != 200:
             print("Groq model listesi alınamadı:", r.status_code)
             return
@@ -866,6 +890,7 @@ def groq_modelleri_dogrula():
         return
     if not mevcut:
         return
+    GROQ_MEVCUT[:] = sorted(m for m in mevcut if m)
     yeni = []
     for m in GROQ_MODELS:
         if m in mevcut:
@@ -883,25 +908,85 @@ def groq_modelleri_dogrula():
     print("Groq model zinciri:", GROQ_MODELS)
 
 
+def gemini_call(prompt):
+    """Gemini (Google AI Studio) yedeği: JSON dict | None. Günlük kota bitince bugünlük kapanır."""
+    if not GEMINI_API_KEY or GEMINI_DEAD["v"]:
+        return None
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent"
+    for deneme in range(1, 3):
+        try:
+            r = requests.post(url, headers={"x-goog-api-key": GEMINI_API_KEY, "Content-Type": "application/json"},
+                              json={"contents": [{"parts": [{"text": prompt}]}],
+                                    "generationConfig": {"temperature": 0.0, "responseMimeType": "application/json"}},
+                              timeout=90)
+        except requests.exceptions.RequestException as e:
+            print("Gemini bağlantı hatası:", e)
+            time.sleep(6)
+            continue
+        if r.status_code == 429:
+            try:
+                bekle = float(r.headers.get("retry-after", "30"))
+            except ValueError:
+                bekle = 30
+            if bekle > 90 or deneme == 2:
+                GEMINI_DEAD["v"] = True
+                GROQ_DEAD_NEDEN["gemini"] = "günlük kota doldu"
+                return None
+            time.sleep(bekle + 2)
+            continue
+        if r.status_code in (400, 403, 404):
+            GEMINI_DEAD["v"] = True
+            GROQ_DEAD_NEDEN["gemini"] = f"istek hatası {r.status_code}: {r.text[:90]}"
+            return None
+        if r.status_code != 200:
+            print("Gemini hata:", r.status_code, r.text[:150])
+            return None
+        try:
+            txt = r.json()["candidates"][0]["content"]["parts"][0]["text"]
+            res = json.loads(txt)
+            return res if isinstance(res, dict) else None
+        except Exception as e:
+            print("Gemini JSON okunamadı:", e)
+            return None
+    return None
+
+
 def groq_zincir(prompt):
-    """Modelleri sırayla dener; kotası biten/kullanılamayan modeli atlar."""
+    """Modelleri sırayla, her modelde tüm anahtarları dener; kotası biten (model, anahtar) çiftini atlar.
+    Hepsi tükenirse (varsa) Gemini yedeğine geçer."""
     global GROQ_DEAD
     groq_modelleri_dogrula()
+    coklu = len(GROQ_KEYS) > 1
     for model in GROQ_MODELS:
-        if model in GROQ_DEAD_MODELS:
-            continue
-        res = groq_call(model, prompt)
-        if res == "MODEL_HATA":
-            GROQ_DEAD_MODELS.add(model)
-            continue
-        if res == "KOTA":
-            continue
+        for ki, key in enumerate(GROQ_KEYS):
+            slot = f"{model}#{ki + 1}" if coklu else model
+            if slot in GROQ_DEAD_MODELS:
+                continue
+            res = groq_call(model, prompt, key, slot)
+            if res == "MODEL_HATA":
+                for kj in range(len(GROQ_KEYS)):          # model hatası anahtardan bağımsızdır
+                    GROQ_DEAD_MODELS.add(f"{model}#{kj + 1}" if coklu else model)
+                break
+            if res == "KOTA":
+                continue
+            if res == "JSON_HATA":
+                GROQ_JSON_HATA[slot] = GROQ_JSON_HATA.get(slot, 0) + 1
+                if GROQ_JSON_HATA[slot] >= 12:        # sürekli JSON bozuyorsa bugünlük bırak
+                    GROQ_DEAD_MODELS.add(slot)
+                    GROQ_DEAD_NEDEN[slot] = "sık sık geçersiz JSON üretti (12 kez) — bugünlük bırakıldı"
+                continue
+            if isinstance(res, dict):
+                res["_model"] = model
+            return res
+    if GEMINI_API_KEY and not GEMINI_DEAD["v"]:
+        res = gemini_call(prompt)
         if isinstance(res, dict):
-            res["_model"] = model
-        return res
-    if all(m in GROQ_DEAD_MODELS for m in GROQ_MODELS):
+            res["_model"] = "gemini:" + GEMINI_MODEL
+            return res
+    tum_slotlar = [f"{m}#{i + 1}" if coklu else m for m in GROQ_MODELS for i in range(max(1, len(GROQ_KEYS)))]
+    if all(sl in GROQ_DEAD_MODELS for sl in tum_slotlar) and (not GEMINI_API_KEY or GEMINI_DEAD["v"]):
         GROQ_DEAD = True
-        print("Tüm Groq modellerinin bugünkü kotası doldu; kalanlar yarına.")
+        print("Tüm yapay zekâ modellerinin/anahtarlarının bugünkü kotası doldu; kalanlar yarına.")
     return None
 
 
@@ -1008,6 +1093,11 @@ KATEGORI2_KURALI = (
     "sağlık dışı özel meslek ya da önlisans mezununun başvuramadığı, iptal/düzeltme ilanı.\n"
     "Bir metinde birden çok kadro varsa önlisans/engelli adayın başvurabildiği kadroyu esas al; "
     "engelli kadrosu varsa ENGELLI_KADRO seç.\n"
+    "PROGRAM KONTROLÜ: Aday yalnızca ANESTEZİ önlisans programı mezunudur. İlan belirli önlisans programlarını sayıyorsa "
+    "(muhasebe, ağız ve diş sağlığı, ameliyathane hizmetleri, büro yönetimi...) ve anestezi bunların arasında DEĞİLSE "
+    "'bolumUygun' alanına 'Hayır (yalnız: ...)' yaz ve kategori ILGISIZ olsun; 'herhangi bir önlisans' deniyorsa "
+    "'Evet (herhangi önlisans)'; anestezi açıkça sayılıyorsa 'Evet (anestezi programı sayılıyor)'. "
+    "Engelli kadrosu (EKPSS) varsa program kontrolü gevşektir: program belirtilmemişse 'Belirtilmemiş' yaz.\n"
 )
 
 SEMA2 = """{
@@ -1016,6 +1106,7 @@ SEMA2 = """{
   "kurum": string,
   "pozisyon": string,
   "kadroSayisi": number | null,
+  "bolumUygun": "Evet (herhangi önlisans) | Evet (anestezi programı sayılıyor) | Hayır (yalnız: <kabul edilen programlar>) | Belirtilmemiş",
   "engelliBilgi": "engelli kadro sayısı, engel derecesi/grubu (örn. %40 ve üzeri, işitme) ve EKPSS şartı; yoksa Yok",
   "basvuruBaslangic": string | null,
   "basvuruBitis": string | null,
@@ -1046,6 +1137,23 @@ def analiz2(baslik, metin):
     return None
 
 
+def dogrula2(an, baslik=""):
+    """İkinci profil: LLM 'uygun' demiş ama kurallara aykırıysa gerekçeyle döner (yoksa None)."""
+    poz = poz_adi(an) or baslik or ""
+    metin = " ".join(str(an.get(x) or "") for x in ("kanit", "kisaOzet", "ekSartlar", "ekSinavDetay"))
+    if AKADEMIK_BASLIK.search(poz) or AKADEMIK_BASLIK.search(baslik or ""):
+        return "akademik kadro"
+    if re.search(r"bilirkişi|tercüman", poz + " " + (baslik or ""), re.I):
+        return "bilirkişi/tercüman listesi (iş alımı değil)"
+    if OGRENCI_SARTI.search(metin):
+        return "öğrenciye yönelik ilan"
+    if IC_TERFI.search(metin):
+        return "iç terfi / görevde yükselme sınavı"
+    if str(an.get("bolumUygun") or "").strip().lower().startswith("hayır"):
+        return "önlisans programı uymuyor — " + str(an.get("bolumUygun"))[:90]
+    return None
+
+
 def oncelik2(baslik, metin):
     t = f"{baslik} {metin[:3000]}"
     if re.search(r"engelli|ekpss", t, re.I):
@@ -1057,6 +1165,17 @@ def oncelik2(baslik, metin):
 
 # ---------------- RAPOR ----------------
 E = lambda x: htmllib.escape(str(x)) if x not in (None, "") else ""
+
+
+def poz_adi(a):
+    """'Belirtilmemiş' gibi boş değerler başlık yerine geçmesin."""
+    p = str(a.get("pozisyon") or "").strip()
+    return "" if p.lower() in ("", "belirtilmemiş", "belirtilmedi", "yok", "null", "none") else p
+
+
+def kanit_yok(an):
+    k = str(an.get("kanit") or "").strip().strip("“”\"'").lower()
+    return k in ("", "belirtilmemiş", "belirtilmedi", "yok", "null", "none") or len(k) < 12
 
 
 def card_html(a):
@@ -1091,7 +1210,7 @@ def card_html(a):
                  + " · ".join(f'<a href="{E(l)}" target="_blank">{E(k)}</a>' for k, l in a["_digerleri"])
                  + "</div>")
     return f"""<div class="card">
-  <div class="top"><a href="{E(a.get('link'))}" target="_blank">{E(a.get('pozisyon') or a.get('_baslik'))}</a>{yeni}</div>
+  <div class="top"><a href="{E(a.get('link'))}" target="_blank">{E(poz_adi(a) or a.get('_baslik'))}</a>{yeni}</div>
   <div class="kurum">{E(a.get('kurum'))}{kadro}</div>
   <div class="meta">
     <span class="tag src">{E(a.get('_kaynak'))}</span>{tarih}
@@ -1171,7 +1290,7 @@ def build_report(bolum, tum, log_rows, yeni_sayisi, okunanlar, groq_notu, dolmus
     yetmeyen_html = ""
     if yetmeyen:
         satirlar = "".join(
-            f'<li><a href="{E(a.get("link"))}" target="_blank">{E(a.get("pozisyon") or a.get("_baslik"))}</a>'
+            f'<li><a href="{E(a.get("link"))}" target="_blank">{E(poz_adi(a) or a.get("_baslik"))}</a>'
             f' — {E(a.get("kurum"))} <span class="tag red">{E(a.get("_uygunsuz"))}</span></li>' for a in yetmeyen)
         yetmeyen_html = (f'<div class="box"><details><summary><b>🚫 Profilinle uyuşmadığı için gizlenen ilanlar '
                          f'({len(yetmeyen)})</b> — KPSS {PROFIL["kpss"]} ({PROFIL["kpss_turu"]}), {PROFIL["yas"]} yaş'
@@ -1179,7 +1298,7 @@ def build_report(bolum, tum, log_rows, yeni_sayisi, okunanlar, groq_notu, dolmus
     dolmus_html = ""
     if dolmus:
         satirlar = "".join(
-            f'<li><a href="{E(a.get("link"))}" target="_blank">{E(a.get("pozisyon") or a.get("_baslik"))}</a>'
+            f'<li><a href="{E(a.get("link"))}" target="_blank">{E(poz_adi(a) or a.get("_baslik"))}</a>'
             f' — {E(a.get("kurum"))} (son gün: {a["_bitis"].strftime("%d.%m.%Y")})</li>' for a in dolmus)
         dolmus_html = (f'<div class="box"><details><summary><b>⌛ Süresi dolmuş, gizlenen ilanlar '
                        f'({len(dolmus)})</b></summary><ul>{satirlar}</ul></details></div>')
@@ -1208,7 +1327,7 @@ def p2_rapor(ads, bugun, state):
     """İkinci profil (önlisans/engelli) için bugün listede olan ilanları kategorilere ayırır."""
     bugun_tarih = TR_NOW.date()
     gruplar = {"ENGELLI_KADRO": [], "ANESTEZI_SAGLIK": [], "ONLISANS": []}
-    dolmus, bekleyen = [], 0
+    dolmus, bekleyen, uymayan, fiziksel = [], 0, [], []
     for key in bugun:
         k = ads.get(key)
         if not k or k.get("kaynak") == SBB_ADI:
@@ -1223,8 +1342,14 @@ def p2_rapor(ads, bugun, state):
         a = dict(an)
         a.update({"link": key, "_kaynak": k.get("kaynak"), "_baslik": k.get("baslik"), "_p2": True,
                   "_bitis": bitis, "_ilk": k.get("first_seen")})
-        if bitis and bitis < bugun_tarih:
+        neden = dogrula2(an, k.get("baslik", ""))
+        if neden:
+            a["_uygunsuz"] = neden
+            uymayan.append(a)
+        elif bitis and bitis < bugun_tarih:
             dolmus.append(a)
+        elif FIZIKSEL.search(f"{poz_adi(a)} {a.get('_baslik') or ''} {a.get('ekSartlar') or ''}"):
+            fiziksel.append(a)           # zabıta/itfaiye/güvenlik/boy-kilo şartlı kadrolar ayrı kapalı bölüme
         else:
             gruplar[an["kategori"]].append(a)
     for kat in gruplar:
@@ -1242,6 +1367,8 @@ def p2_rapor(ads, bugun, state):
         if ENGEL_BASLIK.search(t) and not re.search(r"iptal|düzeltme|süre\s*uzat", t, re.I) and t.lower() not in gorulen:
             gorulen.add(t.lower())
             elle.append({"link": SBB_ANA, "baslik": t[:160], "kaynak": SBB_ADI})
+    gruplar["_uymayan"] = birlestir(uymayan)
+    gruplar["_fiziksel"] = birlestir(fiziksel)
     return gruplar, dolmus, elle[:40], bekleyen
 
 
@@ -1252,7 +1379,18 @@ def build_report2(gruplar, dolmus, elle, bekleyen, groq_notu):
         items = sorted(items, key=lambda x: (x.get("_bitis") is None, x.get("_bitis") or datetime.date.max))
         return "\n".join(card_html(a) for a in items)
 
-    yeni = sum(1 for g in gruplar.values() for c in g if c.get("_yeni"))
+    anagrup = {k: v for k, v in gruplar.items() if not k.startswith("_")}
+    yeni = sum(1 for g in anagrup.values() for c in g if c.get("_yeni"))
+    fiz_html = uy_html = ""
+    if gruplar.get("_fiziksel"):
+        fiz_html = (f'<div class="box"><details><summary><b>🚓 Fiziksel/boy-kilo şartı aranan kadrolar — zabıta vb. '
+                    f'({len(gruplar["_fiziksel"])})</b></summary>{section(gruplar["_fiziksel"])}</details></div>')
+    if gruplar.get("_uymayan"):
+        satir = "".join(f'<li><a href="{E(a["link"])}" target="_blank">{E(poz_adi(a) or a.get("_baslik"))}</a> — '
+                        f'{E(a.get("kurum"))} <span class="tag red">{E(a["_uygunsuz"])}</span></li>'
+                        for a in gruplar["_uymayan"])
+        uy_html = (f'<div class="box"><details><summary><b>🚫 Uygun görünmediği için gizlenen ilanlar '
+                   f'({len(gruplar["_uymayan"])})</b></summary><ul>{satir}</ul></details></div>')
     elle_html = ""
     if elle:
         satir = "".join(f'<li><a href="{E(x["link"])}" target="_blank">{E(x["baslik"])}</a> '
@@ -1261,7 +1399,7 @@ def build_report2(gruplar, dolmus, elle, bekleyen, groq_notu):
                      f' — içeriği okunamıyor</summary><ul>{satir}</ul></details></div>')
     dolmus_html = ""
     if dolmus:
-        satir = "".join(f'<li><a href="{E(a["link"])}" target="_blank">{E(a.get("pozisyon") or a.get("_baslik"))}</a> '
+        satir = "".join(f'<li><a href="{E(a["link"])}" target="_blank">{E(poz_adi(a) or a.get("_baslik"))}</a> '
                         f'— {E(a.get("kurum"))} (son gün: {a["_bitis"].strftime("%d.%m.%Y")})</li>' for a in dolmus)
         dolmus_html = (f'<div class="box"><details><summary><b>⌛ Süresi dolmuş, gizlenen ilanlar ({len(dolmus)})'
                        f'</b></summary><ul>{satir}</ul></details></div>')
@@ -1272,13 +1410,15 @@ def build_report2(gruplar, dolmus, elle, bekleyen, groq_notu):
 <h1>♿ Önlisans &amp; Engelli Kadro İlanları — {TR_NOW.strftime('%d.%m.%Y %H:%M')}</h1>
 <p><a href="index.html">← Ana rapora dön</a> · Bugün yeni eklenen ilgili ilan: <b>{yeni}</b>{E(bekle)}</p>
 <p style="font-size:12px;color:#555">Puana göre eleme yapılmaz; ilanlar son başvuru tarihine göre sıralıdır.
-Aynı ilanlar ana kaynaklardan (İlan.gov.tr, Resmî Gazete, Kariyer Kapısı, ÇŞB, İŞKUR) taranır.</p>
+Aynı ilanlar ana kaynaklardan (İlan.gov.tr, Resmî Gazete, Kariyer Kapısı, ÇŞB, İŞKUR, Memurlar.net) taranır.</p>
 <h2>♿ Engelli kadrosu / EKPSS'li ilanlar — {len(gruplar['ENGELLI_KADRO'])} ilan</h2>
 {section(gruplar['ENGELLI_KADRO'])}
 <h2>🩺 Anestezi / sağlık teknikeri kadroları — {len(gruplar['ANESTEZI_SAGLIK'])} ilan</h2>
 {section(gruplar['ANESTEZI_SAGLIK'])}
 <h2>🎓 Önlisans mezunlarına açık kadrolar — {len(gruplar['ONLISANS'])} ilan</h2>
 {section(gruplar['ONLISANS'])}
+{fiz_html}
+{uy_html}
 {elle_html}
 {dolmus_html}
 <div class="box"><p>Not: Sağlık Bakanlığı'nın kendi KPSS tercih alımları bu kaynaklarda yer almaz; ayrıca takip edilmelidir.</p></div>
@@ -1560,6 +1700,7 @@ def main():
 
     # Rapor verileri
     bolum, tum, dolmus, yeni_sayisi, okunanlar = [], [], [], 0, []
+    kanitsiz = []
     ilgili_say = {}
     bugun_tarih = TR_NOW.date()
     for key in bugun:
@@ -1582,6 +1723,13 @@ def main():
                           "link": SBB_ANA if k.get("kaynak") == SBB_ADI else key,
                           "len": k.get("metin_len", "?"), "duzey": k.get("detail_level", "?"),
                           "sonuc": sonuc, "yeni": yeni})
+        if ilgili and not sure_doldu and kanit_yok(an):
+            # kanıt yoksa kart yerine elle kontrol listesine: yanlış-pozitif kartı önler
+            kanitsiz.append({"kaynak": k.get("kaynak"), "baslik": (poz_adi(an) or k.get("baslik") or "")[:160],
+                             "link": key, "neden": "ilgili olduğuna dair kanıt bulunamadı"})
+            sonuc = "KANIT YOK — elle kontrol listesinde"
+            okunanlar[-1]["sonuc"] = sonuc
+            ilgili = False
         if ilgili:
             a = dict(an)
             a.update({"link": key, "_kaynak": k.get("kaynak"), "_baslik": k.get("baslik"),
@@ -1600,7 +1748,10 @@ def main():
     bolum = [c for c in bolum if not c["_uygunsuz"]]
     tum = [c for c in tum if not c["_uygunsuz"]]
     yeni_sayisi = sum(1 for c in bolum + tum if c["_yeni"])
-    elle = sbb_yalniz(ads, bugun) + kisa_metinliler(ads, bugun)
+    elle = sbb_yalniz(ads, bugun) + kisa_metinliler(ads, bugun) + kanitsiz
+    for u in RG_OKUNAMAYAN:
+        elle.append({"kaynak": "Resmî Gazete", "baslik": u.rsplit("/", 1)[-1], "link": u,
+                     "neden": "PDF metni okunamadı (taranmış görüntü olabilir)"})
     for r in log_rows:                      # tablodaki "İlgili": bugün listede olan, süresi dolmamış ilgili ilanlar
         r[4] = ilgili_say.get(r[1], 0)
     okunanlar.sort(key=lambda o: (o["kaynak"] or "", o["sonuc"]))
@@ -1613,6 +1764,8 @@ def main():
         groq_notu = ""
     if GROQ_DEAD_NEDEN:
         groq_notu += " — ⚠ Groq: " + "; ".join(f"{m}: {n}" for m, n in GROQ_DEAD_NEDEN.items())
+        if GROQ_MEVCUT:
+            groq_notu += " — Groq'ta mevcut modeller: " + ", ".join(GROQ_MEVCUT[:25])
 
     yeni_dosya = not os.path.isfile(LOG_PATH)
     with open(LOG_PATH, "a", newline="", encoding="utf-8") as f:
