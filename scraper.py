@@ -24,6 +24,7 @@ DAYANIKLILIK
 """
 import os
 import re
+import base64
 import csv
 import json
 import time
@@ -190,29 +191,85 @@ def links_matching(page, base, pattern=None, exclude=None, min_text=0):
     return out
 
 
+DETAY_HATA = {}      # url -> okunamama nedeni (bu çalıştırma)
+DETAY_NOT = {}       # url -> "HTTP yedek yolu ile okundu" gibi bilgi notları
+
+
+def hata_sinifla(e):
+    """Playwright/requests hatasını insan okuyacağı kısa nedene çevirir."""
+    t = str(e)
+    for rx, neden in (
+        (r"ERR_CONNECTION_TIMED_OUT|Timeout|timed out", "zaman aşımı (site yavaş ya da bu ağdan erişilemiyor)"),
+        (r"ERR_NAME_NOT_RESOLVED|getaddrinfo|Name or service", "alan adı çözülemedi (ağ/DNS)"),
+        (r"ERR_CONNECTION_RESET|ERR_CONNECTION_CLOSED|ERR_EMPTY_RESPONSE|Connection aborted", "bağlantı kesildi"),
+        (r"ERR_CONNECTION_REFUSED", "bağlantı reddedildi"),
+        (r"ERR_CERT|SSL|certificate", "sertifika hatası"),
+        (r"\b403\b|Forbidden|Access Denied", "erişim engellendi (403)"),
+        (r"\b429\b", "hız sınırı (429)"),
+        (r"\b(?:404|410)\b|Not Found", "sayfa bulunamadı (404)"),
+        (r"\b5\d\d\b", "sunucu hatası (5xx)"),
+    ):
+        if re.search(rx, t, re.I):
+            return neden
+    return t.strip().replace("\n", " ")[:90] or "bilinmeyen hata"
+
+
+def html_metni(html):
+    html = re.sub(r"(?is)<(script|style|noscript|svg)[^>]*>.*?</\1>", " ", html)
+    html = re.sub(r"(?i)<br\s*/?>|</(p|div|li|tr|h\d)>", "\n", html)
+    txt = htmllib.unescape(re.sub(r"<[^>]+>", " ", html))
+    return re.sub(r"[ \t\r\f]+", " ", re.sub(r"\n\s*\n+", "\n", txt)).strip()
+
+
+def http_metin(url):
+    """Playwright başarısız olursa ikinci yol: düz HTTP + HTML temizleme."""
+    r = request_with_retry("GET", url, retries=2, timeout=45)
+    if r.status_code != 200:
+        raise Exception(f"HTTP {r.status_code}")
+    return html_metni(r.text)
+
+
 def read_detail(page, url):
-    """Detay sayfasının görünen metnini döndürür (SPA'lar için ek bekleme)."""
-    try:
-        page.goto(url, timeout=60000, wait_until="domcontentloaded")
+    """Detay sayfasının görünen metnini döndürür. 3 deneme (playwright) + HTTP yedek yolu; neden DETAY_HATA'da."""
+    en_iyi, son_hata = "", None
+    for deneme in range(1, 4):
         try:
-            page.wait_for_load_state("networkidle", timeout=20000)
-        except Exception:
-            pass
-        page.wait_for_timeout(1500)
-        txt = page.inner_text("body") or ""
-        if len(txt) < 400:
-            page.wait_for_timeout(4500)
+            page.goto(url, timeout=60000, wait_until="domcontentloaded")
+            try:
+                page.wait_for_load_state("networkidle", timeout=20000)
+            except Exception:
+                pass
+            page.wait_for_timeout(1500)
             txt = page.inner_text("body") or ""
-        if len(txt) < 400:                      # içerik iframe içinde olabilir
-            for fr in page.frames[1:]:
-                try:
-                    txt += "\n" + (fr.inner_text("body") or "")
-                except Exception:
-                    pass
-        return txt[:40000]
+            if len(txt) < 400:
+                page.wait_for_timeout(4500)
+                txt = page.inner_text("body") or ""
+            if len(txt) < 400:                      # içerik iframe içinde olabilir
+                for fr in page.frames[1:]:
+                    try:
+                        txt += "\n" + (fr.inner_text("body") or "")
+                    except Exception:
+                        pass
+            if len(txt) > len(en_iyi):
+                en_iyi = txt
+            if len(txt) >= 150:
+                return txt[:40000]
+            son_hata = "sayfa içeriği boş/çok kısa geldi"
+        except Exception as e:
+            son_hata = hata_sinifla(e)
+            print(f"Detay okunamadı ({url}) deneme {deneme}/3: {str(e)[:100]}")
+        time.sleep(4 * deneme)
+    try:                                            # ikinci yol: tarayıcısız HTTP
+        t = http_metin(url)
+        if len(t) >= 300:
+            DETAY_NOT[url] = "playwright başarısız, düz HTTP ile okundu"
+            return t[:40000]
     except Exception as e:
-        print(f"Detay okunamadı ({url}): {str(e)[:120]}")
-        return ""
+        son_hata = f"{son_hata}; HTTP yedek yolu da başarısız ({hata_sinifla(e)})"
+    if en_iyi:
+        return en_iyi[:40000]
+    DETAY_HATA[url] = son_hata or "bilinmeyen neden"
+    return ""
 
 
 # ---------------- KAYNAK ÇEKİCİLER ----------------
@@ -275,18 +332,29 @@ def fetch_ilan_gov_tr(page):
 RG_PERSONEL = re.compile(r"alım|alin|alınacak|personel|kadro|sözleşmeli|işçi|memur|KPSS|öğretim", re.I)
 
 
+RG_OCR = []
+
+
 def _rg_pdf_metni(url):
     r = request_with_retry("GET", url, retries=2, timeout=60)
     if r.status_code != 200 or not r.content.startswith(b"%PDF"):
         return None
     reader = PdfReader(io.BytesIO(r.content))
-    return "\n".join((pg.extract_text() or "") for pg in reader.pages)
+    txt = "\n".join((pg.extract_text() or "") for pg in reader.pages)
+    if len(txt.strip()) < 100:                      # taranmış görüntü PDF: Gemini ile OCR
+        ocr = gemini_ocr_pdf(r.content)
+        if ocr and len(ocr.strip()) >= 100:
+            RG_OCR.append(url)
+            return ocr
+    return txt
 
 
 RG_OKUNAMAYAN = []
 
 
 def fetch_resmi_gazete(page):
+    RG_OKUNAMAYAN.clear()
+    RG_OCR.clear()
     d = TR_NOW.date()
     ymd = d.strftime("%Y%m%d")
     klasor = f"https://www.resmigazete.gov.tr/ilanlar/eskiilanlar/{d.year}/{d.month:02d}/"
@@ -342,6 +410,8 @@ def fetch_resmi_gazete(page):
                         "detail_level": "Resmî Gazete ilan PDF'si (tam metin)"})
     note = (f"sitede toplam: {len(pdfs)}, okunan: {okunan}, personel ilanı: {len(entries)}, "
             f"PDF bulma: {kaynak}")
+    if RG_OCR:
+        note += f" — taranmış PDF Gemini ile okundu: {len(RG_OCR)}"
     if RG_OKUNAMAYAN:
         note += f" — okunamayan PDF: {len(RG_OKUNAMAYAN)} (taranmış görüntü olabilir; elle kontrol listesinde)"
     return entries, len(pdfs), note
@@ -536,6 +606,24 @@ def fetch_csb_yerel(page):
 
 
 def fetch_iskur_esube(page):
+    try:
+        return _fetch_iskur_esube(page)
+    except Exception as e:
+        # e-şube açılamazsa İŞKUR'un herkese açık "kamu alım ilanları" sayfasından bağlantılar alınır
+        yedek = "https://www.iskur.gov.tr/ilanlar/kamu-memur-alim-ilanlari/"
+        try:
+            goto_safe(page, yedek, settle=2)
+            ent = links_matching(page, yedek, pattern=r"iskur\.gov\.tr/.+(?:ilan|alim)", min_text=15)
+            ent = [x for x in ent if not re.search(r"kamu-memur-alim-ilanlari/?$", x["link"])]
+        except Exception as e2:
+            raise Exception(f"e-şube: {hata_sinifla(e)}; yedek sayfa: {hata_sinifla(e2)}") from e2
+        if not ent:
+            raise Exception(f"e-şube: {hata_sinifla(e)}; yedek sayfada ilan bağlantısı bulunamadı") from e
+        return (ent[:MAX_LINKS_PER_SOURCE], len(ent),
+                f"e-şube açılamadı ({hata_sinifla(e)}); yedek kamu ilanları sayfasından okundu (yapı doğrulanmadı)")
+
+
+def _fetch_iskur_esube(page):
     url = "https://esube.iskur.gov.tr/Istihdam/AcikIsIlanAra.aspx"
     goto_safe(page, url, settle=3)
     body = (page.inner_text("body") or "").lower()
@@ -865,7 +953,9 @@ def groq_call(model, prompt, key=None, slot=None):
             print("Groq hata:", r.status_code, r.text[:200])
             return None
         try:
-            return json.loads(r.json()["choices"][0]["message"]["content"])
+            icerik = r.json()["choices"][0]["message"]["content"] or ""
+            icerik = re.sub(r"(?s)<think>.*?</think>", "", icerik).strip()      # qwen gibi akıl yürüten modeller
+            return json.loads(icerik)
         except Exception as e:
             print("Groq JSON okunamadı:", e)
             return None
@@ -903,9 +993,39 @@ def groq_modelleri_dogrula():
         i = 1 if yeni[:1] else 0
         yeni[i:i] = guclu
         print("Zincire eklenen yeni modeller:", guclu)
+    for m in sorted(mevcut):                    # gpt-oss dışında yeni nesil sohbet modelleri zincirin sonuna eklenir
+        if (m and m not in yeni and re.match(r"(qwen/|meta-llama/llama-4|moonshotai/)", m)
+                and not re.search(r"guard|whisper|orpheus|safeguard|prompt|tts", m)):
+            yeni.append(m)
+            print("Ek model zincire eklendi:", m)
     if yeni:
         GROQ_MODELS = yeni
     print("Groq model zinciri:", GROQ_MODELS)
+
+
+def gemini_ocr_pdf(pdf_bytes):
+    """Taranmış (görüntü) PDF'in metnini Gemini ile okur. Metin | None."""
+    if not GEMINI_API_KEY or GEMINI_DEAD["v"] or len(pdf_bytes) > 15_000_000:
+        return None
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent"
+    body = {"contents": [{"parts": [
+        {"inline_data": {"mime_type": "application/pdf", "data": base64.b64encode(pdf_bytes).decode()}},
+        {"text": "Bu PDF bir resmî ilan. İçindeki TÜM metni olduğu gibi, yorum katmadan, Türkçe karakterleri koruyarak yaz."}]}],
+        "generationConfig": {"temperature": 0.0}}
+    try:
+        r = requests.post(url, headers={"x-goog-api-key": GEMINI_API_KEY, "Content-Type": "application/json"},
+                          json=body, timeout=120)
+        if r.status_code == 429:
+            GEMINI_DEAD["v"] = True
+            GROQ_DEAD_NEDEN["gemini"] = "günlük kota doldu"
+            return None
+        if r.status_code != 200:
+            print("Gemini OCR hatası:", r.status_code, r.text[:120])
+            return None
+        return r.json()["candidates"][0]["content"]["parts"][0]["text"]
+    except Exception as e:
+        print("Gemini OCR istisnası:", str(e)[:100])
+        return None
 
 
 def gemini_call(prompt):
@@ -1063,6 +1183,22 @@ def kirp_metin(metin, limit=3500, bas=900):
     return "\n[...]\n".join(parca)
 
 
+def _norm(t):
+    t = (t or "").replace("İ", "i").replace("I", "ı").lower()
+    t = re.sub(r"[\u2010-\u2015\u2212]", "-", t)
+    t = re.sub(r"[“”\"'‘’`´*•·]", "", t)
+    return re.sub(r"\s+", " ", t).strip()
+
+
+def kanit_metinde(kanit, metin):
+    """LLM'in 'kanıt' alıntısı ilan metninde gerçekten var mı? True/False/None (değerlendirilemez)."""
+    parcalar = [p for p in re.split(r"\.\.\.|…|\[\.\.\.\]", str(kanit or "")) if len(_norm(p)) >= 14]
+    if not parcalar:
+        return None
+    mn = _norm(metin)
+    return all(_norm(p) in mn for p in parcalar)
+
+
 def analiz(baslik, metin):
     prompt = ("Aşağıda bir Türkiye kamu personeli alım ilanının tam metni var. Bilgisayar mühendisliği "
               "mezunu bir aday açısından sınıflandır ve bilgileri çıkar. SADECE geçerli JSON döndür.\n"
@@ -1076,6 +1212,7 @@ def analiz(baslik, metin):
     res = groq_zincir(prompt)
     if isinstance(res, dict):
         res["_pv"] = PROMPT_VERSION
+        res["_kanit_ok"] = kanit_metinde(res.get("kanit"), metin)
         return res
     return None
 
@@ -1133,6 +1270,7 @@ def analiz2(baslik, metin):
     res = groq_zincir(prompt)
     if isinstance(res, dict) and res.get("kategori") in ("ENGELLI_KADRO", "ANESTEZI_SAGLIK", "ONLISANS", "ILGISIZ"):
         res["_pv"] = P2_VERSION
+        res["_kanit_ok"] = kanit_metinde(res.get("kanit"), metin)
         return res
     return None
 
@@ -1149,9 +1287,56 @@ def dogrula2(an, baslik=""):
         return "öğrenciye yönelik ilan"
     if IC_TERFI.search(metin):
         return "iç terfi / görevde yükselme sınavı"
+    if re.search(r"\(\s*erkek\s*\)|yalnızca erkek|sadece erkek", f"{poz} {baslik or ''}", re.I):
+        return "yalnız erkek adaylara açık"
     if str(an.get("bolumUygun") or "").strip().lower().startswith("hayır"):
         return "önlisans programı uymuyor — " + str(an.get("bolumUygun"))[:90]
     return None
+
+
+def denetle_ilan(baslik, metin):
+    """Bağımsız ikinci okuma: ilan A (bilgisayar müh. lisans) veya B (önlisans anestezi / engelli kadro) için uygun mu?"""
+    prompt = ("Aşağıda bir Türkiye kamu personeli alım ilanının metni var. İki aday için ayrı ayrı değerlendir. "
+              "A: bilgisayar mühendisliği lisans mezunu (ilan bilgisayar/yazılım/bilişim mühendisliğini açıkça kabul ediyor "
+              "VEYA herhangi bir lisans mezununa açık). B: anestezi önlisans mezunu engelli bir kadın aday (ilan engelli "
+              "kadrosu/kontenjanı içeriyor VEYA önlisans mezununa açık ve anestezi programı dışlanmıyor). "
+              "Akademik kadro, iptal ilanı, iç terfi, yalnız başka bölümler = uygun DEĞİL. Emin değilsen false yaz. "
+              'SADECE JSON döndür: {"A": true|false, "B": true|false, "neden": "tek cümle, metinden alıntıyla"}\n\n'
+              f"BAŞLIK: {baslik}\n\nMETİN:\n{kirp_metin(metin, limit=2500)}")
+    res = None
+    kaynak = "groq"
+    if GEMINI_API_KEY and not GEMINI_DEAD["v"]:
+        res, kaynak = gemini_call(prompt), "gemini"
+    if not isinstance(res, dict):
+        res, kaynak = groq_zincir(prompt), "groq"
+    return (res, kaynak) if isinstance(res, dict) and ("A" in res or "B" in res) else (None, kaynak)
+
+
+def ikinci_goz(havuz_eleme, havuz_ilgisiz, her_biri=12):
+    """Elenen ilanlardan örnek alıp başka bir model/sağlayıcıya yeniden okutur. {'n','supheli','saglayici'}"""
+    import random
+    rnd = random.Random(TODAY)
+    ornek = (rnd.sample(havuz_eleme, min(her_biri, len(havuz_eleme)))
+             + rnd.sample(havuz_ilgisiz, min(her_biri, len(havuz_ilgisiz))))
+    sonuc = {"n": 0, "supheli": [], "saglayici": set(), "yapilamadi": 0}
+    for it in ornek:
+        if zaman_doldu() or (GROQ_DEAD and (not GEMINI_API_KEY or GEMINI_DEAD["v"])):
+            sonuc["yapilamadi"] += 1
+            continue
+        res, sag = denetle_ilan(it["baslik"], it["metin"])
+        if not res:
+            sonuc["yapilamadi"] += 1
+            continue
+        sonuc["n"] += 1
+        sonuc["saglayici"].add(sag)
+        if res.get("A") is True or res.get("B") is True:
+            kim = "+".join(x for x in ("A" if res.get("A") is True else "", "B" if res.get("B") is True else "") if x)
+            sonuc["supheli"].append({"kaynak": it["kaynak"], "baslik": it["baslik"][:150], "link": it["link"],
+                                     "neden": f"1. okuma: {it['karar']} → 2. okuma ({sag}): profil {kim} için uygun "
+                                              f"olabilir — {str(res.get('neden') or '')[:160]}"})
+        time.sleep(GROQ_SLEEP_SEC)
+    sonuc["saglayici"] = ", ".join(sorted(sonuc["saglayici"])) or "—"
+    return sonuc
 
 
 def oncelik2(baslik, metin):
@@ -1170,7 +1355,8 @@ E = lambda x: htmllib.escape(str(x)) if x not in (None, "") else ""
 def poz_adi(a):
     """'Belirtilmemiş' gibi boş değerler başlık yerine geçmesin."""
     p = str(a.get("pozisyon") or "").strip()
-    return "" if p.lower() in ("", "belirtilmemiş", "belirtilmedi", "yok", "null", "none") else p
+    return "" if (p.lower() in ("", "belirtilmemiş", "belirtilmedi", "yok", "null", "none", "başvur", "başvuru", "ilan",
+                                "duyuru") or len(p) < 4) else p
 
 
 def kanit_yok(an):
@@ -1202,6 +1388,8 @@ def card_html(a):
     eng = ""
     if a.get("engelliBilgi") and str(a["engelliBilgi"]).strip().lower() not in ("yok", "belirtilmemiş", "none"):
         eng = f'<span class="tag src">♿ Engelli: {E(a["engelliBilgi"])}</span>'
+    if a.get("_kanit_ok") is False:
+        zayif += '<span class="tag red">⚠ kanıt alıntısı ilan metninde birebir bulunamadı — doğrula</span>'
     if not a.get("_p2") and not re.search(r"lisans|bilgisayar|bilişim|yazılım|herhangi|mühendis", str(a.get("kanit") or ""), re.I):
         zayif = '<span class="tag red">⚠ kanıt zayıf — ilanı elle kontrol et</span>'
     diger = ""
@@ -1248,7 +1436,8 @@ pre{white-space:pre-wrap;background:#fff;padding:8px;border:1px solid #ddd;font-
 """
 
 
-def build_report(bolum, tum, log_rows, yeni_sayisi, okunanlar, groq_notu, dolmus=(), elle=(), yetmeyen=()):
+def build_report(bolum, tum, log_rows, yeni_sayisi, okunanlar, groq_notu, dolmus=(), elle=(), yetmeyen=(),
+                 butunluk=(), denetim=None):
     def section(items):
         if not items:
             return "<p>Şu an bu kategoride aktif ilan bulunamadı.</p>"
@@ -1287,6 +1476,33 @@ def build_report(bolum, tum, log_rows, yeni_sayisi, okunanlar, groq_notu, dolmus
                         f'<span class="tag">{E(x["kaynak"])}</span> — {E(x["neden"])}</li>' for x in elle)
         elle_html = (f'<div class="box"><details open><summary><b>🔎 Elle kontrol listesi ({len(elle)})</b> — '
                      f'içeriği okunamadı ama başlığı ilgili görünüyor</summary><ul>{satir}</ul></details></div>')
+    but_html = ""
+    if butunluk:
+        sat = "".join(
+            f'<tr{" class=bad" if not str(r["durum"]).startswith("✔") else ""}><td>{E(r["kaynak"])}</td><td>{r["liste"]}</td>'
+            f'<td>{r["analiz"]}</td><td>{r["eleme"]}</td><td>{r["sadece_liste"]}</td>'
+            f'<td>{r["okunamadi"]}{(" — " + E(r["nedenler"])) if r["nedenler"] else ""}</td>'
+            f'<td>{r["bekleyen"]}</td><td>{r["kanit"]}</td><td>{E(r["durum"])}</td></tr>' for r in butunluk)
+        but_html = ('<div class="box"><h2>🧪 Okuma Bütünlük Kontrolü</h2>'
+                    '<p>Listelenen her ilan şu sonuçlardan birine ulaşmış olmalı; toplam listelenene eşit değilse '
+                    '"açıklanamayan" kırmızı yanar. "Kanıt" sütunu: yapay zekânın gösterdiği alıntı ilan metninde '
+                    'birebir bulunamayan kart sayısı.</p>'
+                    '<table><tr><th>Kaynak</th><th>Listelenen</th><th>Analiz edildi</th><th>Anahtar süzgeciyle elendi</th>'
+                    '<th>Yalnız liste</th><th>Okunamadı (neden)</th><th>Kuyrukta</th><th>Kanıtı doğrulanamayan</th>'
+                    f'<th>Durum</th></tr>{sat}</table></div>')
+    if denetim:
+        if denetim["supheli"]:
+            li = "".join(f'<li><a href="{E(x["link"])}" target="_blank">{E(x["baslik"])}</a> '
+                         f'<span class="tag">{E(x["kaynak"])}</span><br><small>{E(x["neden"])}</small></li>'
+                         for x in denetim["supheli"])
+        elif denetim["n"] == 0:
+            li = "<li>İkinci okuma yapılamadı (yapay zekâ kotası/anahtarı yok ya da hata); bu çalıştırmada denetlenemedi.</li>"
+        else:
+            li = "<li>Şüpheli bulunmadı: ikinci okuma, elenen ilanlarla aynı sonuca vardı.</li>"
+        but_html += (f'<div class="box"><details open><summary><b>🕵️ İkinci yapay zekâ kontrolü</b> — '
+                     f'elenen ilanlardan {denetim["n"]} örnek farklı bir modele yeniden okutuldu '
+                     f'(sağlayıcı: {E(denetim["saglayici"])}); yapılamayan: {denetim["yapilamadi"]}; '
+                     f'şüpheli: {len(denetim["supheli"])}</summary><ul>{li}</ul></details></div>')
     yetmeyen_html = ""
     if yetmeyen:
         satirlar = "".join(
@@ -1317,10 +1533,51 @@ def build_report(bolum, tum, log_rows, yeni_sayisi, okunanlar, groq_notu, dolmus
 {dolmus_html}
 <div class="box"><h2>🔍 Veri Çekim Doğrulama Kaydı</h2>{log_html}
 <p><a href="debug.html">Tanı sayfası (ekran görüntüleri, arka plan istekleri)</a></p>
+{but_html}
 <p><a href="onlisans.html">♿ İkinci rapor: önlisans &amp; engelli kadro ilanları</a></p></div>
 <div class="box"><details><summary><b>📑 Bugün listede görülen tüm ilanlar ({len(okunanlar)}) — okundu mu, sonuç ne?</b></summary>
 {okunan_html}</details></div>
 </body></html>"""
+
+
+def butunluk_satirlari(okunanlar, ads, kanit_sorunlu):
+    """Kaynak başına: her listelenen ilan açıklanabilir bir sonuca ulaştı mı? Toplam = listelenen olmalı."""
+    from collections import Counter, defaultdict
+    sat = defaultdict(lambda: Counter())
+    nedenler = defaultdict(Counter)
+    for o in okunanlar:
+        sn, kay = str(o["sonuc"]), o["kaynak"] or "?"
+        sat[kay]["liste"] += 1
+        if sn.startswith("BEKLEMEDE"):
+            sat[kay]["bekleyen"] += 1
+        elif sn.startswith(("DETAY OKUNAMADI", "DETAY LİNKİ", "METİN KISA")):
+            sat[kay]["okunamadi"] += 1
+            m = re.search(r"—\s*(.+?)\s*\(", sn)
+            nedenler[kay][(m.group(1) if m else sn)[:70]] += 1
+        elif sn.startswith("ADAY DEĞİL"):
+            sat[kay]["eleme"] += 1
+        elif sn.startswith("SBB"):
+            sat[kay]["sadece_liste"] += 1
+        elif sn.startswith(("ILGISIZ", "BOLUM", "TUM_LISANS", "SÜRESİ", "KANIT YOK")):
+            sat[kay]["analiz"] += 1
+        else:
+            sat[kay]["aciklanamayan"] += 1
+            nedenler[kay]["sonuç: " + sn[:40]] += 1
+    out = []
+    for kay, c in sorted(sat.items()):
+        topl = sum(c[x] for x in ("bekleyen", "okunamadi", "eleme", "sadece_liste", "analiz", "aciklanamayan"))
+        fark = c["liste"] - topl
+        if c["aciklanamayan"] or fark:
+            durum = f"❌ açıklanamayan: {c['aciklanamayan'] + fark}"
+        elif c["okunamadi"] or c["bekleyen"]:
+            durum = "⚠ eksik var"
+        else:
+            durum = "✔ tam"
+        out.append({"kaynak": kay, "liste": c["liste"], "analiz": c["analiz"], "eleme": c["eleme"],
+                    "sadece_liste": c["sadece_liste"], "okunamadi": c["okunamadi"],
+                    "nedenler": "; ".join(f"{n} ×{v}" for n, v in nedenler[kay].most_common(3)),
+                    "bekleyen": c["bekleyen"], "kanit": kanit_sorunlu.get(kay, 0), "durum": durum})
+    return out
 
 
 def p2_rapor(ads, bugun, state):
@@ -1470,7 +1727,7 @@ def sonuc_metni(k):
         return "SBB: yalnız liste kaydı (detay okunmuyor)"
     if not k.get("detail_checked") and not k.get("analiz"):
         if k.get("sonuc") == "DETAY OKUNAMADI":
-            return "DETAY OKUNAMADI (yeniden denenecek)"
+            return f"DETAY OKUNAMADI — {k.get('hata') or 'neden kaydedilmedi'} (yeniden denenecek)"
         if k.get("sonuc") == "DETAY LİNKİ BULUNAMADI":
             return "DETAY LİNKİ BULUNAMADI (manuel kontrol gerekli)"
         return "BEKLEMEDE (detay kuyruğu)"
@@ -1480,7 +1737,7 @@ def sonuc_metni(k):
     if k.get("bitti"):
         return k.get("sonuc", "bitti")
     if k.get("sonuc") == "DETAY OKUNAMADI":
-        return "DETAY OKUNAMADI (yeniden denenecek)"
+        return f"DETAY OKUNAMADI — {k.get('hata') or 'neden kaydedilmedi'} (yeniden denenecek)"
     if k.get("metin"):
         return "BEKLEMEDE (Groq analizi)"
     return "BEKLEMEDE (detay kuyruğu)"
@@ -1542,18 +1799,28 @@ def main():
         list_page, detail_page = ctx.new_page(), ctx.new_page()
         source_batches = []
         analiz_kuyrugu, log_by_name, analiz2_kuyrugu = [], {}, []
+        havuz_eleme, havuz_ilgisiz = [], []      # ikinci yapay zekânın denetleyeceği elenmiş ilanlar (bu çalıştırmada işlenenler)
 
         # Stage 1: collect every source before spending time or quota on analysis.
         for idx, (name, fn) in enumerate(SOURCES):
             saat = datetime.datetime.now(ZoneInfo("Europe/Istanbul")).strftime("%H:%M:%S")
             CAPTURE.update(on=True, name=name)
-            try:
-                entries, ham, note = fn(list_page)
-            except Exception as e:
+            entries, ham, note, son_hata = [], 0, "", None
+            for deneme in range(1, 4):          # geçici ağ hatalarına karşı 3 deneme
+                try:
+                    entries, ham, note = fn(list_page)
+                    son_hata = None
+                    if deneme > 1:
+                        note += f" (deneme {deneme}'de başarılı)"
+                    break
+                except Exception as e:
+                    son_hata = e
+                    print(f"HATA ({name}) deneme {deneme}/3: {e}")
+                    time.sleep(15 * deneme)
+            if son_hata is not None:
                 CAPTURE["on"] = False
                 entries, ham = [], 0
-                note = f"HATA: {str(e)[:200]}"
-                print(f"HATA ({name}): {e}")
+                note = f"HATA: {hata_sinifla(son_hata)} — 3 deneme başarısız. Ayrıntı: {str(son_hata)[:160]}"
             CAPTURE["on"] = False
             snapshot(list_page, idx, name, note)
             source_batches.append({"idx": idx, "name": name, "entries": entries,
@@ -1602,7 +1869,8 @@ def main():
                                              else read_detail(detail_page, key))
                 if not metin:
                     k = k or {"first_seen": TODAY, "kaynak": name, "baslik": baslik}
-                    k.update(last_seen=TODAY, detail_checked=False, sonuc="DETAY OKUNAMADI")
+                    k.update(last_seen=TODAY, detail_checked=False, sonuc="DETAY OKUNAMADI",
+                             hata=DETAY_HATA.get(key, "bilinmeyen neden"))
                     ads[key] = k
                     continue
                 okunan += 1
@@ -1640,6 +1908,9 @@ def main():
                         k.update(bitti=True, sonuc="METİN KISA — OKUNAMADI")
                     else:
                         k.update(bitti=True, sonuc="ADAY DEĞİL (anahtar kelime yok)")
+                        if len(metin) >= 300 and not (k.get("p2") or {}).get("aday"):
+                            havuz_eleme.append({"kaynak": name, "baslik": baslik, "link": key, "metin": metin[:6000],
+                                                "karar": "anahtar kelime süzgeci"})
                     k.pop("metin", None)
                     continue
 
@@ -1670,6 +1941,9 @@ def main():
                 k["analiz"] = sonuc
                 k["bitti"] = True
                 k.pop("metin", None)
+                if sonuc.get("kategori") == "ILGISIZ":
+                    havuz_ilgisiz.append({"kaynak": name, "baslik": baslik, "link": key, "metin": metin[:6000],
+                                          "karar": "ILGISIZ (" + str(sonuc.get("kanit") or "")[:80] + ")"})
                 if sonuc.get("kategori") in ("BOLUM", "TUM_LISANS") and name in log_by_name:
                     log_by_name[name][4] += 1
                 if sayac % 10 == 0:
@@ -1695,6 +1969,14 @@ def main():
                 if p2_denenen % 10 == 0:
                     save_state(state)
             save_state(state)
+
+        # Stage 4: ikinci yapay zekâ — elenen ilanlardan örnek alıp bağımsız yeniden okut
+        denetim = None
+        if GROQ_API_KEY and (havuz_eleme or havuz_ilgisiz):
+            try:
+                denetim = ikinci_goz(havuz_eleme, havuz_ilgisiz)
+            except Exception as e:
+                print("İkinci göz hatası:", e)
 
         browser.close()
 
@@ -1775,8 +2057,14 @@ def main():
         for r in log_rows:
             w.writerow([TODAY] + r)
 
+    kanit_sorunlu = {}
+    for c in bolum + tum + yetmeyen + dolmus:
+        if c.get("_kanit_ok") is False:
+            kanit_sorunlu[c.get("_kaynak")] = kanit_sorunlu.get(c.get("_kaynak"), 0) + 1
+    butunluk = butunluk_satirlari(okunanlar, ads, kanit_sorunlu)
     with open("docs/index.html", "w", encoding="utf-8") as f:
-        f.write(build_report(bolum, tum, log_rows, yeni_sayisi, okunanlar, groq_notu, dolmus, elle, yetmeyen))
+        f.write(build_report(bolum, tum, log_rows, yeni_sayisi, okunanlar, groq_notu, dolmus, elle, yetmeyen,
+                           butunluk, denetim))
     if DIAGNOSE:
         with open("docs/debug.html", "w", encoding="utf-8") as f:
             f.write(build_debug())
