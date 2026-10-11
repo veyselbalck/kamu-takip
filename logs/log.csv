@@ -258,3 +258,14 @@ navigating to ""https://kariyerkapisi.gov.tr/isealim"", waiting until ""dom"
 2026-10-10,16:59:21,ÇŞB Yerel Yönetimler,33,33,0,OK,"sitede toplam: 33, okunan: 33 (yalnız ilan/alım başlıklı duyurular; 3 sayfa gezildi)"
 2026-10-10,16:59:34,İŞKUR (e-şube),11,11,1,OK,"sitede toplam: 11, okunan: 11 (Kamu seçilerek arandı; 1 sayfa gezildi, sonraki sayfa yok)"
 2026-10-10,16:59:44,Memurlar.net İlan,63,63,21,KISMİ (tamlık doğrulanmadı),8/8 kategori sayfası gezildi (tam ilan metni); sitede toplam sayısı bilinmiyor (yapı doğrulanmadı)
+2026-10-11,20:07:29,İlan.gov.tr,150,150,15,OK,"sitede toplam: 149, okunan: 150, sayfalama: currentPage"
+2026-10-11,20:08:14,Resmî Gazete,0,0,0,HATA,"HATA: alan adı çözülemedi (ağ/DNS) — 3 deneme başarısız. Ayrıntı: Page.goto: net::ERR_NAME_NOT_RESOLVED at https://www.resmigazete.gov.tr/ilanlar/eskiilanlar/2026/10/20261011-4.htm
+Call log:
+navigating to ""https://www.resmigaz"
+2026-10-11,20:09:51,Kariyer Kapısı,0,0,0,HATA,"HATA: alan adı çözülemedi (ağ/DNS) — 3 deneme başarısız. Ayrıntı: Page.goto: net::ERR_NAME_NOT_RESOLVED at https://kariyerkapisi.gov.tr/isealim
+Call log:
+navigating to ""https://kariyerkapisi.gov.tr/isealim"", waiting until ""dom"
+2026-10-11,20:11:26,SBB Kamu İlan,130,0,0,OK,"sitede toplam: 104, okunan: 130 (ham bağlantı: 130, tekrarlar elendi) — detay okunmuyor (yalnız liste); başka kaynaklarla eşleştirildi"
+2026-10-11,20:11:35,ÇŞB Yerel Yönetimler,33,33,0,OK,"sitede toplam: 33, okunan: 33 (yalnız ilan/alım başlıklı duyurular; 3 sayfa gezildi)"
+2026-10-11,20:11:47,İŞKUR (e-şube),11,11,1,OK,"sitede toplam: 11, okunan: 11 (Kamu seçilerek arandı; 1 sayfa gezildi, sonraki sayfa yok)"
+2026-10-11,20:12:02,Memurlar.net İlan,66,66,21,KISMİ (tamlık doğrulanmadı),8/8 kategori sayfası gezildi (tam ilan metni); sitede toplam sayısı bilinmiyor (yapı doğrulanmadı)
