@@ -339,3 +339,10 @@ navigating to ""https://kariyerkapisi.gov.tr/isealim"", waiting until ""dom"
 2026-10-17,14:08:57,ÇŞB Yerel Yönetimler,34,34,0,OK,"sitede toplam: 34, okunan: 34 (yalnız ilan/alım başlıklı duyurular; 3 sayfa gezildi)"
 2026-10-17,14:09:11,İŞKUR (e-şube),4,4,0,OK,"sitede toplam: 4, okunan: 4 (Kamu seçilerek arandı; 1 sayfa gezildi, sonraki sayfa yok)"
 2026-10-17,14:09:25,Memurlar.net İlan,76,76,26,KISMİ (tamlık doğrulanmadı),8/8 kategori sayfası gezildi (tam ilan metni); sitede toplam sayısı bilinmiyor (yapı doğrulanmadı)
+2026-10-18,20:15:43,İlan.gov.tr,116,116,19,OK,"sitede toplam: 116, okunan: 116, sayfalama: currentPage"
+2026-10-18,20:16:20,Resmî Gazete,5,3,1,OK,"sitede toplam: 5, okunan: 5, personel ilanı: 3, PDF bulma: dizin linkleri"
+2026-10-18,20:16:25,Kariyer Kapısı,26,26,11,OK,"IlanDetay linkleri doğrudan bulundu; sitede toplam: 26, okunan: 26, harici siteye giden (İlana Git): 4"
+2026-10-18,20:16:34,SBB Kamu İlan,121,0,0,OK,"sitede toplam: 87, okunan: 121 (ham bağlantı: 121, tekrarlar elendi) — detay okunmuyor (yalnız liste); başka kaynaklarla eşleştirildi"
+2026-10-18,20:16:42,ÇŞB Yerel Yönetimler,34,34,0,OK,"sitede toplam: 34, okunan: 34 (yalnız ilan/alım başlıklı duyurular; 3 sayfa gezildi)"
+2026-10-18,20:16:56,İŞKUR (e-şube),4,4,0,OK,"sitede toplam: 4, okunan: 4 (Kamu seçilerek arandı; 1 sayfa gezildi, sonraki sayfa yok)"
+2026-10-18,20:17:10,Memurlar.net İlan,70,70,27,KISMİ (tamlık doğrulanmadı),8/8 kategori sayfası gezildi (tam ilan metni); sitede toplam sayısı bilinmiyor (yapı doğrulanmadı)
