@@ -1,0 +1,2081 @@
+"""
+KAMU İLAN TAKİP SİSTEMİ v3 — Playwright + Groq
+============================================================
+AKIŞ
+  1) Her kaynağın ilan listesi (sayfalama dahil) çekilir.
+  2) Görülmemiş her ilanın detay sayfası açılıp tam metni okunur.
+  3) Kademeli analiz (Groq ücretsiz kotasını korumak için):
+       a) ön eleme  : küçük/hızlı model -> BOLUM / TUM_LISANS / ILGISIZ
+       b) ayrıntı   : büyük model -> tarihler, KPSS, ikamet, ek şartlar...
+  4) docs/index.html   : kart kart rapor + "okunan tüm ilanlar" tablosu
+     docs/debug.html   : her sitenin ekran görüntüsü, link örnekleri,
+                         arka plan (XHR) istekleri  -> sorun tespiti için
+
+DOĞRULAMA
+  - "ham_kayit" sitenin gösterdiği ilan sayısıyla karşılaştırılır
+    (ilan.gov.tr "Toplam N ilan" yazıyor). Eksikse durum ŞÜPHELİ olur.
+  - "okunan tüm ilanlar" tablosunda her ilan için metin uzunluğu ve
+    sonuç görünür; çok kısa metin = detay sayfası okunamamış demektir.
+
+DAYANIKLILIK
+  - Süre sınırı MAX_RUNTIME_MIN; yetişmeyenler ertesi gün devam eder.
+  - Groq kotası biterse kalanlar "beklemede" kalır, ertesi gün işlenir.
+  - Bir kaynak çökerse diğerleri devam eder.
+"""
+import os
+import re
+import base64
+import csv
+import json
+import time
+import io
+import hashlib
+import html as htmllib
+import datetime
+from zoneinfo import ZoneInfo
+from urllib.parse import urljoin, urlparse
+
+# Windows'ta antivirüs/proxy HTTPS'i araya girip tarıyorsa Python'un kendi sertifika
+# listesi güvenmez. truststore, Windows sertifika deposunu kullanmasını sağlar.
+try:
+    import truststore
+    truststore.inject_into_ssl()
+except Exception:
+    pass
+
+import requests
+import urllib3
+from playwright.sync_api import sync_playwright
+from pypdf import PdfReader
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+# ---------------- AYARLAR ----------------
+# Birden çok Groq anahtarı (farklı hesaplar) ve isteğe bağlı Gemini yedeği: kota dolunca sıradakine geçilir
+GROQ_KEYS = [k.strip() for k in (os.environ.get("GROQ_API_KEY"), os.environ.get("GROQ_API_KEY_2"),
+                                 os.environ.get("GROQ_API_KEY_3")) if k and k.strip()]
+GEMINI_API_KEY = (os.environ.get("GEMINI_API_KEY") or "").strip()
+GEMINI_MODEL = (os.environ.get("GEMINI_MODEL") or "gemini-2.5-flash").strip()
+GEMINI_DEAD = {"v": False}
+GROQ_API_KEY = GROQ_KEYS[0] if GROQ_KEYS else ("gemini" if GEMINI_API_KEY else None)   # "yapay zekâ erişimi var mı" bayrağı
+GROQ_MODELS = ["llama-3.3-70b-versatile", "openai/gpt-oss-120b", "openai/gpt-oss-20b", "llama-3.1-8b-instant"]
+GROQ_MODEL = GROQ_MODELS[0]                 # ana model; kotası dolarsa sıradakine geçilir
+GROQ_DEAD_MODELS = set()                    # bugün kotası bitmiş / kullanılamayan modeller
+GROQ_JSON_HATA = {}                         # model -> bu çalıştırmadaki geçersiz-JSON sayısı
+GROQ_MEVCUT = []                            # Groq model listesinden gelen kimlikler (tanı için)
+GROQ_DEAD_NEDEN = {}                        # model -> neden (rapor başlığında gösterilir)
+GROQ_ZAYIF = {"openai/gpt-oss-20b", "llama-3.1-8b-instant"}   # kartta "doğrula" uyarısı yalnız bunlar için
+SBB_ADI = "SBB Kamu İlan"
+SBB_ANA = "https://kamuilan.sbb.gov.tr/"     # ilanDetay.aspx?kod=... bağlantıları oturuma özel; sonradan açılınca 404 veriyor
+MEMURLAR_ADI = "Memurlar.net İlan"
+# Groq'ta kaldırılmış model olursa listeden elenir; bu adaylar (varsa) 120b'den sonra zincire eklenir
+GROQ_ADAY_MODELLER = ["meta-llama/llama-4-maverick-17b-128e-instruct", "meta-llama/llama-4-scout-17b-16e-instruct",
+                      "moonshotai/kimi-k2-instruct"]
+GROQ_MODEL_KONTROL = {"yapildi": False}
+
+# Kişisel profil (uygunluk filtresi için). Değişirse buradan güncelle.
+PROFIL = {"kpss": 71, "kpss_turu": "P3", "yas": 26, "boy": 173, "kilo": 105, "tecrube_gun": 150}   # tecrübe: yalnız ~150 gün staj
+DIAGNOSE = os.environ.get("DIAGNOSE", "1") == "1"
+
+MAX_RUNTIME_MIN = 300
+MAX_LINKS_PER_SOURCE = 400
+GROQ_SLEEP_SEC = 2.5
+STATE_VERSION = 2
+STATE_PATH = "data/state.json"
+LOG_PATH = "logs/log.csv"
+
+TR_NOW = datetime.datetime.now(ZoneInfo("Europe/Istanbul"))
+TODAY = TR_NOW.date().isoformat()
+START = time.time()
+
+BROWSER_UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+              "(KHTML, like Gecko) Chrome/120.0 Safari/537.36")
+
+ADAY_ANAHTAR = re.compile(
+    r"bilgisayar|yazılım|bilişim|programcı|programlama|bilgi işlem|siber güvenlik|"
+    r"herhangi bir.{0,30}lisans|tüm lisans|lisans mezunu|"
+    r"(?:4|dört) yıllık lisans|lisans programlarının.{0,60}birinden mezun", re.I | re.S)
+AKADEMIK_BASLIK = re.compile(
+    r"öğretim\s+(?:üyesi|görevlisi|elemanı)|öğr\.?\s*(?:üyesi|görevlisi|gör\b)|"
+    r"araştırma\s+görevlisi|okutman|profesör|doçent", re.I)
+PROMPT_VERSION = 2
+
+# ---- İkinci profil (önlisans mezunu, engelli kadro/EKPSS) — ayrı rapor sayfası: docs/onlisans.html ----
+P2_VERSION = 2
+P2_MAX_ANALIZ = 40          # bir çalıştırmada ikinci profil için en çok bu kadar Groq analizi
+ADAY2_ANAHTAR = re.compile(
+    r"engelli|ekpss|ön\s?lisans|meslek\s+yüksekokul|anestezi|sağlık\s+teknik|tıbbi\s+hizmetler|"
+    r"tıbbi\s+(?:laboratuvar|görüntüleme)|ilk\s+ve\s+acil|ameliyathane", re.I)
+ENGEL_BASLIK = re.compile(r"engelli|ekpss|ön\s?lisans|anestezi|sağlık\s+teknik|tekniker|teknisyen|"
+                          r"büro|veri hazırlama|memur", re.I)
+SOSYAL = ("twitter.com", "facebook.com", "instagram.com", "linkedin.com",
+          "youtube.com", "//x.com", "wa.me", "t.me")
+
+for d in ("logs", "docs", "docs/debug", "data"):
+    os.makedirs(d, exist_ok=True)
+
+GROQ_DEAD = False            # günlük kota bittiyse True
+CAPTURE = {"on": False, "name": ""}
+XHR = {}                     # kaynak adı -> [istekler]
+DEBUG = []                   # tanı sayfası kayıtları
+
+
+def zaman_doldu():
+    return (time.time() - START) / 60 > MAX_RUNTIME_MIN
+
+
+def request_with_retry(method, url, retries=3, timeout=60, **kwargs):
+    headers = kwargs.pop("headers", {})
+    headers.setdefault("User-Agent", BROWSER_UA)
+    last = None
+    for i in range(1, retries + 1):
+        try:
+            return requests.request(method, url, timeout=timeout, verify=False,
+                                    headers=headers, **kwargs)
+        except requests.exceptions.RequestException as e:
+            last = e
+            print(f"Deneme {i}/{retries} başarısız ({url}): {e}")
+            time.sleep(5)
+    raise last
+
+
+# ---------------- STATE ----------------
+def load_state():
+    if os.path.isfile(STATE_PATH):
+        try:
+            with open(STATE_PATH, encoding="utf-8") as f:
+                st = json.load(f)
+            if st.get("version") == STATE_VERSION:
+                return st
+            print("State şeması eski, sıfırlanıyor.")
+        except Exception as e:
+            print("State okunamadı, sıfırlanıyor:", e)
+    return {"version": STATE_VERSION, "first_run": TODAY, "ads": {}}
+
+
+def save_state(state):
+    with open(STATE_PATH, "w", encoding="utf-8") as f:
+        json.dump(state, f, ensure_ascii=False, indent=1)
+
+
+# ---------------- SAYFA YARDIMCILARI ----------------
+def goto_safe(page, url, timeout=60000, settle=2.0):
+    page.goto(url, timeout=timeout, wait_until="domcontentloaded")
+    try:
+        page.wait_for_load_state("networkidle", timeout=25000)
+    except Exception:
+        pass
+    if settle:
+        time.sleep(settle)
+
+
+def links_matching(page, base, pattern=None, exclude=None, min_text=0):
+    """Sayfadaki anchor'lardan (url,metin) toplar; pattern/exclude regex."""
+    out, seen = [], set()
+    for a in page.query_selector_all("a"):
+        href = (a.get_attribute("href") or "").strip()
+        if not href or href.startswith(("#", "javascript:", "mailto:", "tel:")):
+            continue
+        full = urljoin(base, href)
+        if full in seen or any(s in full for s in SOSYAL):
+            continue
+        if pattern and not re.search(pattern, full, re.I):
+            continue
+        if exclude and re.search(exclude, full, re.I):
+            continue
+        text = (a.inner_text() or "").strip().replace("\n", " | ")
+        if len(text) < min_text:
+            continue
+        seen.add(full)
+        out.append({"title": text[:220] or full, "link": full})
+    return out
+
+
+DETAY_HATA = {}      # url -> okunamama nedeni (bu çalıştırma)
+DETAY_NOT = {}       # url -> "HTTP yedek yolu ile okundu" gibi bilgi notları
+
+
+def hata_sinifla(e):
+    """Playwright/requests hatasını insan okuyacağı kısa nedene çevirir."""
+    t = str(e)
+    for rx, neden in (
+        (r"ERR_CONNECTION_TIMED_OUT|Timeout|timed out", "zaman aşımı (site yavaş ya da bu ağdan erişilemiyor)"),
+        (r"ERR_NAME_NOT_RESOLVED|getaddrinfo|Name or service", "alan adı çözülemedi (ağ/DNS)"),
+        (r"ERR_CONNECTION_RESET|ERR_CONNECTION_CLOSED|ERR_EMPTY_RESPONSE|Connection aborted", "bağlantı kesildi"),
+        (r"ERR_CONNECTION_REFUSED", "bağlantı reddedildi"),
+        (r"ERR_CERT|SSL|certificate", "sertifika hatası"),
+        (r"\b403\b|Forbidden|Access Denied", "erişim engellendi (403)"),
+        (r"\b429\b", "hız sınırı (429)"),
+        (r"\b(?:404|410)\b|Not Found", "sayfa bulunamadı (404)"),
+        (r"\b5\d\d\b", "sunucu hatası (5xx)"),
+    ):
+        if re.search(rx, t, re.I):
+            return neden
+    return t.strip().replace("\n", " ")[:90] or "bilinmeyen hata"
+
+
+def html_metni(html):
+    html = re.sub(r"(?is)<(script|style|noscript|svg)[^>]*>.*?</\1>", " ", html)
+    html = re.sub(r"(?i)<br\s*/?>|</(p|div|li|tr|h\d)>", "\n", html)
+    txt = htmllib.unescape(re.sub(r"<[^>]+>", " ", html))
+    return re.sub(r"[ \t\r\f]+", " ", re.sub(r"\n\s*\n+", "\n", txt)).strip()
+
+
+def http_metin(url):
+    """Playwright başarısız olursa ikinci yol: düz HTTP + HTML temizleme."""
+    r = request_with_retry("GET", url, retries=2, timeout=45)
+    if r.status_code != 200:
+        raise Exception(f"HTTP {r.status_code}")
+    return html_metni(r.text)
+
+
+def read_detail(page, url):
+    """Detay sayfasının görünen metnini döndürür. 3 deneme (playwright) + HTTP yedek yolu; neden DETAY_HATA'da."""
+    en_iyi, son_hata = "", None
+    for deneme in range(1, 4):
+        try:
+            page.goto(url, timeout=60000, wait_until="domcontentloaded")
+            try:
+                page.wait_for_load_state("networkidle", timeout=20000)
+            except Exception:
+                pass
+            page.wait_for_timeout(1500)
+            txt = page.inner_text("body") or ""
+            if len(txt) < 400:
+                page.wait_for_timeout(4500)
+                txt = page.inner_text("body") or ""
+            if len(txt) < 400:                      # içerik iframe içinde olabilir
+                for fr in page.frames[1:]:
+                    try:
+                        txt += "\n" + (fr.inner_text("body") or "")
+                    except Exception:
+                        pass
+            if len(txt) > len(en_iyi):
+                en_iyi = txt
+            if len(txt) >= 150:
+                return txt[:40000]
+            son_hata = "sayfa içeriği boş/çok kısa geldi"
+        except Exception as e:
+            son_hata = hata_sinifla(e)
+            print(f"Detay okunamadı ({url}) deneme {deneme}/3: {str(e)[:100]}")
+        time.sleep(4 * deneme)
+    try:                                            # ikinci yol: tarayıcısız HTTP
+        t = http_metin(url)
+        if len(t) >= 300:
+            DETAY_NOT[url] = "playwright başarısız, düz HTTP ile okundu"
+            return t[:40000]
+    except Exception as e:
+        son_hata = f"{son_hata}; HTTP yedek yolu da başarısız ({hata_sinifla(e)})"
+    if en_iyi:
+        return en_iyi[:40000]
+    DETAY_HATA[url] = son_hata or "bilinmeyen neden"
+    return ""
+
+
+# ---------------- KAYNAK ÇEKİCİLER ----------------
+# (entries, ham_kayit, not) döndürür. entry: {title, link, kurum?, content?}
+
+def fetch_ilan_gov_tr(page):
+    base = "https://www.ilan.gov.tr/ilan/tum-ilanlar/personel-alimi?ats=5"
+    pat, exc = r"/ilan/\d+", r"/ilan/tum-ilanlar"
+    goto_safe(page, base, settle=3)
+    m = re.search(r"Toplam\s+(\d+)\s+ilan", page.inner_text("body") or "", re.I)
+    toplam = int(m.group(1)) if m else None
+    tum = {}
+    for e in links_matching(page, base, pat, exc):
+        tum[e["link"]] = e
+
+    param_used = None
+    for param in ("currentPage", "page", "pageNumber", "pageIndex", "p"):
+        goto_safe(page, f"{base}&{param}=2", settle=2)
+        yeni = [e for e in links_matching(page, base, pat, exc) if e["link"] not in tum]
+        if yeni:
+            param_used = param
+            for e in yeni:
+                tum[e["link"]] = e
+            break
+    if param_used:
+        for n in range(3, 60):
+            if toplam and len(tum) >= toplam:
+                break
+            goto_safe(page, f"{base}&{param_used}={n}", settle=1.5)
+            yeni = [e for e in links_matching(page, base, pat, exc) if e["link"] not in tum]
+            if not yeni:
+                break
+            for e in yeni:
+                tum[e["link"]] = e
+    else:
+        # Yedek: "sonraki" düğmesiyle sayfalama
+        goto_safe(page, base, settle=2)
+        for _ in range(60):
+            btn = page.locator("a,button", has_text=re.compile(r"^\s*(›|»|>|Sonraki|İleri|Next)\s*$", re.I))
+            if btn.count() == 0:
+                break
+            try:
+                btn.first.click(timeout=4000)
+                page.wait_for_timeout(2000)
+            except Exception:
+                break
+            yeni = [e for e in links_matching(page, base, pat, exc) if e["link"] not in tum]
+            if not yeni:
+                break
+            for e in yeni:
+                tum[e["link"]] = e
+
+    entries = list(tum.values())
+    note = f"sitede toplam: {toplam}, okunan: {len(entries)}, sayfalama: {param_used or 'düğme/yok'}"
+    if toplam and len(entries) < toplam:
+        note += " (EKSİK!)"
+    return entries[:MAX_LINKS_PER_SOURCE * 2], len(entries), note
+
+
+RG_PERSONEL = re.compile(r"alım|alin|alınacak|personel|kadro|sözleşmeli|işçi|memur|KPSS|öğretim", re.I)
+
+
+RG_OCR = []
+
+
+def _rg_pdf_metni(url):
+    r = request_with_retry("GET", url, retries=2, timeout=60)
+    if r.status_code != 200 or not r.content.startswith(b"%PDF"):
+        return None
+    reader = PdfReader(io.BytesIO(r.content))
+    txt = "\n".join((pg.extract_text() or "") for pg in reader.pages)
+    if len(txt.strip()) < 100:                      # taranmış görüntü PDF: Gemini ile OCR
+        ocr = gemini_ocr_pdf(r.content)
+        if ocr and len(ocr.strip()) >= 100:
+            RG_OCR.append(url)
+            return ocr
+    return txt
+
+
+RG_OKUNAMAYAN = []
+
+
+def fetch_resmi_gazete(page):
+    RG_OKUNAMAYAN.clear()
+    RG_OCR.clear()
+    d = TR_NOW.date()
+    ymd = d.strftime("%Y%m%d")
+    klasor = f"https://www.resmigazete.gov.tr/ilanlar/eskiilanlar/{d.year}/{d.month:02d}/"
+    index = f"{klasor}{ymd}-4.htm"
+    response = page.goto(index, timeout=60000, wait_until="domcontentloaded")
+    if response and response.status != 200:
+        return [], 0, f"bugünkü ilan sayfası yok (HTTP {response.status}) (normal olabilir)"
+    try:
+        page.wait_for_load_state("networkidle", timeout=15000)
+    except Exception:
+        pass
+
+    # 1) Dizin sayfasındaki PDF linkleri
+    pdfs = {e["link"] for e in links_matching(page, index, rf"{ymd}-4-\d+\.pdf$")}
+    kaynak = "dizin linkleri"
+
+    # 2) Link bulunamazsa numarayı sırayla dene (art arda 3 boş = son)
+    if not pdfs:
+        kaynak = "numara denemesi"
+        bos = 0
+        for n in range(1, 500):
+            u = f"{klasor}{ymd}-4-{n}.pdf"
+            try:
+                if request_with_retry("GET", u, retries=1, timeout=30).status_code == 200:
+                    pdfs.add(u); bos = 0
+                else:
+                    bos += 1
+            except Exception:
+                bos += 1
+            if bos >= 3:
+                break
+
+    entries, okunan = [], 0
+    for u in sorted(pdfs, key=lambda x: int(re.search(r"-4-(\d+)\.pdf", x).group(1))):
+        txt = None
+        for deneme in range(3):
+            try:
+                txt = _rg_pdf_metni(u)
+                if txt and len(txt.strip()) >= 100:
+                    break
+            except Exception as e:
+                print("Resmî Gazete PDF okunamadı:", u, str(e)[:100])
+            time.sleep(2)
+        if not txt or len(txt.strip()) < 100:      # taranmış/boş PDF: okunamadı say, elle kontrol listesine yaz
+            RG_OKUNAMAYAN.append(u)
+            continue
+        okunan += 1
+        if not RG_PERSONEL.search(txt[:3000]):
+            continue
+        satirlar = [s.strip() for s in txt.split("\n") if s.strip()]
+        baslik = " ".join(satirlar[:2])[:150]
+        entries.append({"title": baslik, "link": u, "content": txt[:14000], "kurum": baslik,
+                        "detail_level": "Resmî Gazete ilan PDF'si (tam metin)"})
+    note = (f"sitede toplam: {len(pdfs)}, okunan: {okunan}, personel ilanı: {len(entries)}, "
+            f"PDF bulma: {kaynak}")
+    if RG_OCR:
+        note += f" — taranmış PDF Gemini ile okundu: {len(RG_OCR)}"
+    if RG_OKUNAMAYAN:
+        note += f" — okunamayan PDF: {len(RG_OKUNAMAYAN)} (taranmış görüntü olabilir; elle kontrol listesinde)"
+    return entries, len(pdfs), note
+
+
+def fetch_kariyer_kapisi(page):
+    url = "https://kariyerkapisi.gov.tr/isealim"
+    goto_safe(page, url, settle=3)
+    try:
+        page.get_by_role("button", name=re.compile(r"^(ara|listele|getir)$", re.I)).first.click(timeout=3000)
+        page.wait_for_timeout(3000)
+    except Exception:
+        pass
+    detay = links_matching(page, url, r"IlanDetay")
+    if detay:
+        body = page.inner_text("body") or ""
+        sayilar = re.findall(r"\((\d+)\s*İLAN\)", body)
+        harici = sum(1 for a in page.query_selector_all("a") if (a.inner_text() or "").strip() == "İlana Git")
+        if sayilar:
+            toplam = sum(int(x) for x in sayilar) - harici
+            note = (f"IlanDetay linkleri doğrudan bulundu; sitede toplam: {toplam}, okunan: {len(detay)}, "
+                    f"harici siteye giden (İlana Git): {harici}")
+        else:
+            note = "IlanDetay linkleri doğrudan bulundu"
+        return detay, len(detay), note
+    kurum_satirlari = []
+    for tr in page.query_selector_all("table tr"):
+        a = tr.query_selector("a")
+        href = (a.get_attribute("href") or "") if a else ""
+        if href and not href.startswith(("#", "javascript:")):
+            kurum_satirlari.append(urljoin(url, href))
+    if kurum_satirlari:
+        toplanan = {}
+        for u in kurum_satirlari[:150]:
+            try:
+                goto_safe(page, u, settle=1.5)
+                for e in links_matching(page, u, r"IlanDetay"):
+                    toplanan[e["link"]] = e
+            except Exception as ex:
+                print("Kariyer Kapısı kurum sayfası hatası:", str(ex)[:100])
+        return list(toplanan.values()), len(toplanan), f"{len(kurum_satirlari)} kurum satırı gezildi"
+    goto_safe(page, url, settle=1)
+    body = (page.inner_text("body") or "").lower()
+    if "aktif bir ilan bulunmamaktadır" in body:
+        return [], 0, "site 'aktif ilan yok' diyor (normal) — tanı sayfasındaki ekran görüntüsünü kontrol et"
+    if "aktif ilanlar" in body and "kurum/birim" in body:
+        return [], 0, "aktif ilan tablosu boş (normal olabilir); sayfada yalnızca tablo başlıkları var"
+    return [], 0, "ilan/tablo bulunamadı — tanı sayfasına bak"
+
+
+def fetch_sbb_kamu_ilan(page):
+    url = "https://kamuilan.sbb.gov.tr/"
+    goto_safe(page, url, settle=4)
+    body = (page.inner_text("body") or "").lower()
+    if "geographic restriction" in body or "access denied" in body or "access restricted" in body:
+        raise Exception("SBB sitesi bu çalıştırma ortamını coğrafi erişim kuralıyla engelledi")
+    host = urlparse(url).hostname
+    entries = [e for e in links_matching(page, url, min_text=8)
+               if urlparse(e["link"]).hostname == host]
+    # Manşet/kaydırıcıdaki tekrarları ele: aynı metinli bağlantı aynı ilandır
+    tekil, gorulen = [], set()
+    for e in entries:
+        t = re.sub(r"\s+", " ", e["title"]).strip().lower()
+        if t in gorulen:
+            continue
+        gorulen.add(t)
+        tekil.append(e)
+    m = re.search(r"TÜM İLANLAR\s*(\d+)\s*ilan", page.inner_text("body") or "", re.I)
+    if m:
+        note = (f"sitede toplam: {m.group(1)}, okunan: {len(tekil)} "
+                f"(ham bağlantı: {len(entries)}, tekrarlar elendi)")
+    else:
+        note = "aynı alan adındaki sayfa linkleri (yapı doğrulanmadı)"
+    return tekil[:MAX_LINKS_PER_SOURCE], len(tekil), note
+
+
+MEMURLAR_MENU = re.compile(
+    r"^(?:4/B İlanları|Akademik İlanlar.*|Askeri İlanlar|Daimi İşçi İlanları|Engelli İlanları|Eski Hükümlü|"
+    r"Geçici İşçi İlanları|Genel İlanlar|Kalkınma Ajansı|KPSS-[AB] İlanları|Mahalli İlanlar|Öğrenci Alım İlanları|"
+    r"Özel Okul İlanları|SYDV İlanları|Terörle Mücadelede.*|Yatay Geçiş İlanları|YÖK Duyuruları|Yurt Dışı.*|"
+    r"Yüksek Lisans ve Doktora|Kategoriler|Yeni İlanlar|Çok okunanlar|Çok yorumlananlar)$", re.I)
+
+
+def read_memurlar(page, url):
+    """Memurlar.net ilan sayfası: menü/kenar çubuğu kategori adları süzgeçleri yanıltmasın diye yalnız ilan gövdesi alınır."""
+    txt = read_detail(page, url)
+    for sel in ("article", "[itemprop='articleBody']", ".ilan-detay", ".haber-detay", "#icerik", "main"):
+        try:
+            el = page.query_selector(sel)
+            if el:
+                t = el.inner_text() or ""
+                if len(t) > 400:
+                    return "\n".join(l for l in t.split("\n") if not MEMURLAR_MENU.match(l.strip()))
+        except Exception:
+            pass
+    return "\n".join(l for l in (txt or "").split("\n") if not MEMURLAR_MENU.match(l.strip()))
+
+
+MEMURLAR_KATEGORILER = ["", "kategori/engelli-ilanlari", "kategori/kpss-b-ilanlari", "kategori/kpss-a-ilanlari",
+                        "kategori/mahalli-ilanlari", "kategori/genel-ilanlar", "kategori/lakinma-ajansi",
+                        "kategori/daimi-isci-ilanlari"]
+
+
+def fetch_memurlar(page):
+    """ilan.memurlar.net: ilanların TAM metnini veren derleme site; engelli/KPSS-B/mahalli kategorileri ayrı listelenir."""
+    base = "https://ilan.memurlar.net/"
+    toplanan, gezilen, hatali = {}, 0, 0
+    for yol in MEMURLAR_KATEGORILER:
+        url = base + (yol + "/?Expire=false" if yol else "")
+        try:
+            goto_safe(page, url, settle=1)
+        except Exception as e:
+            hatali += 1
+            print("memurlar kategori hatası:", yol, str(e)[:80])
+            continue
+        gezilen += 1
+        for _ in range(3):                      # rel=next varsa en çok 3 sayfa
+            for e in links_matching(page, url, pattern=r"/ilan/\d+/", min_text=12):
+                toplanan.setdefault(e["link"], dict(e, detail_level="İlan detay sayfası"))
+            sonraki = page.locator("a[rel='next']")
+            try:
+                if sonraki.count() == 0:
+                    break
+                sonraki.first.click(timeout=5000)
+                page.wait_for_load_state("domcontentloaded", timeout=20000)
+                time.sleep(1)
+            except Exception:
+                break
+    if not gezilen:
+        raise Exception("Memurlar.net kategori sayfalarının hiçbiri açılamadı")
+    entries = list(toplanan.values())
+    return (entries[:MAX_LINKS_PER_SOURCE], len(entries),
+            f"{gezilen}/{len(MEMURLAR_KATEGORILER)} kategori sayfası gezildi (tam ilan metni); "
+            f"sitede toplam sayısı bilinmiyor (yapı doğrulanmadı)")
+
+
+def fetch_csb_yerel(page):
+    url = "https://yerelyonetimler.csb.gov.tr/duyurular"
+    son = None
+    for _ in range(2):
+        try:
+            page.goto(url, timeout=60000, wait_until="domcontentloaded")
+            son = None
+            break
+        except Exception as e:
+            son = e
+    if son:
+        raise Exception("erişilemedi (zaman aşımı). GitHub sunucusunun yurt dışı IP'si engelleniyor "
+                        "olabilir. Çözüm: Türkiye'deki bilgisayarında self-hosted runner. Ayrıntı: "
+                        + str(son)[:120])
+    try:
+        page.wait_for_load_state("networkidle", timeout=20000)
+    except Exception:
+        pass
+    time.sleep(2)
+    CSB_ILAN = re.compile(r"(?:ALIM|İLANI|İLAN)\b", re.I)
+    CSB_KURUM = re.compile(r"BELEDİY|ÜNİVERSİT|İL ÖZEL|BAŞKANLIĞ|MÜDÜRLÜĞ|KURUM|BİRLİĞ|İDARESİ|ODASI", re.I)
+
+    def duyurular():
+        out = []
+        for e in links_matching(page, url, min_text=25):
+            t = e["title"].replace("|", " ")
+            # menü/rehber bağlantıları değil, gerçek duyuru başlıkları: kurum adı + "ALIM/İLAN"
+            if CSB_ILAN.search(t) and CSB_KURUM.search(t) and urlparse(e["link"]).hostname == urlparse(url).hostname:
+                out.append(e)
+        return out
+
+    entries = duyurular()
+    # sayfalama varsa (2, 3, 4 … numaralı bağlantılar) en çok 4 ek sayfa gez
+    sayfa_linkleri = []
+    for a in page.query_selector_all("a"):
+        tx = (a.inner_text() or "").strip()
+        href = (a.get_attribute("href") or "").strip()
+        if tx.isdigit() and 2 <= int(tx) <= 9 and href and not href.startswith(("#", "javascript:")):
+            full = urljoin(url, href)
+            if full not in sayfa_linkleri and full != url:
+                sayfa_linkleri.append(full)
+    gezilen = 1
+    for sl in sayfa_linkleri[:4]:
+        try:
+            page.goto(sl, timeout=60000, wait_until="domcontentloaded")
+            time.sleep(2)
+            mevcut = {e["link"] for e in entries}
+            entries += [e for e in duyurular() if e["link"] not in mevcut]
+            gezilen += 1
+        except Exception:
+            break
+    if not entries:
+        return [], 0, "duyuru listesinde ilan başlığı bulunamadı — tanı sayfasına bak"
+    return (entries[:MAX_LINKS_PER_SOURCE], len(entries),
+            f"sitede toplam: {len(entries)}, okunan: {len(entries)} (yalnız ilan/alım başlıklı duyurular; {gezilen} sayfa gezildi)")
+
+
+def fetch_iskur_esube(page):
+    try:
+        return _fetch_iskur_esube(page)
+    except Exception as e:
+        # e-şube açılamazsa İŞKUR'un herkese açık "kamu alım ilanları" sayfasından bağlantılar alınır
+        yedek = "https://www.iskur.gov.tr/ilanlar/kamu-memur-alim-ilanlari/"
+        try:
+            goto_safe(page, yedek, settle=2)
+            ent = links_matching(page, yedek, pattern=r"iskur\.gov\.tr/.+(?:ilan|alim)", min_text=15)
+            ent = [x for x in ent if not re.search(r"kamu-memur-alim-ilanlari/?$", x["link"])]
+        except Exception as e2:
+            raise Exception(f"e-şube: {hata_sinifla(e)}; yedek sayfa: {hata_sinifla(e2)}") from e2
+        if not ent:
+            raise Exception(f"e-şube: {hata_sinifla(e)}; yedek sayfada ilan bağlantısı bulunamadı") from e
+        return (ent[:MAX_LINKS_PER_SOURCE], len(ent),
+                f"e-şube açılamadı ({hata_sinifla(e)}); yedek kamu ilanları sayfasından okundu (yapı doğrulanmadı)")
+
+
+def _fetch_iskur_esube(page):
+    url = "https://esube.iskur.gov.tr/Istihdam/AcikIsIlanAra.aspx"
+    goto_safe(page, url, settle=3)
+    body = (page.inner_text("body") or "").lower()
+    if "reddedildi" in body or "istek id" in body:
+        raise Exception("İŞKUR güvenlik duvarı isteği reddetti (bot / yurt dışı IP). "
+                        "Self-hosted runner çözebilir.")
+
+    kamu = page.locator("#ctl04_kamuRadio")
+    if not kamu.is_checked():
+        kamu.check(timeout=6000)
+    try:
+        page.locator("a[href*='CommandItem_Search']").click(timeout=6000)
+        page.wait_for_load_state("networkidle", timeout=30000)
+    except Exception as e:
+        raise Exception(f"İŞKUR e-Şube kamu araması başarısız: {str(e)[:120]}") from e
+
+    entries, gorulen_no = [], set()
+    sayfa, tamam = 1, False
+    while sayfa <= 15:
+        grid = page.locator("#ctl04_ctlGridAcikIslerListeDetail")
+        yeni_say = 0
+        for tr in grid.locator("tr").all():
+            detail_link = tr.locator("a[href^='javascript:PopupJobDetails']")
+            if detail_link.count() == 0:
+                continue
+            t = (tr.inner_text() or "").strip().replace("\n", " | ")
+            href = detail_link.first.get_attribute("href") or ""
+            match = re.search(r"PopupJobDetails\('([^']+)'\s*,\s*'Kamu'", href)
+            if not match or match.group(1) in gorulen_no:
+                continue
+            ilan_no = match.group(1)
+            gorulen_no.add(ilan_no)
+            yeni_say += 1
+            entries.append({"title": t[:220],
+                            "link": urljoin(url, f"AcikIsIlanDetay.aspx?uiID={ilan_no}&isyeriTuru=Kamu"),
+                            "detail_level": "İlan detay sayfası"})
+        # ASP.NET grid sayfalaması: __doPostBack(...,'Page$N')
+        sonraki = page.locator(f"a[href*=\"Page${sayfa + 1}'\"]")
+        if yeni_say == 0 or sonraki.count() == 0:
+            tamam = True
+            break
+        try:
+            sonraki.first.click(timeout=6000)
+            page.wait_for_load_state("networkidle", timeout=30000)
+        except Exception:
+            break
+        sayfa += 1
+
+    if entries and tamam:
+        note = (f"sitede toplam: {len(entries)}, okunan: {len(entries)} "
+                f"(Kamu seçilerek arandı; {sayfa} sayfa gezildi, sonraki sayfa yok)")
+        return entries[:MAX_LINKS_PER_SOURCE], len(entries), note
+    note = f"Kamu seçilerek arandı; {len(entries)} ilan bulundu, detay sayfaları açılacak"
+    return entries[:MAX_LINKS_PER_SOURCE], len(entries), note
+
+
+SOURCES = [
+    ("İlan.gov.tr", fetch_ilan_gov_tr),
+    ("Resmî Gazete", fetch_resmi_gazete),
+    ("Kariyer Kapısı", fetch_kariyer_kapisi),
+    ("SBB Kamu İlan", fetch_sbb_kamu_ilan),
+    ("ÇŞB Yerel Yönetimler", fetch_csb_yerel),
+    ("İŞKUR (e-şube)", fetch_iskur_esube),
+    (MEMURLAR_ADI, fetch_memurlar),
+]
+
+
+# ---------------- GROQ ----------------
+ONCELIK_YUKSEK = re.compile(r"bilişim|bilgisayar|yazılım|bilgi işlem|programcı|siber|veri |sistem|mühendis", re.I)
+ONCELIK_ORTA = re.compile(r"uzman yardımcısı|sözleşmeli|memur|meslek personeli|uzman|müfettiş|denetçi|kurum", re.I)
+
+
+def oncelik(baslik, metin=""):
+    """Küçük sayı = önce analiz edilir (kota sınırlıyken en umut verici ilanlar öne)."""
+    if ONCELIK_YUKSEK.search(baslik):
+        return 0
+    if ONCELIK_ORTA.search(baslik):
+        return 1
+    return 2
+
+
+# ---------------- SONUÇ DOĞRULAMA / TARİH / TEKRAR BİRLEŞTİRME ----------------
+OGRENCI_SARTI = re.compile(
+    r"[34]\.?\s*(?:veya|ya da|ve)\s*[34]\.?\s*sınıf|öğrenim görecek|öğrenim görmekte", re.I)
+IC_TERFI = re.compile(r"yeterlik\s+sınav|görevde\s+yükselme|unvan\s+değişikliği", re.I)
+LISE_ONLISANS_POZ = re.compile(
+    r"teknisyen|tekniker|hizmetli|şoför|aşçı|bekçi|temizlik|koruma ve güvenlik|"
+    r"güvenlik görevlisi|işçi|çaycı|odacı", re.I)
+AYLAR = {"ocak": 1, "şubat": 2, "mart": 3, "nisan": 4, "mayıs": 5, "haziran": 6, "temmuz": 7,
+         "ağustos": 8, "eylül": 9, "ekim": 10, "kasım": 11, "aralık": 12}
+
+
+def tarih_ayrisir(s):
+    """'19.10.2026 17:00' | '12/10/2026' | '12 Ekim 2026' | '2026-10-12' -> date | None"""
+    if not s:
+        return None
+    s = str(s).replace("İ", "i").replace("I", "ı").lower()
+    try:
+        m = re.search(r"(\d{4})-(\d{2})-(\d{2})", s)
+        if m:
+            return datetime.date(int(m.group(1)), int(m.group(2)), int(m.group(3)))
+        m = re.search(r"(\d{1,2})\s*[./-]\s*(\d{1,2})\s*[./-]\s*(\d{4})", s)
+        if m:
+            return datetime.date(int(m.group(3)), int(m.group(2)), int(m.group(1)))
+        m = re.search(r"(\d{1,2})\s+([a-zçğıöşü]+)\s+(\d{4})", s)
+        if m and m.group(2) in AYLAR:
+            return datetime.date(int(m.group(3)), AYLAR[m.group(2)], int(m.group(1)))
+    except ValueError:
+        return None
+    return None
+
+
+def dogrula(an, baslik=""):
+    """LLM 'BOLUM/TUM_LISANS' demiş ama kurallara aykırıysa ILGISIZ'e çevirir. (analiz, neden)"""
+    if not an or an.get("kategori") not in ("BOLUM", "TUM_LISANS"):
+        return an, None
+    poz = an.get("pozisyon") or ""
+    metin = " ".join(str(an.get(x) or "") for x in ("kanit", "kisaOzet", "ekSartlar", "ekSinavDetay"))
+    neden = None
+    if AKADEMIK_BASLIK.search(poz) or AKADEMIK_BASLIK.search(baslik or ""):
+        neden = "akademik kadro"
+    elif OGRENCI_SARTI.search(metin):
+        neden = "öğrenciye yönelik ilan"
+    elif IC_TERFI.search(metin):
+        neden = "iç terfi / yeterlik sınavı"
+    elif LISE_ONLISANS_POZ.search(poz):
+        neden = "lise/önlisans kadrosu"
+    if neden:
+        an = dict(an)
+        an["kategori"] = "ILGISIZ"
+        an["_neden"] = neden
+    return an, neden
+
+
+KURUM_GENEL = {"ve", "ile", "başkanlığı", "başkanlığına", "müdürlüğü", "müdürlüğüne", "genel", "bakanlığı",
+               "rektörlüğü", "rektörlüğünden", "belediye", "belediyesi", "daire", "il", "kurumu",
+               "türkiye", "cumhuriyeti", "kurum", "üniversitesi", "üniversite", "valiliği", "valilik",
+               "belediyesi", "büyükşehir", "kalkınma", "ajansı"}
+
+
+def _kelimeler(s, genel=()):
+    s = re.sub(r"\(.*?\)", " ", (s or "").replace("İ", "i").replace("I", "ı").lower())
+    return {w for w in re.findall(r"[a-zçğıöşü0-9]+", s) if len(w) > 1 and w not in genel}
+
+
+def _kapsama(x, y):
+    if not x or not y:
+        return 0.0
+    return len(x & y) / min(len(x), len(y))
+
+
+BILISIM_POZ = re.compile(r"bilişim|bilgi\s*işlem|yazılım|programc|sistem|veri", re.I)
+
+
+def ayni_ilan(a, b):
+    ka, kb = a.get("kadroSayisi"), b.get("kadroSayisi")
+    celisir = bool(ka and kb and str(ka) != str(kb))
+    ku = _kapsama(_kelimeler(a.get("kurum"), KURUM_GENEL), _kelimeler(b.get("kurum"), KURUM_GENEL))
+    poz_a = a.get("pozisyon") or a.get("_baslik") or ""
+    poz_b = b.get("pozisyon") or b.get("_baslik") or ""
+    # 1) kurum ve pozisyon adı benzer
+    if not celisir and ku >= 0.6 and _kapsama(_kelimeler(poz_a), _kelimeler(poz_b)) >= 0.6:
+        return True
+    # 2) aynı kurum, aynı (birden büyük) kadro sayısı, başvuru bitişi çelişmiyor (başlıklar farklı yazılmış olabilir)
+    ba, bb = a.get("_bitis"), b.get("_bitis")
+    if (ku >= 0.8 and ka and kb and not celisir and str(ka) not in ("0", "1")
+            and not (ba and bb and ba != bb)):
+        return True
+    # 3) aynı kurum, ikisi de bilişim kadrosu ve aynı gün ilk kez görüldü (aynı ilanın farklı yayımı)
+    if (ku >= 0.8 and BILISIM_POZ.search(poz_a) and BILISIM_POZ.search(poz_b)
+            and a.get("_ilk") and a.get("_ilk") == b.get("_ilk") and a.get("_kaynak") != b.get("_kaynak")):
+        return True
+    return False
+
+
+def birlestir(items):
+    """Aynı ilanın farklı kaynaklardaki kopyalarını tek karta indirir (diğer linkler korunur)."""
+    gruplar = []
+    for a in items:
+        for g in gruplar:
+            if ayni_ilan(g[0], a):
+                g.append(a)
+                break
+        else:
+            gruplar.append([a])
+    out = []
+    for g in gruplar:
+        g.sort(key=lambda x: -sum(1 for v in x.values() if v not in (None, "", "Belirtilmemiş", "belirtilmemiş")))
+        ana = dict(g[0])
+        ana["_digerleri"] = [(x.get("_kaynak"), x.get("link")) for x in g[1:]]
+        ana["_ilk"] = min((x.get("_ilk") or "9999") for x in g)       # kart, en eski görülme tarihine göre "yeni" sayılır
+        out.append(ana)
+    return out
+
+
+TECRUBE_RX = re.compile(r"(\d+)(?:\s*[-–/]\s*\d+)?\s*yıl\w*[\s)]*(?:\(?[\w']+[\s)]*){0,5}?(?:tecrübe|deneyim)", re.I)
+FIZIKSEL = re.compile(r"zabıta|itfaiye|bekçi|güvenlik görevlisi|\bboy\b|\bkilo", re.I)
+ILGI_BASLIK = re.compile(r"uzman|bilişim|bilgi\s*işlem|yazılım|mühendis|memur|meslek personeli|sözleşmeli|"
+                         r"müfettiş|denetçi|kontrolör|analist|programcı|personel", re.I)
+DISLA_BASLIK = re.compile(r"iptal|düzeltme|süre\s*uzat|subay|pilot|tabip|hakim|savcı|hemşire|işçi|sağlık|"
+                          r"öğretmen|bilirkişi|tercüman|zabıta|itfaiye|bekçi", re.I)
+
+
+def tecrube_yili(a):
+    """Kartta istenen asgari mesleki tecrübe yılı (yoksa 0). 'Kıdemli' unvanı en az 3 yıl sayılır."""
+    metin = " ".join(str(a.get(x) or "") for x in ("ekSartlar", "kisaOzet", "pozisyon", "_baslik"))
+    yillar = [int(m.group(1)) for m in TECRUBE_RX.finditer(metin)]
+    if yillar:
+        return min(yillar)
+    return 3 if re.search(r"kıdemli", metin, re.I) else 0
+
+
+def uygunluk(a):
+    """Kişisel profile göre kesin elenen ilan için neden (yoksa None). Emin olunmayan durumda None döner."""
+    kt = str(a.get("kpssTuru") or "")
+    ek = " ".join(str(a.get(x) or "") for x in ("ekSartlar", "kisaOzet", "kpssTuru"))
+    if re.search(r"\(\s*[BC]\s*\)\s*grubu|\b[BC]\s*grubu", kt, re.I):
+        return "KPSS (B/C) grubu — önlisans/lise düzeyi"
+    m = re.search(r"(?:en az|asgari|minimum)\s*(\d{2,3})(?:[.,]\d+)?|(\d{2,3})(?:[.,]\d+)?\s*(?:puan|ve üzeri|ve üstü|ve yukarı)", kt, re.I)
+    if m:
+        puan = int(m.group(1) or m.group(2))
+        if 40 <= puan <= 100 and puan > PROFIL["kpss"]:
+            return f"KPSS puanın ({PROFIL['kpss']}) yetmez — en az {puan} isteniyor"
+    turler = set(re.findall(r"P\s*-?\s*(\d{1,2})\b", kt))
+    if turler and PROFIL["kpss_turu"].lstrip("P") not in turler:
+        return (f"puan türün (KPSS-{PROFIL['kpss_turu']}) istenen türler arasında yok "
+                f"({', '.join('P' + t for t in sorted(turler, key=int))})")
+    bk = re.search(r"boy[\s\-‑–]*kilo[^.;]{0,40}?[±+]\s*/?-?\s*(\d{1,2})\s*kg", ek, re.I)
+    if bk and abs(PROFIL["kilo"] - (PROFIL["boy"] - 100)) > int(bk.group(1)):
+        return f"boy-kilo şartı (±{bk.group(1)} kg) — {PROFIL['boy']} cm için ideal ~{PROFIL['boy']-100} kg"
+    ty = tecrube_yili(a)
+    if ty >= 1:
+        return f"{ty}+ yıl mesleki tecrübe şartı (sende ~{PROFIL['tecrube_gun']} gün staj var)"
+    y = re.search(r"(\d{2})\s*yaş\w*\s+(?:\w+\s+){0,2}?(?:doldurmamış|aşmamış)", ek, re.I)
+    if y and PROFIL["yas"] >= int(y.group(1)):
+        return f"yaş sınırı ({y.group(1)}) aşılmış"
+    return None
+
+
+def _sbb_parcala(baslik):
+    parcalar = [p.strip() for p in re.split(r"\||\n", baslik or "") if p.strip()]
+    return (parcalar[0] if parcalar else ""), (parcalar[1] if len(parcalar) > 1 else "")
+
+
+def sbb_yalniz(ads, bugun):
+    """SBB'de listelenen ama başka hiçbir kaynakta kurum karşılığı bulunmayan, başlığı ilgili ilanlar."""
+    diger = []
+    for key in bugun:
+        k = ads.get(key)
+        if k and k.get("kaynak") != SBB_ADI:
+            diger.append(_kelimeler((k.get("baslik") or "") + " " + str((k.get("analiz") or {}).get("kurum") or ""),
+                                    KURUM_GENEL))
+    out, gorulen = [], set()
+    for key in bugun:
+        k = ads.get(key)
+        if not k or k.get("kaynak") != SBB_ADI:
+            continue
+        kurum, ilan = _sbb_parcala(k.get("baslik"))
+        ks = _kelimeler(kurum, KURUM_GENEL)
+        if not ks or not ILGI_BASLIK.search(ilan or kurum) or DISLA_BASLIK.search(kurum + " " + ilan) \
+                or AKADEMIK_BASLIK.search(ilan):
+            continue
+        if any(len(ks & d) / len(ks) >= 0.5 for d in diger):
+            continue
+        anahtar = (frozenset(ks), " ".join(re.sub(r"\(.*", "", ilan).lower().split()))
+        if anahtar in gorulen:
+            continue
+        gorulen.add(anahtar)
+        out.append({"kaynak": SBB_ADI, "baslik": f"{kurum} — {ilan}".strip(" —"), "link": SBB_ANA,
+                    "neden": "yalnız SBB'de görüldü; SBB ana sayfasında başlığı arayın (ilan bağlantıları oturuma özel olduğu için doğrudan açılmıyor)"})
+    return out
+
+
+def kisa_metinliler(ads, bugun):
+    out = []
+    for key in bugun:
+        k = ads.get(key)
+        if k and str(k.get("sonuc") or "").startswith("METİN KISA") and k.get("kaynak") != SBB_ADI:
+            b = (k.get("baslik") or "").replace("\n", " | ")
+            if ILGI_BASLIK.search(b) and not DISLA_BASLIK.search(b) and not AKADEMIK_BASLIK.search(b):
+                out.append({"kaynak": k.get("kaynak"), "baslik": b[:160], "link": key,
+                            "neden": "sayfa metni alınamadı (çok kısa)"})
+    return out
+
+
+def groq_call(model, prompt, key=None, slot=None):
+    """JSON dict | None (geçici/kalıcı hata) | 'MODEL_HATA'. slot = 'model#anahtarNo' (kota takibi için)."""
+    key = key or GROQ_API_KEY
+    slot = slot or model
+    if not key or key == "gemini":
+        return None
+    if slot in GROQ_DEAD_MODELS:
+        return "KOTA"
+    for deneme in range(1, 4):
+        try:
+            r = requests.post(
+                "https://api.groq.com/openai/v1/chat/completions",
+                headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
+                json={"model": model, "messages": [{"role": "user", "content": prompt}],
+                      "temperature": 0.0, "response_format": {"type": "json_object"}},
+                timeout=90)
+        except requests.exceptions.RequestException as e:
+            print("Groq bağlantı hatası:", e)
+            time.sleep(8)
+            continue
+        if r.status_code == 429:
+            try:
+                bekle = float(r.headers.get("retry-after", "20"))
+            except ValueError:
+                bekle = 20
+            if bekle > 90:
+                GROQ_DEAD_MODELS.add(slot)
+                GROQ_DEAD_NEDEN[slot] = "günlük kota doldu"
+                print(f"Groq günlük kota doldu ({slot}, retry-after {bekle:.0f}s).")
+                return "KOTA"
+            print(f"Groq 429, {bekle:.0f}s bekleniyor")
+            time.sleep(bekle + 2)
+            continue
+        if r.status_code == 400 and re.search(r"validate JSON|json_validate_failed|failed_generation", r.text, re.I):
+            print("Groq JSON üretemedi (yalnız bu istek):", model, r.text[:100])
+            return "JSON_HATA"                 # model sağlam; bu ilan için sıradaki modele geçilir
+        if r.status_code in (400, 404):
+            print("Groq model/istek hatası:", model, r.status_code, r.text[:150])
+            GROQ_DEAD_NEDEN[slot] = f"model/istek hatası {r.status_code}: {r.text[:90]}"
+            return "MODEL_HATA"
+        if r.status_code != 200:
+            print("Groq hata:", r.status_code, r.text[:200])
+            return None
+        try:
+            icerik = r.json()["choices"][0]["message"]["content"] or ""
+            icerik = re.sub(r"(?s)<think>.*?</think>", "", icerik).strip()      # qwen gibi akıl yürüten modeller
+            return json.loads(icerik)
+        except Exception as e:
+            print("Groq JSON okunamadı:", e)
+            return None
+    return None
+
+
+def groq_modelleri_dogrula():
+    """Groq'un güncel model listesini çekip zincirden kaldırılmış modelleri çıkarır, yeni adayları ekler."""
+    global GROQ_MODELS
+    if GROQ_MODEL_KONTROL["yapildi"] or not GROQ_KEYS:
+        return
+    GROQ_MODEL_KONTROL["yapildi"] = True
+    try:
+        r = requests.get("https://api.groq.com/openai/v1/models",
+                         headers={"Authorization": f"Bearer {GROQ_KEYS[0]}"}, timeout=30)
+        if r.status_code != 200:
+            print("Groq model listesi alınamadı:", r.status_code)
+            return
+        mevcut = {m.get("id") for m in r.json().get("data", []) if m.get("active", True)}
+    except Exception as e:
+        print("Groq model listesi hatası:", e)
+        return
+    if not mevcut:
+        return
+    GROQ_MEVCUT[:] = sorted(m for m in mevcut if m)
+    yeni = []
+    for m in GROQ_MODELS:
+        if m in mevcut:
+            yeni.append(m)
+        else:
+            GROQ_DEAD_NEDEN[m] = "Groq model listesinde yok (kaldırılmış) — zincirden çıkarıldı"
+            print("Groq'ta olmayan model çıkarıldı:", m)
+    guclu = [m for m in GROQ_ADAY_MODELLER if m in mevcut and m not in yeni]
+    if guclu:
+        i = 1 if yeni[:1] else 0
+        yeni[i:i] = guclu
+        print("Zincire eklenen yeni modeller:", guclu)
+    for m in sorted(mevcut):                    # gpt-oss dışında yeni nesil sohbet modelleri zincirin sonuna eklenir
+        if (m and m not in yeni and re.match(r"(qwen/|meta-llama/llama-4|moonshotai/)", m)
+                and not re.search(r"guard|whisper|orpheus|safeguard|prompt|tts", m)):
+            yeni.append(m)
+            print("Ek model zincire eklendi:", m)
+    if yeni:
+        GROQ_MODELS = yeni
+    print("Groq model zinciri:", GROQ_MODELS)
+
+
+def gemini_ocr_pdf(pdf_bytes):
+    """Taranmış (görüntü) PDF'in metnini Gemini ile okur. Metin | None."""
+    if not GEMINI_API_KEY or GEMINI_DEAD["v"] or len(pdf_bytes) > 15_000_000:
+        return None
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent"
+    body = {"contents": [{"parts": [
+        {"inline_data": {"mime_type": "application/pdf", "data": base64.b64encode(pdf_bytes).decode()}},
+        {"text": "Bu PDF bir resmî ilan. İçindeki TÜM metni olduğu gibi, yorum katmadan, Türkçe karakterleri koruyarak yaz."}]}],
+        "generationConfig": {"temperature": 0.0}}
+    try:
+        r = requests.post(url, headers={"x-goog-api-key": GEMINI_API_KEY, "Content-Type": "application/json"},
+                          json=body, timeout=120)
+        if r.status_code == 429:
+            GEMINI_DEAD["v"] = True
+            GROQ_DEAD_NEDEN["gemini"] = "günlük kota doldu"
+            return None
+        if r.status_code != 200:
+            print("Gemini OCR hatası:", r.status_code, r.text[:120])
+            return None
+        return r.json()["candidates"][0]["content"]["parts"][0]["text"]
+    except Exception as e:
+        print("Gemini OCR istisnası:", str(e)[:100])
+        return None
+
+
+def gemini_call(prompt):
+    """Gemini (Google AI Studio) yedeği: JSON dict | None. Günlük kota bitince bugünlük kapanır."""
+    if not GEMINI_API_KEY or GEMINI_DEAD["v"]:
+        return None
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent"
+    for deneme in range(1, 3):
+        try:
+            r = requests.post(url, headers={"x-goog-api-key": GEMINI_API_KEY, "Content-Type": "application/json"},
+                              json={"contents": [{"parts": [{"text": prompt}]}],
+                                    "generationConfig": {"temperature": 0.0, "responseMimeType": "application/json"}},
+                              timeout=90)
+        except requests.exceptions.RequestException as e:
+            print("Gemini bağlantı hatası:", e)
+            time.sleep(6)
+            continue
+        if r.status_code == 429:
+            try:
+                bekle = float(r.headers.get("retry-after", "30"))
+            except ValueError:
+                bekle = 30
+            if bekle > 90 or deneme == 2:
+                GEMINI_DEAD["v"] = True
+                GROQ_DEAD_NEDEN["gemini"] = "günlük kota doldu"
+                return None
+            time.sleep(bekle + 2)
+            continue
+        if r.status_code in (400, 403, 404):
+            GEMINI_DEAD["v"] = True
+            GROQ_DEAD_NEDEN["gemini"] = f"istek hatası {r.status_code}: {r.text[:90]}"
+            return None
+        if r.status_code != 200:
+            print("Gemini hata:", r.status_code, r.text[:150])
+            return None
+        try:
+            txt = r.json()["candidates"][0]["content"]["parts"][0]["text"]
+            res = json.loads(txt)
+            return res if isinstance(res, dict) else None
+        except Exception as e:
+            print("Gemini JSON okunamadı:", e)
+            return None
+    return None
+
+
+def groq_zincir(prompt):
+    """Modelleri sırayla, her modelde tüm anahtarları dener; kotası biten (model, anahtar) çiftini atlar.
+    Hepsi tükenirse (varsa) Gemini yedeğine geçer."""
+    global GROQ_DEAD
+    groq_modelleri_dogrula()
+    coklu = len(GROQ_KEYS) > 1
+    for model in GROQ_MODELS:
+        for ki, key in enumerate(GROQ_KEYS):
+            slot = f"{model}#{ki + 1}" if coklu else model
+            if slot in GROQ_DEAD_MODELS:
+                continue
+            res = groq_call(model, prompt, key, slot)
+            if res == "MODEL_HATA":
+                for kj in range(len(GROQ_KEYS)):          # model hatası anahtardan bağımsızdır
+                    GROQ_DEAD_MODELS.add(f"{model}#{kj + 1}" if coklu else model)
+                break
+            if res == "KOTA":
+                continue
+            if res == "JSON_HATA":
+                GROQ_JSON_HATA[slot] = GROQ_JSON_HATA.get(slot, 0) + 1
+                if GROQ_JSON_HATA[slot] >= 12:        # sürekli JSON bozuyorsa bugünlük bırak
+                    GROQ_DEAD_MODELS.add(slot)
+                    GROQ_DEAD_NEDEN[slot] = "sık sık geçersiz JSON üretti (12 kez) — bugünlük bırakıldı"
+                continue
+            if isinstance(res, dict):
+                res["_model"] = model
+            return res
+    if GEMINI_API_KEY and not GEMINI_DEAD["v"]:
+        res = gemini_call(prompt)
+        if isinstance(res, dict):
+            res["_model"] = "gemini:" + GEMINI_MODEL
+            return res
+    tum_slotlar = [f"{m}#{i + 1}" if coklu else m for m in GROQ_MODELS for i in range(max(1, len(GROQ_KEYS)))]
+    if all(sl in GROQ_DEAD_MODELS for sl in tum_slotlar) and (not GEMINI_API_KEY or GEMINI_DEAD["v"]):
+        GROQ_DEAD = True
+        print("Tüm yapay zekâ modellerinin/anahtarlarının bugünkü kotası doldu; kalanlar yarına.")
+    return None
+
+
+KATEGORI_KURALI = (
+    "KATEGORİLER (aday bilgisayar mühendisliği mezunu):\n"
+    "- BOLUM: kabul edilen bölümler arasında Bilgisayar/Yazılım Mühendisliği veya bilişim bölümleri "
+    "açıkça sayılıyor ('Bilişim Personeli' kadrosu dahil).\n"
+    "- TUM_LISANS: bölüm kısıtı YOK, herhangi bir lisans (4 yıllık) mezunu başvurabiliyor.\n"
+    "- ILGISIZ: yalnızca başka bölümler, akademik kadro (öğretim üyesi/görevlisi/araştırma görevlisi), "
+    "lise/önlisans/meslek lisesi kadroları (teknisyen, tekniker, hizmetli, şoför...), işçi, iptal/düzeltme ilanı; "
+    "öğrencilere yönelik (3./4. sınıf öğrenimi sürenler) ilanlar; yalnızca belirli bir kadroda görev yapmış "
+    "kişilere açık yeterlik sınavı / iç terfi ilanları; yüksek lisans veya doktora zorunlu ilanlar. "
+    "Bu durumlarda bilgisayar mühendisi lisans mezunu başvuramaz.\n"
+    "Bir metinde birden çok kadro varsa bilgisayar mühendisinin başvurabildiği kadroyu esas al.\n"
+)
+
+
+SEMA = """{
+  "kategori": "BOLUM" | "TUM_LISANS" | "ILGISIZ",
+  "kanit": "kategoriyi destekleyen METİNDEN birebir kısa alıntı (max 200 karakter)",
+  "kurum": string,
+  "pozisyon": string,
+  "kadroSayisi": number | null,
+  "basvuruBaslangic": string | null,
+  "basvuruBitis": string | null,
+  "degerlendirmeSekli": "örn: %100 KPSS | KPSS + sözlü mülakat | KPSS + yazılı sınav | belirtilmemiş",
+    "kpssDurumu": "Zorunlu" | "Tercih sebebi" | "Aranmıyor" | "Belirtilmemiş",
+  "kpssTuru": "örn: KPSS-P3 en az 70 puan | belirtilmemiş",
+  "ekSinav": boolean,
+    "ekSinavDetay": "sınav türü ve puan şartı; yoksa Yok veya Belirtilmemiş",
+  "ikametSarti": "Yok" | "Belirtilmemiş" | "Var: <il/ilçe>",
+  "ekSartlar": "boy/kilo/yaş sınırı, yabancı dil puanı, ehliyet, deneyim, askerlik vb. yoksa 'Yok'",
+  "kisaOzet": "en fazla 2 cümle"
+}"""
+
+
+KIRP_ANAHTAR = re.compile(
+    r"KPSS|lisans|mezun|bölüm|mühendis|bilgisayar|bilişim|yazılım|ikamet|oturan|başvuru|"
+    r"tarih|sınav|mülakat|puan|yaş|boy|kilo|deneyim|kadro|pozisyon|unvan", re.I)
+
+
+KIRP_GUCLU = re.compile(
+    r"bilgisayar|bilişim|yazılım|mühendis|herhangi bir.{0,30}lisans|lisans mezun|bölümlerinden|"
+    r"mezun olmak|KPSS|ikamet|oturan|tecrübe|deneyim", re.I | re.S)
+
+
+def kirp_metin(metin, limit=3500, bas=900):
+    """Groq token tüketimini düşürmek için: ilan başı + önce güçlü, sonra genel anahtar kelime pasajları."""
+    metin = re.sub(r"[ \t]+", " ", metin)
+    metin = re.sub(r"\n{2,}", "\n", metin)
+    if len(metin) <= limit:
+        return metin
+    secili = bytearray(len(metin))
+    for i in range(min(bas, len(metin))):
+        secili[i] = 1
+    butce = limit - min(bas, len(metin))
+    for rx, once, sonra in ((KIRP_GUCLU, 150, 450), (KIRP_ANAHTAR, 100, 250)):
+        for m in rx.finditer(metin):
+            for i in range(max(0, m.start() - once), min(len(metin), m.end() + sonra)):
+                if butce <= 0:
+                    break
+                if not secili[i]:
+                    secili[i] = 1
+                    butce -= 1
+    parca, bas_i = [], None
+    for i, v in enumerate(secili):
+        if v and bas_i is None:
+            bas_i = i
+        elif not v and bas_i is not None:
+            parca.append(metin[bas_i:i])
+            bas_i = None
+    if bas_i is not None:
+        parca.append(metin[bas_i:])
+    return "\n[...]\n".join(parca)
+
+
+def _norm(t):
+    t = (t or "").replace("İ", "i").replace("I", "ı").lower()
+    t = re.sub(r"[\u2010-\u2015\u2212]", "-", t)
+    t = re.sub(r"[“”\"'‘’`´*•·]", "", t)
+    return re.sub(r"\s+", " ", t).strip()
+
+
+def kanit_metinde(kanit, metin):
+    """LLM'in 'kanıt' alıntısı ilan metninde gerçekten var mı? True/False/None (değerlendirilemez)."""
+    parcalar = [p for p in re.split(r"\.\.\.|…|\[\.\.\.\]", str(kanit or "")) if len(_norm(p)) >= 14]
+    if not parcalar:
+        return None
+    mn = _norm(metin)
+    return all(_norm(p) in mn for p in parcalar)
+
+
+def analiz(baslik, metin):
+    prompt = ("Aşağıda bir Türkiye kamu personeli alım ilanının tam metni var. Bilgisayar mühendisliği "
+              "mezunu bir aday açısından sınıflandır ve bilgileri çıkar. SADECE geçerli JSON döndür.\n"
+              + KATEGORI_KURALI +
+              "\nKESİN KURALLAR: Metinde yazmayan bilgiyi UYDURMA; yoksa null / 'Belirtilmemiş' yaz. "
+              "'kanit' metinden birebir alıntı olmalı. KPSS için zorunlu, tercih sebebi, aranmıyor "
+              "ve belirtilmemiş durumlarını ayır; türü ve taban puanı yaz. Ek sınavın türünü ve "
+              "varsa puanını belirt. İkamet şartı için 'ikamet', 'oturmak', 'ilinde ikamet eden' "
+              "gibi ifadelere bak; şart varsa il/ilçeyi yaz.\n\nJSON ŞEMASI:\n" + SEMA +
+              "\n\nBAŞLIK: " + baslik + "\n\nMETİN (ilgili bölümler):\n" + kirp_metin(metin))
+    res = groq_zincir(prompt)
+    if isinstance(res, dict):
+        res["_pv"] = PROMPT_VERSION
+        res["_kanit_ok"] = kanit_metinde(res.get("kanit"), metin)
+        return res
+    return None
+
+
+KATEGORI2_KURALI = (
+    "KATEGORİLER (aday: ÖNLİSANS mezunu, anestezi alanı; ayrıca işitme engelli, EKPSS'si var):\n"
+    "- ENGELLI_KADRO: ilan engelli adaylara özel VEYA ilanda engelli kadrosu/kontenjanı (EKPSS) ayrıca belirtilmiş; "
+    "eğitim düzeyi önlisans, lise veya ilkokul/ortaokul olabilir (önlisans mezunu başvurabilir). Sürekli işçi, memur, "
+    "sözleşmeli personel, hepsi dahil.\n"
+    "- ANESTEZI_SAGLIK: anestezi teknikeri/teknisyeni veya önlisans düzeyi sağlık/tıbbi hizmetler kadrosu "
+    "(engelli kontenjanı yoksa).\n"
+    "- ONLISANS: önlisans mezunlarının başvurabildiği genel kadro (memur, sözleşmeli, tekniker, büro, VHKİ...), "
+    "engelli kontenjanı yok.\n"
+    "- ILGISIZ: yalnız lisans/yüksek lisans/doktora şartı, akademik kadro, belirli mesleklere kapalı (öğretmen, hâkim...), "
+    "sağlık dışı özel meslek ya da önlisans mezununun başvuramadığı, iptal/düzeltme ilanı.\n"
+    "Bir metinde birden çok kadro varsa önlisans/engelli adayın başvurabildiği kadroyu esas al; "
+    "engelli kadrosu varsa ENGELLI_KADRO seç.\n"
+    "PROGRAM KONTROLÜ: Aday yalnızca ANESTEZİ önlisans programı mezunudur. İlan belirli önlisans programlarını sayıyorsa "
+    "(muhasebe, ağız ve diş sağlığı, ameliyathane hizmetleri, büro yönetimi...) ve anestezi bunların arasında DEĞİLSE "
+    "'bolumUygun' alanına 'Hayır (yalnız: ...)' yaz ve kategori ILGISIZ olsun; 'herhangi bir önlisans' deniyorsa "
+    "'Evet (herhangi önlisans)'; anestezi açıkça sayılıyorsa 'Evet (anestezi programı sayılıyor)'. "
+    "Engelli kadrosu (EKPSS) varsa program kontrolü gevşektir: program belirtilmemişse 'Belirtilmemiş' yaz.\n"
+)
+
+SEMA2 = """{
+  "kategori": "ENGELLI_KADRO" | "ANESTEZI_SAGLIK" | "ONLISANS" | "ILGISIZ",
+  "kanit": "kategoriyi destekleyen METİNDEN birebir kısa alıntı (max 200 karakter)",
+  "kurum": string,
+  "pozisyon": string,
+  "kadroSayisi": number | null,
+  "bolumUygun": "Evet (herhangi önlisans) | Evet (anestezi programı sayılıyor) | Hayır (yalnız: <kabul edilen programlar>) | Belirtilmemiş",
+  "engelliBilgi": "engelli kadro sayısı, engel derecesi/grubu (örn. %40 ve üzeri, işitme) ve EKPSS şartı; yoksa Yok",
+  "basvuruBaslangic": string | null,
+  "basvuruBitis": string | null,
+  "degerlendirmeSekli": "örn: %100 KPSS | EKPSS | KPSS + sözlü mülakat | kura | belirtilmemiş",
+  "kpssDurumu": "Zorunlu" | "Tercih sebebi" | "Aranmıyor" | "Belirtilmemiş",
+  "kpssTuru": "örn: KPSS-B grubu en az 60 puan | EKPSS | belirtilmemiş",
+  "ekSinav": boolean,
+  "ekSinavDetay": "sınav türü ve puan şartı; yoksa Yok veya Belirtilmemiş",
+  "ikametSarti": "Yok" | "Belirtilmemiş" | "Var: <il/ilçe>",
+  "ekSartlar": "yaş sınırı, sağlık şartı, ehliyet, deneyim, askerlik vb. yoksa 'Yok'",
+  "kisaOzet": "en fazla 2 cümle"
+}"""
+
+
+def analiz2(baslik, metin):
+    prompt = ("Aşağıda bir Türkiye kamu personeli alım ilanının tam metni var. Önlisans mezunu, engelli (işitme) "
+              "bir aday açısından sınıflandır ve bilgileri çıkar. SADECE geçerli JSON döndür.\n"
+              + KATEGORI2_KURALI +
+              "\nKESİN KURALLAR: Metinde yazmayan bilgiyi UYDURMA; yoksa null / 'Belirtilmemiş' yaz. "
+              "'kanit' metinden birebir alıntı olmalı. Engelli kadrosu/kontenjanını ve istenen engel derecesini "
+              "özellikle ara. KPSS/EKPSS durumunu ve taban puanı yaz. İkamet şartı için 'ikamet', 'oturmak' "
+              "ifadelerine bak.\n\nJSON ŞEMASI:\n" + SEMA2 +
+              "\n\nBAŞLIK: " + baslik + "\n\nMETİN (ilgili bölümler):\n" + kirp_metin(metin))
+    res = groq_zincir(prompt)
+    if isinstance(res, dict) and res.get("kategori") in ("ENGELLI_KADRO", "ANESTEZI_SAGLIK", "ONLISANS", "ILGISIZ"):
+        res["_pv"] = P2_VERSION
+        res["_kanit_ok"] = kanit_metinde(res.get("kanit"), metin)
+        return res
+    return None
+
+
+def dogrula2(an, baslik=""):
+    """İkinci profil: LLM 'uygun' demiş ama kurallara aykırıysa gerekçeyle döner (yoksa None)."""
+    poz = poz_adi(an) or baslik or ""
+    metin = " ".join(str(an.get(x) or "") for x in ("kanit", "kisaOzet", "ekSartlar", "ekSinavDetay"))
+    if AKADEMIK_BASLIK.search(poz) or AKADEMIK_BASLIK.search(baslik or ""):
+        return "akademik kadro"
+    if re.search(r"bilirkişi|tercüman", poz + " " + (baslik or ""), re.I):
+        return "bilirkişi/tercüman listesi (iş alımı değil)"
+    if OGRENCI_SARTI.search(metin):
+        return "öğrenciye yönelik ilan"
+    if IC_TERFI.search(metin):
+        return "iç terfi / görevde yükselme sınavı"
+    if re.search(r"\(\s*erkek\s*\)|yalnızca erkek|sadece erkek", f"{poz} {baslik or ''}", re.I):
+        return "yalnız erkek adaylara açık"
+    if str(an.get("bolumUygun") or "").strip().lower().startswith("hayır"):
+        return "önlisans programı uymuyor — " + str(an.get("bolumUygun"))[:90]
+    return None
+
+
+def denetle_ilan(baslik, metin):
+    """Bağımsız ikinci okuma: ilan A (bilgisayar müh. lisans) veya B (önlisans anestezi / engelli kadro) için uygun mu?"""
+    prompt = ("Aşağıda bir Türkiye kamu personeli alım ilanının metni var. İki aday için ayrı ayrı değerlendir. "
+              "A: bilgisayar mühendisliği lisans mezunu (ilan bilgisayar/yazılım/bilişim mühendisliğini açıkça kabul ediyor "
+              "VEYA herhangi bir lisans mezununa açık). B: anestezi önlisans mezunu engelli bir kadın aday (ilan engelli "
+              "kadrosu/kontenjanı içeriyor VEYA önlisans mezununa açık ve anestezi programı dışlanmıyor). "
+              "Akademik kadro, iptal ilanı, iç terfi, yalnız başka bölümler = uygun DEĞİL. Emin değilsen false yaz. "
+              'SADECE JSON döndür: {"A": true|false, "B": true|false, "neden": "tek cümle, metinden alıntıyla"}\n\n'
+              f"BAŞLIK: {baslik}\n\nMETİN:\n{kirp_metin(metin, limit=2500)}")
+    res = None
+    kaynak = "groq"
+    if GEMINI_API_KEY and not GEMINI_DEAD["v"]:
+        res, kaynak = gemini_call(prompt), "gemini"
+    if not isinstance(res, dict):
+        res, kaynak = groq_zincir(prompt), "groq"
+    return (res, kaynak) if isinstance(res, dict) and ("A" in res or "B" in res) else (None, kaynak)
+
+
+def ikinci_goz(havuz_eleme, havuz_ilgisiz, her_biri=12):
+    """Elenen ilanlardan örnek alıp başka bir model/sağlayıcıya yeniden okutur. {'n','supheli','saglayici'}"""
+    import random
+    rnd = random.Random(TODAY)
+    ornek = (rnd.sample(havuz_eleme, min(her_biri, len(havuz_eleme)))
+             + rnd.sample(havuz_ilgisiz, min(her_biri, len(havuz_ilgisiz))))
+    sonuc = {"n": 0, "supheli": [], "saglayici": set(), "yapilamadi": 0}
+    for it in ornek:
+        if zaman_doldu() or (GROQ_DEAD and (not GEMINI_API_KEY or GEMINI_DEAD["v"])):
+            sonuc["yapilamadi"] += 1
+            continue
+        res, sag = denetle_ilan(it["baslik"], it["metin"])
+        if not res:
+            sonuc["yapilamadi"] += 1
+            continue
+        sonuc["n"] += 1
+        sonuc["saglayici"].add(sag)
+        if res.get("A") is True or res.get("B") is True:
+            kim = "+".join(x for x in ("A" if res.get("A") is True else "", "B" if res.get("B") is True else "") if x)
+            sonuc["supheli"].append({"kaynak": it["kaynak"], "baslik": it["baslik"][:150], "link": it["link"],
+                                     "neden": f"1. okuma: {it['karar']} → 2. okuma ({sag}): profil {kim} için uygun "
+                                              f"olabilir — {str(res.get('neden') or '')[:160]}"})
+        time.sleep(GROQ_SLEEP_SEC)
+    sonuc["saglayici"] = ", ".join(sorted(sonuc["saglayici"])) or "—"
+    return sonuc
+
+
+def oncelik2(baslik, metin):
+    t = f"{baslik} {metin[:3000]}"
+    if re.search(r"engelli|ekpss", t, re.I):
+        return 0
+    if re.search(r"anestezi|sağlık\s+teknik|tıbbi", t, re.I):
+        return 1
+    return 2
+
+
+# ---------------- RAPOR ----------------
+E = lambda x: htmllib.escape(str(x)) if x not in (None, "") else ""
+
+
+def poz_adi(a):
+    """'Belirtilmemiş' gibi boş değerler başlık yerine geçmesin."""
+    p = str(a.get("pozisyon") or "").strip()
+    return "" if (p.lower() in ("", "belirtilmemiş", "belirtilmedi", "yok", "null", "none", "başvur", "başvuru", "ilan",
+                                "duyuru") or len(p) < 4) else p
+
+
+def kanit_yok(an):
+    k = str(an.get("kanit") or "").strip().strip("“”\"'").lower()
+    return k in ("", "belirtilmemiş", "belirtilmedi", "yok", "null", "none") or len(k) < 12
+
+
+def card_html(a):
+    yeni = '<span class="new">🆕 Bugün eklendi</span>' if a.get("_yeni") else ""
+    ikamet = a.get("ikametSarti") or "Belirtilmemiş"
+    cls = "tag red" if str(ikamet).startswith("Var") else "tag"
+    ek = a.get("ekSartlar") or "Yok"
+    ek_html = "" if str(ek).strip().lower() == "yok" else f'<div class="warn">⚠ Ek şart: {E(ek)}</div>'
+    ek_sinav = a.get("ekSinavDetay") or ("Var (ayrıntı belirtilmemiş)" if a.get("ekSinav") else "Yok")
+    tarih = ""
+    if a.get("basvuruBaslangic") or a.get("basvuruBitis"):
+        tarih = f'<span class="tag">📅 {E(a.get("basvuruBaslangic") or "?")} → {E(a.get("basvuruBitis") or "?")}</span>'
+    kadro = f' — {E(a["kadroSayisi"])} kadro' if a.get("kadroSayisi") else ""
+    kalan = ""
+    if a.get("_bitis"):
+        g = (a["_bitis"] - TR_NOW.date()).days
+        kalan = (f'<span class="tag red">⏰ bugün son gün!</span>' if g == 0 else
+                 f'<span class="tag{" red" if g <= 3 else ""}">⏰ {g} gün kaldı</span>')
+    tecr = ""
+    if a.get("_tecrube"):
+        tecr = (f'<span class="tag{" red" if a["_tecrube"] >= 3 else ""}">'
+                f'🧑‍💼 {a["_tecrube"]}+ yıl tecrübe şartı</span>')
+    zayif = ""
+    eng = ""
+    if a.get("engelliBilgi") and str(a["engelliBilgi"]).strip().lower() not in ("yok", "belirtilmemiş", "none"):
+        eng = f'<span class="tag src">♿ Engelli: {E(a["engelliBilgi"])}</span>'
+    if a.get("_kanit_ok") is False:
+        zayif += '<span class="tag red">⚠ kanıt alıntısı ilan metninde birebir bulunamadı — doğrula</span>'
+    if not a.get("_p2") and not re.search(r"lisans|bilgisayar|bilişim|yazılım|herhangi|mühendis", str(a.get("kanit") or ""), re.I):
+        zayif = '<span class="tag red">⚠ kanıt zayıf — ilanı elle kontrol et</span>'
+    diger = ""
+    if a.get("_digerleri"):
+        diger = ('<div class="kanit">🔗 Aynı ilan başka kaynakta da: '
+                 + " · ".join(f'<a href="{E(l)}" target="_blank">{E(k)}</a>' for k, l in a["_digerleri"])
+                 + "</div>")
+    return f"""<div class="card">
+  <div class="top"><a href="{E(a.get('link'))}" target="_blank">{E(poz_adi(a) or a.get('_baslik'))}</a>{yeni}</div>
+  <div class="kurum">{E(a.get('kurum'))}{kadro}</div>
+  <div class="meta">
+    <span class="tag src">{E(a.get('_kaynak'))}</span>{tarih}
+    <span class="tag">🧾 {E(a.get('degerlendirmeSekli'))}</span>
+        <span class="tag">KPSS {E(a.get('kpssDurumu') or 'Belirtilmemiş')}: {E(a.get('kpssTuru') or 'belirtilmemiş')}</span>
+        <span class="tag">Ek sınav: {E(ek_sinav)}</span>
+    <span class="{cls}">📍 İkamet: {E(ikamet)}</span>{kalan}{tecr}{zayif}{eng}
+    {'<span class="tag">🤖 yedek model: ' + E(a.get('_model')) + ' (doğrula)</span>' if a.get('_model') in GROQ_ZAYIF else ''}
+  </div>
+  {ek_html}
+  <p>{E(a.get('kisaOzet'))}</p>
+  <div class="kanit">Kanıt: “{E(a.get('kanit'))}”</div>{diger}
+  <a class="btn" href="{E(a.get('link'))}" target="_blank">İlana git ↗</a>
+</div>"""
+
+
+STYLE = """
+body{font-family:system-ui,Arial,sans-serif;background:#f5f6fa;padding:24px;color:#1f2430;max-width:1000px;margin:auto}
+h1{font-size:22px} h2{font-size:18px;margin-top:32px}
+.card{background:#fff;border-radius:12px;padding:16px 20px;margin:12px 0;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.top a{color:#2a5bd7;text-decoration:none;font-weight:700;font-size:16px}
+.new{background:#16a34a;color:#fff;border-radius:6px;padding:2px 8px;font-size:12px;margin-left:8px}
+.kurum{color:#555;margin-top:2px}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.tag{background:#eef1fb;color:#33418f;padding:3px 10px;border-radius:20px;font-size:12px}
+.tag.red{background:#fde8e8;color:#9b1c1c} .tag.src{background:#e8f5e9;color:#1b5e20}
+.warn{background:#fff3cd;color:#7a5b00;padding:4px 10px;border-radius:6px;font-size:12px;margin-top:8px}
+.kanit{font-size:11px;color:#777;font-style:italic;margin-top:4px}
+.btn{display:inline-block;margin-top:8px;font-size:12px;color:#2a5bd7}
+.box{font-size:12px;color:#444;margin-top:30px;overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:12px}
+td,th{border:1px solid #ddd;padding:4px 8px;text-align:left;vertical-align:top}
+.bad{background:#fde8e8} img{max-width:100%;border:1px solid #ccc}
+pre{white-space:pre-wrap;background:#fff;padding:8px;border:1px solid #ddd;font-size:11px}
+"""
+
+
+def build_report(bolum, tum, log_rows, yeni_sayisi, okunanlar, groq_notu, dolmus=(), elle=(), yetmeyen=(),
+                 butunluk=(), denetim=None):
+    def section(items):
+        if not items:
+            return "<p>Şu an bu kategoride aktif ilan bulunamadı.</p>"
+        items = sorted(items, key=lambda x: ((x.get("_tecrube") or 0) >= 3, x.get("_bitis") is None,
+                                             x.get("_bitis") or datetime.date.max))
+        return "\n".join(card_html(a) for a in items)
+
+    log_html = ("<table><tr><th>Saat</th><th>Kaynak</th><th>Ham kayıt</th><th>Detay okunan (bugün)</th>"
+                "<th>İlgili</th><th>Durum</th><th>Not</th></tr>")
+    for r in log_rows:
+        cls = ' class="bad"' if str(r[5]).startswith(("HATA", "ŞÜPHELİ", "KISMİ")) else ""
+        log_html += f"<tr{cls}>" + "".join(f"<td>{E(c)}</td>" for c in r) + "</tr>"
+    log_html += "</table>"
+
+    okunan_html = ("<table><tr><th>Kaynak</th><th>Başlık</th><th>Metin uzunluğu</th>"
+                   "<th>Okuma düzeyi</th><th>Sonuç</th></tr>")
+    for o in okunanlar:
+        kisa = isinstance(o["len"], int) and o["len"] < 300
+        cls = ' class="bad"' if kisa or o["sonuc"].startswith("BEKLEMEDE") else ""
+        yeni = '<span class="new">🆕 Bugün eklendi</span>' if o.get("yeni") else ""
+        okunan_html += (f"<tr{cls}><td>{E(o['kaynak'])}</td>"
+                        f"<td><a href=\"{E(o['link'])}\" target=\"_blank\">{E(o['baslik'])[:140]}</a>{yeni}</td>"
+                        f"<td>{E(o['len'])}{' ⚠ kısa' if kisa else ''}</td>"
+                        f"<td>{E(o['duzey'])}</td><td>{E(o['sonuc'])}</td></tr>")
+    okunan_html += "</table>"
+
+    tum_fiz = [a for a in tum if FIZIKSEL.search(str(a.get("pozisyon") or "") + " " + str(a.get("ekSartlar") or ""))]
+    tum_n = [a for a in tum if a not in tum_fiz]
+    fiz_html = ""
+    if tum_fiz:
+        fiz_html = (f'<div class="box"><details><summary><b>🚓 Fiziksel/yaş şartı aranan kadrolar — zabıta vb. '
+                    f'({len(tum_fiz)})</b></summary>{section(tum_fiz)}</details></div>')
+    elle_html = ""
+    if elle:
+        satir = "".join(f'<li><a href="{E(x["link"])}" target="_blank">{E(x["baslik"])}</a> '
+                        f'<span class="tag">{E(x["kaynak"])}</span> — {E(x["neden"])}</li>' for x in elle)
+        elle_html = (f'<div class="box"><details open><summary><b>🔎 Elle kontrol listesi ({len(elle)})</b> — '
+                     f'içeriği okunamadı ama başlığı ilgili görünüyor</summary><ul>{satir}</ul></details></div>')
+    but_html = ""
+    if butunluk:
+        sat = "".join(
+            f'<tr{" class=bad" if not str(r["durum"]).startswith("✔") else ""}><td>{E(r["kaynak"])}</td><td>{r["liste"]}</td>'
+            f'<td>{r["analiz"]}</td><td>{r["eleme"]}</td><td>{r["sadece_liste"]}</td>'
+            f'<td>{r["okunamadi"]}{(" — " + E(r["nedenler"])) if r["nedenler"] else ""}</td>'
+            f'<td>{r["bekleyen"]}</td><td>{r["kanit"]}</td><td>{E(r["durum"])}</td></tr>' for r in butunluk)
+        but_html = ('<div class="box"><h2>🧪 Okuma Bütünlük Kontrolü</h2>'
+                    '<p>Listelenen her ilan şu sonuçlardan birine ulaşmış olmalı; toplam listelenene eşit değilse '
+                    '"açıklanamayan" kırmızı yanar. "Kanıt" sütunu: yapay zekânın gösterdiği alıntı ilan metninde '
+                    'birebir bulunamayan kart sayısı.</p>'
+                    '<table><tr><th>Kaynak</th><th>Listelenen</th><th>Analiz edildi</th><th>Anahtar süzgeciyle elendi</th>'
+                    '<th>Yalnız liste</th><th>Okunamadı (neden)</th><th>Kuyrukta</th><th>Kanıtı doğrulanamayan</th>'
+                    f'<th>Durum</th></tr>{sat}</table></div>')
+    if denetim:
+        if denetim["supheli"]:
+            li = "".join(f'<li><a href="{E(x["link"])}" target="_blank">{E(x["baslik"])}</a> '
+                         f'<span class="tag">{E(x["kaynak"])}</span><br><small>{E(x["neden"])}</small></li>'
+                         for x in denetim["supheli"])
+        elif denetim["n"] == 0:
+            li = "<li>İkinci okuma yapılamadı (yapay zekâ kotası/anahtarı yok ya da hata); bu çalıştırmada denetlenemedi.</li>"
+        else:
+            li = "<li>Şüpheli bulunmadı: ikinci okuma, elenen ilanlarla aynı sonuca vardı.</li>"
+        but_html += (f'<div class="box"><details open><summary><b>🕵️ İkinci yapay zekâ kontrolü</b> — '
+                     f'elenen ilanlardan {denetim["n"]} örnek farklı bir modele yeniden okutuldu '
+                     f'(sağlayıcı: {E(denetim["saglayici"])}); yapılamayan: {denetim["yapilamadi"]}; '
+                     f'şüpheli: {len(denetim["supheli"])}</summary><ul>{li}</ul></details></div>')
+    yetmeyen_html = ""
+    if yetmeyen:
+        satirlar = "".join(
+            f'<li><a href="{E(a.get("link"))}" target="_blank">{E(poz_adi(a) or a.get("_baslik"))}</a>'
+            f' — {E(a.get("kurum"))} <span class="tag red">{E(a.get("_uygunsuz"))}</span></li>' for a in yetmeyen)
+        yetmeyen_html = (f'<div class="box"><details><summary><b>🚫 Profilinle uyuşmadığı için gizlenen ilanlar '
+                         f'({len(yetmeyen)})</b> — KPSS {PROFIL["kpss"]} ({PROFIL["kpss_turu"]}), {PROFIL["yas"]} yaş'
+                         f'</summary><ul>{satirlar}</ul></details></div>')
+    dolmus_html = ""
+    if dolmus:
+        satirlar = "".join(
+            f'<li><a href="{E(a.get("link"))}" target="_blank">{E(poz_adi(a) or a.get("_baslik"))}</a>'
+            f' — {E(a.get("kurum"))} (son gün: {a["_bitis"].strftime("%d.%m.%Y")})</li>' for a in dolmus)
+        dolmus_html = (f'<div class="box"><details><summary><b>⌛ Süresi dolmuş, gizlenen ilanlar '
+                       f'({len(dolmus)})</b></summary><ul>{satirlar}</ul></details></div>')
+    return f"""<!DOCTYPE html><html lang="tr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Günlük Kamu İlan Raporu</title><style>{STYLE}</style></head><body>
+<h1>📋 Günlük Kamu İlan Raporu — {TR_NOW.strftime('%d.%m.%Y %H:%M')}</h1>
+<p>Bugün yeni eklenen ilgili ilan: <b>{yeni_sayisi}</b> {E(groq_notu)}</p>
+<h2>🎯 Bölümüme Özel (Bilgisayar/Yazılım Mühendisliği) — {len(bolum)} ilan</h2>
+{section(bolum)}
+<h2>🎓 Tüm Lisans Mezunlarına Açık — {len(tum_n)} ilan</h2>
+{section(tum_n)}
+{fiz_html}
+{elle_html}
+{yetmeyen_html}
+{dolmus_html}
+<div class="box"><h2>🔍 Veri Çekim Doğrulama Kaydı</h2>{log_html}
+<p><a href="debug.html">Tanı sayfası (ekran görüntüleri, arka plan istekleri)</a></p>
+{but_html}
+<p><a href="onlisans.html">♿ İkinci rapor: önlisans &amp; engelli kadro ilanları</a></p></div>
+<div class="box"><details><summary><b>📑 Bugün listede görülen tüm ilanlar ({len(okunanlar)}) — okundu mu, sonuç ne?</b></summary>
+{okunan_html}</details></div>
+</body></html>"""
+
+
+def butunluk_satirlari(okunanlar, ads, kanit_sorunlu):
+    """Kaynak başına: her listelenen ilan açıklanabilir bir sonuca ulaştı mı? Toplam = listelenen olmalı."""
+    from collections import Counter, defaultdict
+    sat = defaultdict(lambda: Counter())
+    nedenler = defaultdict(Counter)
+    for o in okunanlar:
+        sn, kay = str(o["sonuc"]), o["kaynak"] or "?"
+        sat[kay]["liste"] += 1
+        if sn.startswith("BEKLEMEDE"):
+            sat[kay]["bekleyen"] += 1
+        elif sn.startswith(("DETAY OKUNAMADI", "DETAY LİNKİ", "METİN KISA")):
+            sat[kay]["okunamadi"] += 1
+            m = re.search(r"—\s*(.+?)\s*\(", sn)
+            nedenler[kay][(m.group(1) if m else sn)[:70]] += 1
+        elif sn.startswith("ADAY DEĞİL"):
+            sat[kay]["eleme"] += 1
+        elif sn.startswith("SBB"):
+            sat[kay]["sadece_liste"] += 1
+        elif sn.startswith(("ILGISIZ", "BOLUM", "TUM_LISANS", "SÜRESİ", "KANIT YOK")):
+            sat[kay]["analiz"] += 1
+        else:
+            sat[kay]["aciklanamayan"] += 1
+            nedenler[kay]["sonuç: " + sn[:40]] += 1
+    out = []
+    for kay, c in sorted(sat.items()):
+        topl = sum(c[x] for x in ("bekleyen", "okunamadi", "eleme", "sadece_liste", "analiz", "aciklanamayan"))
+        fark = c["liste"] - topl
+        if c["aciklanamayan"] or fark:
+            durum = f"❌ açıklanamayan: {c['aciklanamayan'] + fark}"
+        elif c["okunamadi"] or c["bekleyen"]:
+            durum = "⚠ eksik var"
+        else:
+            durum = "✔ tam"
+        out.append({"kaynak": kay, "liste": c["liste"], "analiz": c["analiz"], "eleme": c["eleme"],
+                    "sadece_liste": c["sadece_liste"], "okunamadi": c["okunamadi"],
+                    "nedenler": "; ".join(f"{n} ×{v}" for n, v in nedenler[kay].most_common(3)),
+                    "bekleyen": c["bekleyen"], "kanit": kanit_sorunlu.get(kay, 0), "durum": durum})
+    return out
+
+
+def p2_rapor(ads, bugun, state):
+    """İkinci profil (önlisans/engelli) için bugün listede olan ilanları kategorilere ayırır."""
+    bugun_tarih = TR_NOW.date()
+    gruplar = {"ENGELLI_KADRO": [], "ANESTEZI_SAGLIK": [], "ONLISANS": []}
+    dolmus, bekleyen, uymayan, fiziksel = [], 0, [], []
+    for key in bugun:
+        k = ads.get(key)
+        if not k or k.get("kaynak") == SBB_ADI:
+            continue
+        p2 = k.get("p2") or {}
+        if p2.get("aday") and not p2.get("analiz"):
+            bekleyen += 1
+        an = p2.get("analiz")
+        if not an or an.get("kategori") not in gruplar:
+            continue
+        bitis = tarih_ayrisir(an.get("basvuruBitis"))
+        a = dict(an)
+        a.update({"link": key, "_kaynak": k.get("kaynak"), "_baslik": k.get("baslik"), "_p2": True,
+                  "_bitis": bitis, "_ilk": k.get("first_seen")})
+        neden = dogrula2(an, k.get("baslik", ""))
+        if neden:
+            a["_uygunsuz"] = neden
+            uymayan.append(a)
+        elif bitis and bitis < bugun_tarih:
+            dolmus.append(a)
+        elif FIZIKSEL.search(f"{poz_adi(a)} {a.get('_baslik') or ''} {a.get('ekSartlar') or ''}"):
+            fiziksel.append(a)           # zabıta/itfaiye/güvenlik/boy-kilo şartlı kadrolar ayrı kapalı bölüme
+        else:
+            gruplar[an["kategori"]].append(a)
+    for kat in gruplar:
+        gruplar[kat] = birlestir(gruplar[kat])
+        for c in gruplar[kat]:
+            c["_yeni"] = c.get("_ilk") == TODAY and TODAY != state.get("first_run")
+    # SBB'de içerik okunmadığı için başlığı uygun görünenler elle kontrol listesi olur
+    elle, gorulen = [], set()
+    for key in bugun:
+        k = ads.get(key)
+        if not k or k.get("kaynak") != SBB_ADI:
+            continue
+        kurum, ilan = _sbb_parcala(k.get("baslik"))
+        t = f"{kurum} {ilan}"
+        if ENGEL_BASLIK.search(t) and not re.search(r"iptal|düzeltme|süre\s*uzat", t, re.I) and t.lower() not in gorulen:
+            gorulen.add(t.lower())
+            elle.append({"link": SBB_ANA, "baslik": t[:160], "kaynak": SBB_ADI})
+    gruplar["_uymayan"] = birlestir(uymayan)
+    gruplar["_fiziksel"] = birlestir(fiziksel)
+    return gruplar, dolmus, elle[:40], bekleyen
+
+
+def build_report2(gruplar, dolmus, elle, bekleyen, groq_notu):
+    def section(items):
+        if not items:
+            return "<p>Şu an bu kategoride aktif ilan bulunamadı.</p>"
+        items = sorted(items, key=lambda x: (x.get("_bitis") is None, x.get("_bitis") or datetime.date.max))
+        return "\n".join(card_html(a) for a in items)
+
+    anagrup = {k: v for k, v in gruplar.items() if not k.startswith("_")}
+    yeni = sum(1 for g in anagrup.values() for c in g if c.get("_yeni"))
+    fiz_html = uy_html = ""
+    if gruplar.get("_fiziksel"):
+        fiz_html = (f'<div class="box"><details><summary><b>🚓 Fiziksel/boy-kilo şartı aranan kadrolar — zabıta vb. '
+                    f'({len(gruplar["_fiziksel"])})</b></summary>{section(gruplar["_fiziksel"])}</details></div>')
+    if gruplar.get("_uymayan"):
+        satir = "".join(f'<li><a href="{E(a["link"])}" target="_blank">{E(poz_adi(a) or a.get("_baslik"))}</a> — '
+                        f'{E(a.get("kurum"))} <span class="tag red">{E(a["_uygunsuz"])}</span></li>'
+                        for a in gruplar["_uymayan"])
+        uy_html = (f'<div class="box"><details><summary><b>🚫 Uygun görünmediği için gizlenen ilanlar '
+                   f'({len(gruplar["_uymayan"])})</b></summary><ul>{satir}</ul></details></div>')
+    elle_html = ""
+    if elle:
+        satir = "".join(f'<li><a href="{E(x["link"])}" target="_blank">{E(x["baslik"])}</a> '
+                        f'<span class="tag">{E(x["kaynak"])}</span></li>' for x in elle)
+        elle_html = (f'<div class="box"><details><summary><b>🔎 SBB\'de görülen, elle kontrol edilecek ({len(elle)})</b>'
+                     f' — içeriği okunamıyor</summary><ul>{satir}</ul></details></div>')
+    dolmus_html = ""
+    if dolmus:
+        satir = "".join(f'<li><a href="{E(a["link"])}" target="_blank">{E(poz_adi(a) or a.get("_baslik"))}</a> '
+                        f'— {E(a.get("kurum"))} (son gün: {a["_bitis"].strftime("%d.%m.%Y")})</li>' for a in dolmus)
+        dolmus_html = (f'<div class="box"><details><summary><b>⌛ Süresi dolmuş, gizlenen ilanlar ({len(dolmus)})'
+                       f'</b></summary><ul>{satir}</ul></details></div>')
+    bekle = f" — ⏳ {bekleyen} ilan analiz kuyruğunda (sonraki çalıştırmalarda işlenecek)" if bekleyen else ""
+    return f"""<!DOCTYPE html><html lang="tr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Önlisans ve Engelli Kadro İlanları</title><style>{STYLE}</style></head><body>
+<h1>♿ Önlisans &amp; Engelli Kadro İlanları — {TR_NOW.strftime('%d.%m.%Y %H:%M')}</h1>
+<p><a href="index.html">← Ana rapora dön</a> · Bugün yeni eklenen ilgili ilan: <b>{yeni}</b>{E(bekle)}</p>
+<p style="font-size:12px;color:#555">Puana göre eleme yapılmaz; ilanlar son başvuru tarihine göre sıralıdır.
+Aynı ilanlar ana kaynaklardan (İlan.gov.tr, Resmî Gazete, Kariyer Kapısı, ÇŞB, İŞKUR, Memurlar.net) taranır.</p>
+<h2>♿ Engelli kadrosu / EKPSS'li ilanlar — {len(gruplar['ENGELLI_KADRO'])} ilan</h2>
+{section(gruplar['ENGELLI_KADRO'])}
+<h2>🩺 Anestezi / sağlık teknikeri kadroları — {len(gruplar['ANESTEZI_SAGLIK'])} ilan</h2>
+{section(gruplar['ANESTEZI_SAGLIK'])}
+<h2>🎓 Önlisans mezunlarına açık kadrolar — {len(gruplar['ONLISANS'])} ilan</h2>
+{section(gruplar['ONLISANS'])}
+{fiz_html}
+{uy_html}
+{elle_html}
+{dolmus_html}
+<div class="box"><p>Not: Sağlık Bakanlığı'nın kendi KPSS tercih alımları bu kaynaklarda yer almaz; ayrıca takip edilmelidir.</p></div>
+</body></html>"""
+
+
+def build_debug():
+    parts = []
+    for d in DEBUG:
+        img = f'<img src="{d["img"]}" alt="ekran görüntüsü">' if d.get("img") else "(ekran görüntüsü yok)"
+        xhr = "\n".join(f'{x["method"]} {x["status"]} {x["url"]}'
+                        + (f'\n   gövde: {x["post"]}' if x.get("post") else "")
+                        + (f'\n   yanıt: {x["preview"]}' if x.get("preview") else "")
+                        for x in XHR.get(d["name"], [])[:25]) or "(yok)"
+        parts.append(f"""<h2>{E(d['name'])}</h2>
+<p><b>Not:</b> {E(d['note'])}<br><b>Son URL:</b> {E(d.get('url'))}<br><b>Başlık:</b> {E(d.get('title'))}</p>
+{img}
+<h3>Sayfa metni (ilk 1500 karakter)</h3><pre>{E(d.get('body'))}</pre>
+<h3>Bulunan linkler (ilk 40)</h3><pre>{E(d.get('links'))}</pre>
+<h3>Arka plan (XHR/fetch) istekleri</h3><pre>{E(xhr)}</pre><hr>""")
+    return (f'<!DOCTYPE html><html lang="tr"><head><meta charset="utf-8"><title>Tanı</title>'
+            f'<style>{STYLE}</style></head><body><h1>🛠 Tanı sayfası — {TR_NOW.strftime("%d.%m.%Y %H:%M")}</h1>'
+            f'<p><a href="index.html">← Rapora dön</a></p>{"".join(parts)}</body></html>')
+
+
+def snapshot(page, idx, name, note):
+    """Tanı sayfası için ekran görüntüsü + metin + link örnekleri."""
+    if not DIAGNOSE:
+        return
+    rec = {"name": name, "note": note}
+    try:
+        rec["url"] = page.url
+        rec["title"] = page.title()
+        rec["body"] = (page.inner_text("body") or "")[:1500]
+        rec["links"] = "\n".join(
+            f'{(a.inner_text() or "").strip()[:70]!r} -> {(a.get_attribute("href") or "")[:110]}'
+            for a in page.query_selector_all("a")[:40])
+        path = f"docs/debug/s{idx}.jpg"
+        page.screenshot(path=path, type="jpeg", quality=45)
+        rec["img"] = f"debug/s{idx}.jpg"
+    except Exception as e:
+        rec["body"] = f"(tanı alınamadı: {str(e)[:150]})"
+    DEBUG.append(rec)
+
+
+# ---------------- ANA AKIŞ ----------------
+def sonuc_metni(k):
+    if k.get("kaynak") == SBB_ADI:
+        return "SBB: yalnız liste kaydı (detay okunmuyor)"
+    if not k.get("detail_checked") and not k.get("analiz"):
+        if k.get("sonuc") == "DETAY OKUNAMADI":
+            return f"DETAY OKUNAMADI — {k.get('hata') or 'neden kaydedilmedi'} (yeniden denenecek)"
+        if k.get("sonuc") == "DETAY LİNKİ BULUNAMADI":
+            return "DETAY LİNKİ BULUNAMADI (manuel kontrol gerekli)"
+        return "BEKLEMEDE (detay kuyruğu)"
+    an = k.get("analiz")
+    if an:
+        return an.get("kategori", "?")
+    if k.get("bitti"):
+        return k.get("sonuc", "bitti")
+    if k.get("sonuc") == "DETAY OKUNAMADI":
+        return f"DETAY OKUNAMADI — {k.get('hata') or 'neden kaydedilmedi'} (yeniden denenecek)"
+    if k.get("metin"):
+        return "BEKLEMEDE (Groq analizi)"
+    return "BEKLEMEDE (detay kuyruğu)"
+
+
+def ilan_hash(baslik, metin):
+    return hashlib.sha256(f"{baslik}\n{metin}".encode("utf-8")).hexdigest()
+
+
+def kaynak_durumu(ham, note):
+    if note.startswith("HATA:"):
+        return "HATA"
+    if "EKSİK" in note:
+        return "ŞÜPHELİ (eksik okundu)"
+    match = re.search(r"sitede toplam:\s*(\d+), okunan:\s*(\d+)", note)
+    if match:
+        return "OK" if int(match.group(2)) >= int(match.group(1)) else "ŞÜPHELİ (eksik okundu)"
+    if "bugünkü ilan sayfası yok" in note:
+        return "BOŞ (sayfa yok; kontrol edin)"
+    if "aktif ilan tablosu boş" in note:
+        return "KISMİ (boş tablo; doğrulanmalı)"
+    if "aktif ilan yok" in note:
+        return "BOŞ (site ilan olmadığını bildiriyor)"
+    if ham == 0:
+        return "ŞÜPHELİ (0 ham kayıt)"
+    return "KISMİ (tamlık doğrulanmadı)"
+
+
+def main():
+    state = load_state()
+    ads = state["ads"]
+    log_rows, bugun = [], set()
+
+    def on_resp(resp):
+        if not CAPTURE["on"]:
+            return
+        try:
+            req = resp.request
+            if req.resource_type not in ("xhr", "fetch"):
+                return
+            lst = XHR.setdefault(CAPTURE["name"], [])
+            if len(lst) >= 40:
+                return
+            item = {"url": resp.url[:200], "status": resp.status, "method": req.method,
+                    "post": (req.post_data or "")[:200]}
+            if "json" in (resp.headers.get("content-type", "")) and len([x for x in lst if x.get("preview")]) < 12:
+                try:
+                    item["preview"] = resp.text()[:300]
+                except Exception:
+                    pass
+            lst.append(item)
+        except Exception:
+            pass
+
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        ctx = browser.new_context(user_agent=BROWSER_UA, ignore_https_errors=True, locale="tr-TR")
+        ctx.on("response", on_resp)
+        list_page, detail_page = ctx.new_page(), ctx.new_page()
+        source_batches = []
+        analiz_kuyrugu, log_by_name, analiz2_kuyrugu = [], {}, []
+        havuz_eleme, havuz_ilgisiz = [], []      # ikinci yapay zekânın denetleyeceği elenmiş ilanlar (bu çalıştırmada işlenenler)
+
+        # Stage 1: collect every source before spending time or quota on analysis.
+        for idx, (name, fn) in enumerate(SOURCES):
+            saat = datetime.datetime.now(ZoneInfo("Europe/Istanbul")).strftime("%H:%M:%S")
+            CAPTURE.update(on=True, name=name)
+            entries, ham, note, son_hata = [], 0, "", None
+            for deneme in range(1, 4):          # geçici ağ hatalarına karşı 3 deneme
+                try:
+                    entries, ham, note = fn(list_page)
+                    son_hata = None
+                    if deneme > 1:
+                        note += f" (deneme {deneme}'de başarılı)"
+                    break
+                except Exception as e:
+                    son_hata = e
+                    print(f"HATA ({name}) deneme {deneme}/3: {e}")
+                    time.sleep(15 * deneme)
+            if son_hata is not None:
+                CAPTURE["on"] = False
+                entries, ham = [], 0
+                note = f"HATA: {hata_sinifla(son_hata)} — 3 deneme başarısız. Ayrıntı: {str(son_hata)[:160]}"
+            CAPTURE["on"] = False
+            snapshot(list_page, idx, name, note)
+            source_batches.append({"idx": idx, "name": name, "entries": entries,
+                                  "ham": ham, "note": note, "saat": saat})
+            for e in entries:
+                key = e["link"]
+                bugun.add(key)
+                k = ads.get(key) or {"first_seen": TODAY, "kaynak": name,
+                                     "baslik": e.get("title", ""), "kurum": e.get("kurum", "")}
+                k.update(last_seen=TODAY, kaynak=name, baslik=e.get("title", k.get("baslik", "")))
+                k["detail_level"] = e.get("detail_level", "İlan detay sayfası")
+                k["detail_checked"] = False
+                if e.get("kurum"):
+                    k["kurum"] = e["kurum"]
+                if e.get("content") and not (k.get("bitti") or k.get("analiz")):
+                    k["metin"] = e["content"][:8000]
+                ads[key] = k
+            save_state(state)
+
+        # Stage 2: read details and classify the already-collected listings.
+        for batch in source_batches:
+            idx, name, entries = batch["idx"], batch["name"], batch["entries"]
+            okunan = ilgili = 0
+            for e in entries:
+                key = e["link"]
+                k = ads.get(key)
+                baslik = e.get("title", "")
+                if zaman_doldu():
+                    continue
+                if e.get("detail_level", "").startswith("Satır düzeyi"):
+                    k = ads[key]
+                    k.update(detail_checked=False, sonuc="DETAY LİNKİ BULUNAMADI")
+                    continue
+                if name == SBB_ADI:
+                    # SBB detay sayfaları 133 karakterlik iskelet metin dönüyor (içerik okunamıyor) ve her ilan
+                    # birkaç kez listeleniyor. Sayfa açmak yerine yalnız liste kaydı tutulur; başka kaynakta
+                    # karşılığı olmayanlar raporda "elle kontrol" listesine düşer.
+                    k = k or {"first_seen": TODAY, "kaynak": name, "baslik": baslik}
+                    k.update(last_seen=TODAY, detail_checked=False, bitti=True,
+                             sonuc="SBB: yalnız liste (detay okunmuyor)")
+                    k.pop("metin", None)
+                    ads[key] = k
+                    continue
+
+                metin = e.get("content") or (read_memurlar(detail_page, key) if name == MEMURLAR_ADI
+                                             else read_detail(detail_page, key))
+                if not metin:
+                    k = k or {"first_seen": TODAY, "kaynak": name, "baslik": baslik}
+                    k.update(last_seen=TODAY, detail_checked=False, sonuc="DETAY OKUNAMADI",
+                             hata=DETAY_HATA.get(key, "bilinmeyen neden"))
+                    ads[key] = k
+                    continue
+                okunan += 1
+                k = k or {"first_seen": TODAY, "kaynak": name, "baslik": baslik,
+                          "kurum": e.get("kurum", "")}
+                metin_hash = ilan_hash(baslik, metin)
+                degisti = k.get("metin_hash") != metin_hash
+                k.update({"last_seen": TODAY, "metin_len": len(metin), "metin_hash": metin_hash,
+                          "detail_checked": True})
+                k.pop("detail_error", None)
+                # İkinci profil (önlisans/engelli): metin burada elde olduğu için anahtar kelime süzgeci uygulanır
+                p2 = k.get("p2") or {}
+                if degisti or p2.get("v") != P2_VERSION:
+                    aday2 = bool(not AKADEMIK_BASLIK.search(baslik) and ADAY2_ANAHTAR.search(metin + " " + baslik))
+                    p2 = {"v": P2_VERSION, "aday": aday2}
+                    k["p2"] = p2
+                    k.pop("p2metin", None)
+                if p2.get("aday") and not p2.get("analiz"):
+                    k["p2metin"] = metin[:8000]
+                    analiz2_kuyrugu.append((oncelik2(baslik, metin), key, baslik, metin))
+                if not degisti and (k.get("bitti") or k.get("analiz")):
+                    continue
+                k.pop("analiz", None)
+                k.pop("bitti", None)
+                k.pop("sonuc", None)
+                ads[key] = k
+
+                if AKADEMIK_BASLIK.search(baslik):
+                    k.update(bitti=True, sonuc="ILGISIZ (akademik kadro)")
+                    k.pop("metin", None)
+                    continue
+                if not ADAY_ANAHTAR.search(metin + " " + e.get("title", "")):
+                    if len(metin) < 300 and not e.get("content"):
+                        # çok kısa metin = sayfa gerçekten okunamadı; "ilgisiz" demek yanlış olur
+                        k.update(bitti=True, sonuc="METİN KISA — OKUNAMADI")
+                    else:
+                        k.update(bitti=True, sonuc="ADAY DEĞİL (anahtar kelime yok)")
+                        if len(metin) >= 300 and not (k.get("p2") or {}).get("aday"):
+                            havuz_eleme.append({"kaynak": name, "baslik": baslik, "link": key, "metin": metin[:6000],
+                                                "karar": "anahtar kelime süzgeci"})
+                    k.pop("metin", None)
+                    continue
+
+                k["metin"] = metin[:8000]          # analiz edilene kadar saklanır
+                analiz_kuyrugu.append((oncelik(baslik, metin) + (5 if name == MEMURLAR_ADI else 0),
+                                       key, baslik, metin, name))
+
+            if name == SBB_ADI:
+                batch["note"] += " — detay okunmuyor (yalnız liste); başka kaynaklarla eşleştirildi"
+            durum = kaynak_durumu(batch["ham"], batch["note"])
+            log_rows.append([batch["saat"], name, batch["ham"], okunan, ilgili, durum, batch["note"]])
+            log_by_name[name] = log_rows[-1]
+            save_state(state)
+
+        # Stage 3: kota sınırlıyken en umut verici ilanlardan başlayarak analiz et
+        if GROQ_API_KEY:
+            analiz_kuyrugu.sort(key=lambda x: x[0])
+            print(f"Analiz kuyruğu: {len(analiz_kuyrugu)} ilan")
+            for sayac, (_, key, baslik, metin, name) in enumerate(analiz_kuyrugu, 1):
+                if GROQ_DEAD or zaman_doldu():
+                    break
+                sonuc = analiz(baslik, metin)
+                if not GROQ_DEAD:
+                    time.sleep(GROQ_SLEEP_SEC)
+                if not sonuc:
+                    continue
+                k = ads[key]
+                k["analiz"] = sonuc
+                k["bitti"] = True
+                k.pop("metin", None)
+                if sonuc.get("kategori") == "ILGISIZ":
+                    havuz_ilgisiz.append({"kaynak": name, "baslik": baslik, "link": key, "metin": metin[:6000],
+                                          "karar": "ILGISIZ (" + str(sonuc.get("kanit") or "")[:80] + ")"})
+                if sonuc.get("kategori") in ("BOLUM", "TUM_LISANS") and name in log_by_name:
+                    log_by_name[name][4] += 1
+                if sayac % 10 == 0:
+                    save_state(state)
+            save_state(state)
+
+        # Stage 3b: ikinci profil analizi (birinci profilden artan kotayla)
+        p2_denenen = 0
+        if GROQ_API_KEY:
+            analiz2_kuyrugu.sort(key=lambda x: x[0])
+            print(f"İkinci profil analiz kuyruğu: {len(analiz2_kuyrugu)} ilan")
+            for _, key, baslik, metin in analiz2_kuyrugu:
+                if GROQ_DEAD or zaman_doldu() or p2_denenen >= P2_MAX_ANALIZ:
+                    break
+                p2_denenen += 1
+                sonuc = analiz2(baslik, metin)
+                if not GROQ_DEAD:
+                    time.sleep(GROQ_SLEEP_SEC)
+                if not sonuc:
+                    continue
+                ads[key]["p2"]["analiz"] = sonuc
+                ads[key].pop("p2metin", None)
+                if p2_denenen % 10 == 0:
+                    save_state(state)
+            save_state(state)
+
+        # Stage 4: ikinci yapay zekâ — elenen ilanlardan örnek alıp bağımsız yeniden okut
+        denetim = None
+        if GROQ_API_KEY and (havuz_eleme or havuz_ilgisiz):
+            try:
+                denetim = ikinci_goz(havuz_eleme, havuz_ilgisiz)
+            except Exception as e:
+                print("İkinci göz hatası:", e)
+
+        browser.close()
+
+    # Rapor verileri
+    bolum, tum, dolmus, yeni_sayisi, okunanlar = [], [], [], 0, []
+    kanitsiz = []
+    ilgili_say = {}
+    bugun_tarih = TR_NOW.date()
+    for key in bugun:
+        k = ads.get(key)
+        if not k:
+            continue
+        yeni = k.get("first_seen") == TODAY and TODAY != state.get("first_run")
+        an, neden = dogrula(k.get("analiz"), k.get("baslik", ""))
+        if k.get("kaynak") == SBB_ADI:      # SBB'de detay okunmuyor; eski başlık-tabanlı analizler güvenilmez
+            an, neden = None, None
+        sonuc = sonuc_metni(k)
+        if neden:
+            sonuc = f"ILGISIZ ({neden})"
+        ilgili = bool(an and an.get("kategori") in ("BOLUM", "TUM_LISANS"))
+        bitis = tarih_ayrisir(an.get("basvuruBitis")) if ilgili else None
+        sure_doldu = bool(bitis and bitis < bugun_tarih)
+        if ilgili and sure_doldu:
+            sonuc = f"SÜRESİ DOLMUŞ ({bitis.strftime('%d.%m.%Y')}) — {an['kategori']}"
+        okunanlar.append({"kaynak": k.get("kaynak"), "baslik": k.get("baslik"),
+                          "link": SBB_ANA if k.get("kaynak") == SBB_ADI else key,
+                          "len": k.get("metin_len", "?"), "duzey": k.get("detail_level", "?"),
+                          "sonuc": sonuc, "yeni": yeni})
+        if ilgili and not sure_doldu and kanit_yok(an):
+            # kanıt yoksa kart yerine elle kontrol listesine: yanlış-pozitif kartı önler
+            kanitsiz.append({"kaynak": k.get("kaynak"), "baslik": (poz_adi(an) or k.get("baslik") or "")[:160],
+                             "link": key, "neden": "ilgili olduğuna dair kanıt bulunamadı"})
+            sonuc = "KANIT YOK — elle kontrol listesinde"
+            okunanlar[-1]["sonuc"] = sonuc
+            ilgili = False
+        if ilgili:
+            a = dict(an)
+            a.update({"link": key, "_kaynak": k.get("kaynak"), "_baslik": k.get("baslik"),
+                      "_yeni": yeni, "_bitis": bitis, "_ilk": k.get("first_seen")})
+            if sure_doldu:
+                dolmus.append(a)
+            else:
+                ilgili_say[k.get("kaynak")] = ilgili_say.get(k.get("kaynak"), 0) + 1
+                (bolum if a["kategori"] == "BOLUM" else tum).append(a)
+    bolum, tum = birlestir(bolum), birlestir(tum)
+    for c in bolum + tum:      # "yeni": kartın en eski kaynağı bugün görülmüşse; sayı da kartlar üzerinden
+        c["_yeni"] = c.get("_ilk") == TODAY and TODAY != state.get("first_run")
+        c["_tecrube"] = tecrube_yili(c)
+        c["_uygunsuz"] = uygunluk(c)
+    yetmeyen = [c for c in bolum + tum if c["_uygunsuz"]]
+    bolum = [c for c in bolum if not c["_uygunsuz"]]
+    tum = [c for c in tum if not c["_uygunsuz"]]
+    yeni_sayisi = sum(1 for c in bolum + tum if c["_yeni"])
+    elle = sbb_yalniz(ads, bugun) + kisa_metinliler(ads, bugun) + kanitsiz
+    for u in RG_OKUNAMAYAN:
+        elle.append({"kaynak": "Resmî Gazete", "baslik": u.rsplit("/", 1)[-1], "link": u,
+                     "neden": "PDF metni okunamadı (taranmış görüntü olabilir)"})
+    for r in log_rows:                      # tablodaki "İlgili": bugün listede olan, süresi dolmamış ilgili ilanlar
+        r[4] = ilgili_say.get(r[1], 0)
+    okunanlar.sort(key=lambda o: (o["kaynak"] or "", o["sonuc"]))
+    bekleyen = sum(1 for o in okunanlar if o["sonuc"].startswith("BEKLEMEDE"))
+    if bekleyen and not GROQ_API_KEY:
+        groq_notu = f"— ⏳ {bekleyen} ilan analiz kuyruğunda; GROQ_API_KEY tanımlı değil."
+    elif bekleyen:
+        groq_notu = f"— ⏳ {bekleyen} ilan Groq kotası/hatası nedeniyle analiz kuyruğunda."
+    else:
+        groq_notu = ""
+    if GROQ_DEAD_NEDEN:
+        groq_notu += " — ⚠ Groq: " + "; ".join(f"{m}: {n}" for m, n in GROQ_DEAD_NEDEN.items())
+        if GROQ_MEVCUT:
+            groq_notu += " — Groq'ta mevcut modeller: " + ", ".join(GROQ_MEVCUT[:25])
+
+    yeni_dosya = not os.path.isfile(LOG_PATH)
+    with open(LOG_PATH, "a", newline="", encoding="utf-8") as f:
+        w = csv.writer(f)
+        if yeni_dosya:
+            w.writerow(["tarih", "saat", "kaynak", "ham_kayit", "detay_okunan", "ilgili", "durum", "not"])
+        for r in log_rows:
+            w.writerow([TODAY] + r)
+
+    kanit_sorunlu = {}
+    for c in bolum + tum + yetmeyen + dolmus:
+        if c.get("_kanit_ok") is False:
+            kanit_sorunlu[c.get("_kaynak")] = kanit_sorunlu.get(c.get("_kaynak"), 0) + 1
+    butunluk = butunluk_satirlari(okunanlar, ads, kanit_sorunlu)
+    with open("docs/index.html", "w", encoding="utf-8") as f:
+        f.write(build_report(bolum, tum, log_rows, yeni_sayisi, okunanlar, groq_notu, dolmus, elle, yetmeyen,
+                           butunluk, denetim))
+    if DIAGNOSE:
+        with open("docs/debug.html", "w", encoding="utf-8") as f:
+            f.write(build_debug())
+    p2_bolumler, p2_dolmus, p2_elle, p2_bekleyen = p2_rapor(ads, bugun, state)
+    with open("docs/onlisans.html", "w", encoding="utf-8") as f:
+        f.write(build_report2(p2_bolumler, p2_dolmus, p2_elle, p2_bekleyen, groq_notu))
+    save_state(state)
+    print(f"İkinci rapor: engelli {len(p2_bolumler['ENGELLI_KADRO'])}, sağlık {len(p2_bolumler['ANESTEZI_SAGLIK'])}, "
+          f"önlisans {len(p2_bolumler['ONLISANS'])}, beklemede {p2_bekleyen}")
+    print(f"Bitti. Bölüm: {len(bolum)}, Tüm lisans: {len(tum)}, Süresi dolmuş: {len(dolmus)}, Yeni: {yeni_sayisi}, Elle kontrol: {len(elle)}, Beklemede: {bekleyen}")
+
+
+if __name__ == "__main__":
+    main()
