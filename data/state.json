@@ -46876,8 +46876,8 @@
    "last_seen": "2026-10-22",
    "detail_level": "İlan detay sayfası",
    "detail_checked": true,
-   "metin_len": 739,
-   "metin_hash": "fbead31ff37ba8ca3b488b409bb52c46e441d0ccbb5d2eaa0d4ad576764ef0e7",
+   "metin_len": 828,
+   "metin_hash": "67b9006f4e02310aa2738dd2f12be0729172bee9fe38daddb95f097237aad4cc",
    "p2": {
     "v": 2,
     "aday": false
@@ -47034,8 +47034,8 @@
    "last_seen": "2026-10-22",
    "detail_level": "İlan detay sayfası",
    "detail_checked": true,
-   "metin_len": 807,
-   "metin_hash": "21c16aa7c1904d7a48b84fd6040951edc9c1dedc8faefebca5cdd4044a5e5044",
+   "metin_len": 532,
+   "metin_hash": "83bebf4ed7a18d017096c7550f2f0a2d1f63a193b263ba0e3107c05263a72e98",
    "p2": {
     "v": 2,
     "aday": false
@@ -47051,8 +47051,8 @@
    "last_seen": "2026-10-22",
    "detail_level": "İlan detay sayfası",
    "detail_checked": true,
-   "metin_len": 835,
-   "metin_hash": "31bd3036a00b0641a911f31366e5a4329ff39c83d61f79ef8193f90d691cbece",
+   "metin_len": 597,
+   "metin_hash": "9cf0bf19906e6918ffddbe1afe200381f29813f58f08668bc13bda1b2fd427c6",
    "p2": {
     "v": 2,
     "aday": false
@@ -47068,8 +47068,8 @@
    "last_seen": "2026-10-22",
    "detail_level": "İlan detay sayfası",
    "detail_checked": true,
-   "metin_len": 837,
-   "metin_hash": "36c07ef7f7e105a0177d2cfbcd6745d873beacd19c9f8fe241431642696661f6",
+   "metin_len": 619,
+   "metin_hash": "a236d05750b2ef33cc1706019d65aa95594cd356d4fff0de04bde777b25e7321",
    "p2": {
     "v": 2,
     "aday": false
@@ -47081,15 +47081,15 @@
     "pozisyon": "İşçi",
     "kadroSayisi": 2,
     "basvuruBaslangic": null,
-    "basvuruBitis": "31 mayıs 2022",
+    "basvuruBitis": "31 Mayıs 2022",
     "degerlendirmeSekli": "belirtilmemiş",
     "kpssDurumu": "Belirtilmemiş",
-    "kpssTuru": "belirtilmemiş",
+    "kpssTuru": "Belirtilmemiş",
     "ekSinav": false,
     "ekSinavDetay": "Yok",
     "ikametSarti": "Belirtilmemiş",
     "ekSartlar": "Yok",
-    "kisaOzet": "İstanbul Bilişim ve Akıllı Kent Teknolojileri, 2 işçi kadrosu için 31 Mayıs 2022 son başvuru tarihli ilan yayınladı.",
+    "kisaOzet": "İstanbul Bilişim ve Akıllı Kent Teknolojileri 2 işçi alacak. Başvuru son tarihi 31 Mayıs 2022.",
     "_model": "openai/gpt-oss-120b",
     "_pv": 2,
     "_kanit_ok": true
@@ -56076,8 +56076,8 @@
    "last_seen": "2026-10-22",
    "detail_level": "İlan detay sayfası",
    "detail_checked": true,
-   "metin_len": 828,
-   "metin_hash": "595500299a30ee48d221312cee5ccdf383d24b8de90209510f06eda69f6a53ca",
+   "metin_len": 547,
+   "metin_hash": "043379748ceaabf53f0f296d707fff3d268908e760b9be6c77470498490ed922",
    "p2": {
     "v": 2,
     "aday": false
@@ -56093,8 +56093,8 @@
    "last_seen": "2026-10-22",
    "detail_level": "İlan detay sayfası",
    "detail_checked": true,
-   "metin_len": 831,
-   "metin_hash": "b0f6bd3f68d33542461bd6864fcb0ea67dee06cc3edd1081d1510a23bb8c5056",
+   "metin_len": 585,
+   "metin_hash": "2fe1331fe03499331c5ea9d9715d66d7373048bfaeea418302109de213382fbd",
    "p2": {
     "v": 2,
     "aday": false
@@ -78046,8 +78046,8 @@
    "last_seen": "2026-10-22",
    "detail_level": "İlan detay sayfası",
    "detail_checked": true,
-   "metin_len": 767,
-   "metin_hash": "c68a13cf357e045a333e615473ef2ffa3e381232342336cb56ebea8f036d5f5f",
+   "metin_len": 540,
+   "metin_hash": "731e9bc695b519d473c8e70c827a2229ee09c3a3581723205fffe85a66a9ee65",
    "p2": {
     "v": 2,
     "aday": false
@@ -78080,8 +78080,8 @@
    "last_seen": "2026-10-22",
    "detail_level": "İlan detay sayfası",
    "detail_checked": true,
-   "metin_len": 799,
-   "metin_hash": "83c9ed7b150ebcac008262c0a58756660e97492a4d2729ed96b19d004ebb7264",
+   "metin_len": 522,
+   "metin_hash": "d3b3c4c7f58f214fe5a14e2713de7eb7cbdc24221d1f2179acb22b5b68b8dc2c",
    "p2": {
     "v": 2,
     "aday": false
@@ -87414,8 +87414,8 @@
    "last_seen": "2026-10-22",
    "detail_level": "İlan detay sayfası",
    "detail_checked": true,
-   "metin_len": 725,
-   "metin_hash": "9d04af81192a24e16e4280e1e6c495f19af0829fd6cce75d492de3bb0d11a464",
+   "metin_len": 543,
+   "metin_hash": "772caa887a704da0522e7e4b47aae7780c2713d077de843025dae9cc91bc7212",
    "p2": {
     "v": 2,
     "aday": false
@@ -93310,8 +93310,8 @@
    "last_seen": "2026-10-22",
    "detail_level": "İlan detay sayfası",
    "detail_checked": true,
-   "metin_len": 738,
-   "metin_hash": "edcd03e5e67269266cc5dd7fb11c6f5d98a6f73e7ae16531b3482e41b21a1512",
+   "metin_len": 539,
+   "metin_hash": "cf096ac46f2a1d746a00c5747fe4b00b2c4a9d48b520e5dfb58d2097787465d1",
    "p2": {
     "v": 2,
     "aday": false
@@ -93327,8 +93327,8 @@
    "last_seen": "2026-10-22",
    "detail_level": "İlan detay sayfası",
    "detail_checked": true,
-   "metin_len": 748,
-   "metin_hash": "9ebae7b586eb867b4e67c88003bd4de4ad27504c0db831e4323910ab1e2bfc26",
+   "metin_len": 478,
+   "metin_hash": "eb5ed7a4d53e13103b39996f0587132836b6e070754b043c854642eca72022e6",
    "p2": {
     "v": 2,
     "aday": false
@@ -93450,8 +93450,8 @@
    "last_seen": "2026-10-22",
    "detail_level": "İlan detay sayfası",
    "detail_checked": true,
-   "metin_len": 774,
-   "metin_hash": "781a74b4cfb05bfe7630e385219251dab4f01f1b5de3976bf596d6c163815f06",
+   "metin_len": 532,
+   "metin_hash": "053f73dac5811f2787b16b4ca0c6d55d3a4ed5b9cae4a8ed2f30cb465afeb4c0",
    "p2": {
     "v": 2,
     "aday": true,
@@ -93459,10 +93459,10 @@
      "kategori": "ENGELLI_KADRO",
      "kanit": "Muğla Dal-Bel Engelli Geçici 2 İşçi Alacak.",
      "kurum": "Abant İzzet Baysal Üniversitesi",
-     "pozisyon": "Geçici İşçi",
+     "pozisyon": "İşçi",
      "kadroSayisi": 2,
      "bolumUygun": "Belirtilmemiş",
-     "engelliBilgi": "2 kadro, engel derecesi/grubu belirtilmemiş, EKPSS şartı belirtilmemiş",
+     "engelliBilgi": "2, Belirtilmemiş, Belirtilmemiş",
      "basvuruBaslangic": null,
      "basvuruBitis": "24 Eylül 2026",
      "degerlendirmeSekli": "belirtilmemiş",
@@ -93472,7 +93472,7 @@
      "ekSinavDetay": "Yok",
      "ikametSarti": "Belirtilmemiş",
      "ekSartlar": "Yok",
-     "kisaOzet": "Abant İzzet Baysal Üniversitesi, Muğla Dal‑Bel bölümü için 2 geçici engelli işçi alımı yapmaktadır. Başvuru son tarihi 24 Eylül 2026.",
+     "kisaOzet": "Abant İzzet Baysal Üniversitesi, Muğla Dal‑Bel bölgesinde engelli adaylar için geçici 2 işçi alımı yapmaktadır. Başvuru son tarihi 24 Eylül 2026.",
      "_model": "openai/gpt-oss-120b",
      "_pv": 2,
      "_kanit_ok": true
@@ -93489,8 +93489,8 @@
    "last_seen": "2026-10-22",
    "detail_level": "İlan detay sayfası",
    "detail_checked": true,
-   "metin_len": 726,
-   "metin_hash": "23ef854dbedfe581e01100c3f2ab3ebcacbca9b6b9e7817e2adaa7a48c6b9eea",
+   "metin_len": 549,
+   "metin_hash": "04ae001f88c3cf70ce97a073cad13c538e4acf3ed9b3adb68388dabb470dad23",
    "p2": {
     "v": 2,
     "aday": false
@@ -93506,8 +93506,8 @@
    "last_seen": "2026-10-22",
    "detail_level": "İlan detay sayfası",
    "detail_checked": true,
-   "metin_len": 778,
-   "metin_hash": "6b0b7e632d117afe2747196e7348de3d55e497d37f702b860142c2d48581e23f",
+   "metin_len": 535,
+   "metin_hash": "88239b67412b2d61648c39f5ff4b155ee91a9d48c5114b1624d3e9d86f2b5171",
    "p2": {
     "v": 2,
     "aday": false
@@ -93523,8 +93523,8 @@
    "last_seen": "2026-10-22",
    "detail_level": "İlan detay sayfası",
    "detail_checked": true,
-   "metin_len": 798,
-   "metin_hash": "4434426ad07ce2a3c776b5c1b8738ff94fae87b2d0c9d43a118c91ba859286fd",
+   "metin_len": 547,
+   "metin_hash": "db2651a168c14d941d367517e040bcd2a9fe0206afc35c91452d280ca066845f",
    "p2": {
     "v": 2,
     "aday": false
@@ -93557,8 +93557,8 @@
    "last_seen": "2026-10-22",
    "detail_level": "İlan detay sayfası",
    "detail_checked": true,
-   "metin_len": 808,
-   "metin_hash": "ab72d1666e4feea734c0e98a9bb85aea4352d813b78722ee0c690afc5bf79a6a",
+   "metin_len": 838,
+   "metin_hash": "e2609b76d13c5e11895aac77b656580da96bfc4bcb629d41931b7044e2fe592c",
    "p2": {
     "v": 2,
     "aday": false
@@ -93574,8 +93574,8 @@
    "last_seen": "2026-10-22",
    "detail_level": "İlan detay sayfası",
    "detail_checked": true,
-   "metin_len": 799,
-   "metin_hash": "e2b6ca8197afd69fb42d4e35bcd36bc2d00b31c201df4d9e4f2d31607cac6f40",
+   "metin_len": 553,
+   "metin_hash": "22a64fdc59a4d6dfd733321ca8a3f96e3251fe537df29a665b78d1d2c10ced5f",
    "p2": {
     "v": 2,
     "aday": false
@@ -93591,8 +93591,8 @@
    "last_seen": "2026-10-22",
    "detail_level": "İlan detay sayfası",
    "detail_checked": true,
-   "metin_len": 760,
-   "metin_hash": "7eecc3399afaf1de0f1017fc3bcf99b56ed9394c5555d9315b62a8faef1d47e4",
+   "metin_len": 807,
+   "metin_hash": "a4ca3b4148f0cc8bdd1b5d8117413a3f32fd2b9a64af906426d5cc8da8a5db9e",
    "p2": {
     "v": 2,
     "aday": false
@@ -97405,8 +97405,8 @@
    "last_seen": "2026-10-22",
    "detail_level": "İlan detay sayfası",
    "detail_checked": true,
-   "metin_len": 1413,
-   "metin_hash": "aec7a1795a54e25ec2706eda4812d39361ac4a1a0cbf6118d64fdf97ac4b7094",
+   "metin_len": 885,
+   "metin_hash": "a486fe8a961d7a2f3c631bf76471d5673003eccefe8ee625442c965623272582",
    "p2": {
     "v": 2,
     "aday": false
@@ -97591,6 +97591,42 @@
    },
    "bitti": true,
    "sonuc": "ILGISIZ (akademik kadro)"
+  },
+  "https://www.ilan.gov.tr/ilan/2265614/kamu-akademik-personel-kamu-personel-alim-ve-sinavlari-tarim-ve-orman-bakanligindan-sozlesmeli-bilisim-personeli-alim-ilani": {
+   "first_seen": "2026-10-22",
+   "kaynak": "İlan.gov.tr",
+   "baslik": "TARIM VE ORMAN BAKANLIĞI | Tarım ve Orman Bakanlığından Sözleşmeli Bilişim Personeli Alım İlanı | DPB845534 | ANKARA",
+   "kurum": "",
+   "last_seen": "2026-10-22",
+   "detail_level": "İlan detay sayfası",
+   "detail_checked": true,
+   "metin_len": 36965,
+   "metin_hash": "2ae8498ca637c0117a223604aad7dda937605c53196aa8a4467a2ea896e95440",
+   "p2": {
+    "v": 2,
+    "aday": false
+   },
+   "analiz": {
+    "kategori": "BOLUM",
+    "kanit": "Fakültelerin dört yıllık bilgisayar mühendisliği, yazılım mühendisliği, ... bölümlerinden ... mezun olması",
+    "kurum": "Tarım ve Orman Bakanlığı",
+    "pozisyon": "Sözleşmeli Bilişim Personeli",
+    "kadroSayisi": 13,
+    "basvuruBaslangic": null,
+    "basvuruBitis": null,
+    "degerlendirmeSekli": "Sözlü ve uygulamalı sınav",
+    "kpssDurumu": "Belirtilmemiş",
+    "kpssTuru": "Belirtilmemiş",
+    "ekSinav": true,
+    "ekSinavDetay": "Sözlü ve uygulamalı sınav; puan şartı belirtilmemiş",
+    "ikametSarti": "Yok",
+    "ekSartlar": "En az 3-5 yıl mesleki tecrübe, en az iki programlama dili bilgisi, bilgisayar donanım ve ağ yönetimi bilgisi",
+    "kisaOzet": "Tarım ve Orman Bakanlığı, sözleşmeli bilişim personeli alımı yapmaktadır. Bilgisayar mühendisliği mezunları, sözlü ve uygulamalı sınavla değerlendirilecek 13 pozisyona başvurabilir.",
+    "_model": "openai/gpt-oss-120b",
+    "_pv": 2,
+    "_kanit_ok": true
+   },
+   "bitti": true
   }
  }
 }
