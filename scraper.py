@@ -534,6 +534,7 @@ EK_GUCLU_METIN = re.compile(r"ilan\s*metni|ilanı\s*indir|ilan\s*(?:dosya|pdf)|d
 ENGEL_METNI = re.compile(r"geographic restriction|access denied|access restricted", re.I)
 EK_MAX = 4
 SBB_DEBUG_SAYAC = {"n": 0}
+OLE_IMZA = b"\xd0\xcf\x11\xe0\xa1\xb1\x1a\xe1"      # eski .doc biçimi
 
 
 def ek_metni(veri, tur, url):
@@ -555,6 +556,11 @@ def ek_metni(veri, tur, url):
             return (t, "docx") if len(t.strip()) >= 50 else (None, "docx-boş")
         except Exception:
             return None, "zip"
+    if veri[:8] == OLE_IMZA:                       # eski .doc: metin parçalarını çıkar
+        adaylar = [veri.decode("cp1254", "ignore"), veri.decode("utf-16le", "ignore")]
+        kalip = r"[0-9A-Za-zÇĞİÖŞÜçğıöşü.,;:()%/\-–'’“” \t]{30,}"
+        t = max(("\n".join(re.findall(kalip, a)) for a in adaylar), key=len)
+        return (t, "doc") if len(t.strip()) >= 150 else (None, "doc-okunamadı")
     mime = tur.split(";")[0].strip() if (tur or "").startswith("image/") else ""
     if not mime:
         m = re.search(r"\.(png|jpe?g|gif|webp|bmp)(\?|$)", url or "", re.I)
@@ -695,6 +701,29 @@ def sbb_kalici_anahtar(baslik):
 
 def sbb_detay_oku(ctx, url, sira):
     """Bir SBB ilanını liste oturumu açıkken yeni sekmede okur -> (metin | None, seviye, neden)."""
+    # Bağlantı çoğu zaman sayfa değil, ilan DOSYASI olarak iner (tarayıcıda net::ERR_ABORTED verir).
+    # Bu yüzden önce oturum çerezleriyle doğrudan indirilir; dosya değilse sayfa olarak açılır.
+    try:
+        r = ctx.request.get(url, timeout=60000, headers={"Referer": SBB_ANA})
+        if r.status < 400:
+            veri, tur = r.body(), (r.headers.get("content-type") or "").lower()
+            ek = (r.headers.get("content-disposition") or "").lower()
+            if (veri[:4] == b"%PDF" or veri[:2] == b"PK" or veri[:8] == OLE_IMZA or tur.startswith("image/")
+                    or "attachment" in ek or "octet-stream" in tur):
+                t, cins = ek_metni(veri, tur, url)
+                if DIAGNOSE and SBB_DEBUG_SAYAC["n"] < 4:         # tanı sayfasında ilk örnekler görünsün
+                    SBB_DEBUG_SAYAC["n"] += 1
+                    DEBUG.append({"name": f"SBB detay örneği {SBB_DEBUG_SAYAC['n']} (dosya olarak indi)", "url": url,
+                                  "title": "-", "note": f"içerik türü: {tur or '?'}; boyut: {len(veri)} bayt; "
+                                                         f"biçim: {cins}; okunan karakter: {len(t or '')}",
+                                  "body": (t or "")[:1500], "links": ""})
+                if t and len(t.strip()) >= 150:
+                    return t[:40000], f"SBB ilan dosyası ({cins}) (tam metin)", ""
+                return None, "dosya okunamadı", f"{cins}; {tur or 'tür yok'}; {len(veri)} bayt"
+            if ENGEL_METNI.search((r.text() or "")[:600]):
+                return None, "engel", "site bu çalıştırma ortamını coğrafi olarak engelledi"
+    except Exception:
+        pass                                   # istek başarısızsa sayfa yolu denenir
     dp = ctx.new_page()
     try:
         durum = None
@@ -1331,33 +1360,45 @@ def gemini_ocr_pdf(pdf_bytes):
 
 
 def gemini_model_dogrula():
-    """Ayarlı Gemini modeli artık yoksa (404), hesabın listesinden en yeni 'flash' modelini seçer."""
+    """Ayarlı Gemini modeli yanıt vermiyorsa (listede görünse bile 404 verebilir) denenerek çalışan en yeni flash modeli seçilir."""
     global GEMINI_MODEL
     if not GEMINI_API_KEY or GEMINI_MODEL_KONTROL["yapildi"]:
         return
     GEMINI_MODEL_KONTROL["yapildi"] = True
+    surum = lambda m: tuple(int(x) for x in re.search(r"gemini-([\d.]+)", m).group(1).split(".") if x)
+    adaylar = [GEMINI_MODEL, "gemini-flash-latest"]
     try:
         r = requests.get("https://generativelanguage.googleapis.com/v1beta/models?pageSize=200",
                          headers={"x-goog-api-key": GEMINI_API_KEY}, timeout=30)
-        if r.status_code != 200:
-            print("Gemini model listesi alınamadı:", r.status_code)
-            return
-        modeller = [m["name"].split("/", 1)[1] for m in r.json().get("models", [])
-                    if "generateContent" in (m.get("supportedGenerationMethods") or [])]
+        if r.status_code == 200:
+            modeller = [m["name"].split("/", 1)[1] for m in r.json().get("models", [])
+                        if "generateContent" in (m.get("supportedGenerationMethods") or [])]
+            adaylar += sorted([m for m in modeller if re.fullmatch(r"gemini-[\d.]+-flash", m)], key=surum, reverse=True)
+            adaylar += sorted([m for m in modeller if re.fullmatch(r"gemini-[\d.]+-flash-preview[\w.-]*", m)],
+                              key=surum, reverse=True)
     except Exception as e:
         print("Gemini model listesi hatası:", e)
-        return
-    if GEMINI_MODEL in modeller:
-        return
-    adaylar = [m for m in modeller if re.fullmatch(r"gemini-[\d.]+-flash", m)]
-    adaylar.sort(key=lambda m: tuple(int(x) for x in re.search(r"gemini-([\d.]+)", m).group(1).split(".") if x),
-                 reverse=True)
-    if adaylar:
-        print("Gemini modeli değiştirildi:", GEMINI_MODEL, "->", adaylar[0])
-        GEMINI_MODEL = adaylar[0]
-    else:
-        GEMINI_DEAD["v"] = True
-        GROQ_DEAD_NEDEN["gemini"] = f"'{GEMINI_MODEL}' yok ve uygun flash model bulunamadı"
+    denenen = []
+    for m in adaylar:
+        if m in denenen:
+            continue
+        denenen.append(m)
+        if len(denenen) > 8:
+            break
+        try:
+            r = requests.post(f"https://generativelanguage.googleapis.com/v1beta/models/{m}:generateContent",
+                              headers={"x-goog-api-key": GEMINI_API_KEY, "Content-Type": "application/json"},
+                              json={"contents": [{"parts": [{"text": "Yalnızca ok yaz."}]}],
+                                    "generationConfig": {"maxOutputTokens": 8}}, timeout=40)
+        except Exception:
+            continue
+        if r.status_code in (200, 429):                # 429 = model var, yalnız kota dolu
+            if m != GEMINI_MODEL:
+                print("Gemini modeli değiştirildi:", GEMINI_MODEL, "->", m)
+                GEMINI_MODEL = m
+            return
+    GEMINI_DEAD["v"] = True
+    GROQ_DEAD_NEDEN["gemini"] = "çalışan Gemini modeli bulunamadı (denenen: " + ", ".join(denenen[:5]) + ")"
 
 
 def gemini_ocr_dosya(veri, mime):
@@ -2170,7 +2211,7 @@ def main():
         havuz_eleme, havuz_ilgisiz = [], []      # ikinci yapay zekânın denetleyeceği elenmiş ilanlar (bu çalıştırmada işlenenler)
 
         # Stage 1: collect every source before spending time or quota on analysis.
-        for idx, (name, fn) in enumerate(SOURCES):
+        def kaynak_topla(idx, name, fn):
             saat = datetime.datetime.now(ZoneInfo("Europe/Istanbul")).strftime("%H:%M:%S")
             CAPTURE.update(on=True, name=name)
             entries, ham, note, son_hata = [], 0, "", None
@@ -2186,16 +2227,17 @@ def main():
                     print(f"HATA ({name}) deneme {deneme}/3: {e}")
                     time.sleep(15 * deneme)
             if son_hata is not None:
-                CAPTURE["on"] = False
                 entries, ham = [], 0
                 note = f"HATA: {hata_sinifla(son_hata)} — 3 deneme başarısız. Ayrıntı: {str(son_hata)[:160]}"
             CAPTURE["on"] = False
             snapshot(list_page, idx, name, note)
             if name == SBB_ADI and note.startswith("HATA:") and "coğrafi" in note:
                 SBB_BLOKE["v"] = True
-            source_batches.append({"idx": idx, "name": name, "entries": entries,
-                                  "ham": ham, "note": note, "saat": saat})
-            for e in entries:
+            return {"idx": idx, "name": name, "entries": entries, "ham": ham, "note": note, "saat": saat}
+
+        def batch_kaydet(batch):
+            name = batch["name"]
+            for e in batch["entries"]:
                 key = e["link"]
                 bugun.add(key)
                 k = ads.get(key) or {"first_seen": TODAY, "kaynak": name,
@@ -2209,6 +2251,26 @@ def main():
                     k["metin"] = e["content"][:8000]
                 ads[key] = k
             save_state(state)
+
+        for idx, (name, fn) in enumerate(SOURCES):
+            b = kaynak_topla(idx, name, fn)
+            source_batches.append(b)
+            batch_kaydet(b)
+
+        # Geçici ağ/DNS kesintileri için: başarısız kaynaklar diğerleri bittikten sonra yeniden denenir
+        for tur in (1, 2):
+            basarisiz = [b for b in source_batches
+                         if b["note"].startswith("HATA:") and "coğrafi" not in b["note"]]
+            if not basarisiz or zaman_doldu():
+                break
+            print(f"{len(basarisiz)} kaynak yeniden denenecek (tur {tur}): " + ", ".join(b["name"] for b in basarisiz))
+            time.sleep(90 * tur)
+            for b in basarisiz:
+                yeni = kaynak_topla(b["idx"], b["name"], SOURCES[b["idx"]][1])
+                if not yeni["note"].startswith("HATA:"):
+                    yeni["note"] += f" (ağ hatası sonrası {tur}. yeniden denemede başarılı)"
+                source_batches[source_batches.index(b)] = yeni
+                batch_kaydet(yeni)
 
         # Stage 2: read details and classify the already-collected listings.
         for batch in source_batches:
