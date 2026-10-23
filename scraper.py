@@ -68,6 +68,7 @@ GROQ_MEVCUT = []                            # Groq model listesinden gelen kimli
 GROQ_DEAD_NEDEN = {}                        # model -> neden (rapor başlığında gösterilir)
 GROQ_ZAYIF = {"openai/gpt-oss-20b"}   # kartta "doğrula" uyarısı yalnız bunlar için
 SBB_ADI = "SBB Kamu İlan"
+STALE = {}                                  # kaynak çöktüğünde önceki günden taşınan ilanlar: anahtar -> son görülme
 SBB_BLOKE = {"v": False}                    # coğrafi engel nedeniyle açılamadıysa raporlarda bilgi notu çıkar
 SBB_ANA = "https://kamuilan.sbb.gov.tr/"     # ilanDetay.aspx?kod=... bağlantıları oturuma özel; sonradan açılınca 404 veriyor
 MEMURLAR_ADI = "Memurlar.net İlan"
@@ -1770,6 +1771,12 @@ def kanit_yok(an):
 
 def card_html(a):
     yeni = '<span class="new">🆕 Bugün eklendi</span>' if a.get("_yeni") else ""
+    if a.get("_eski"):
+        try:
+            gun = datetime.date.fromisoformat(str(a["_eski"])).strftime("%d.%m.%Y")
+        except Exception:
+            gun = str(a["_eski"])
+        yeni += f' <span class="tag red">⚠ kaynak şu an erişilemiyor — son görülme: {E(gun)}</span>'
     ikamet = a.get("ikametSarti") or "Belirtilmemiş"
     cls = "tag red" if str(ikamet).startswith("Var") else "tag"
     ek = a.get("ekSartlar") or "Yok"
@@ -2003,7 +2010,7 @@ def p2_rapor(ads, bugun, state):
         bitis = tarih_ayrisir(an.get("basvuruBitis"))
         a = dict(an)
         a.update({"link": key, "_kaynak": k.get("kaynak"), "_baslik": k.get("baslik"), "_p2": True,
-                  "_bitis": bitis, "_ilk": k.get("first_seen")})
+                  "_bitis": bitis, "_ilk": k.get("first_seen"), "_eski": STALE.get(key)})
         neden = dogrula2(an, k.get("baslik", ""))
         if neden:
             a["_uygunsuz"] = neden
@@ -2272,6 +2279,22 @@ def main():
                 source_batches[source_batches.index(b)] = yeni
                 batch_kaydet(yeni)
 
+        # Kaynak çöktüyse (DNS/ağ hatası vb.) son 3 günde görülen, analizi bulunan ilanlar raporda kaybolmasın:
+        # "kaynak erişilemiyor" rozetiyle gösterilir.
+        esik = (TR_NOW.date() - datetime.timedelta(days=3)).isoformat()
+        for b in source_batches:
+            if not b["note"].startswith("HATA:"):
+                continue
+            tasinan = 0
+            for key, k in ads.items():
+                if (k.get("kaynak") == b["name"] and key not in bugun and (k.get("last_seen") or "") >= esik
+                        and (k.get("analiz") or (k.get("p2") or {}).get("analiz"))):
+                    bugun.add(key)
+                    STALE[key] = k.get("last_seen")
+                    tasinan += 1
+            if tasinan:
+                b["note"] += f" — önceki günlerden {tasinan} ilan taşındı (kartlarda 'kaynak erişilemiyor' rozeti)"
+
         # Stage 2: read details and classify the already-collected listings.
         for batch in source_batches:
             idx, name, entries = batch["idx"], batch["name"], batch["entries"]
@@ -2456,7 +2479,7 @@ def main():
         if ilgili:
             a = dict(an)
             a.update({"link": key, "_kaynak": k.get("kaynak"), "_baslik": k.get("baslik"),
-                      "_yeni": yeni, "_bitis": bitis, "_ilk": k.get("first_seen")})
+                      "_yeni": yeni, "_bitis": bitis, "_ilk": k.get("first_seen"), "_eski": STALE.get(key)})
             if sure_doldu:
                 dolmus.append(a)
             else:
