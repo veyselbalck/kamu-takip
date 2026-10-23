@@ -404,3 +404,12 @@ navigating to ""https://kariyerkapisi.gov.tr/isealim"", waiting until ""dom"
 2026-10-22,15:54:28,ÇŞB Yerel Yönetimler,34,34,0,OK,"sitede toplam: 34, okunan: 34 (yalnız ilan/alım başlıklı duyurular; 3 sayfa gezildi)"
 2026-10-22,15:54:44,İŞKUR (e-şube),15,15,0,OK,"sitede toplam: 15, okunan: 15 (Kamu seçilerek arandı; 1 sayfa gezildi, sonraki sayfa yok)"
 2026-10-22,15:54:58,Memurlar.net İlan,73,73,25,KISMİ (tamlık doğrulanmadı),8/8 kategori sayfası gezildi (tam ilan metni); sitede toplam sayısı bilinmiyor (yapı doğrulanmadı)
+2026-10-23,11:14:17,İlan.gov.tr,149,149,20,OK,"sitede toplam: 149, okunan: 149, sayfalama: currentPage"
+2026-10-23,11:15:02,Resmî Gazete,0,0,0,HATA,"HATA: alan adı çözülemedi (ağ/DNS) — 3 deneme başarısız. Ayrıntı: Page.goto: net::ERR_NAME_NOT_RESOLVED at https://www.resmigazete.gov.tr/ilanlar/eskiilanlar/2026/10/20261023-4.htm
+Call log:
+navigating to ""https://www.resmigaz"
+2026-10-23,11:16:38,Kariyer Kapısı,0,0,0,HATA,HATA: Kariyer Kapısı açılamadı: sayfa açılamadı (alan adı çözülemedi (ağ/DNS)) — 3 deneme başarısız. Ayrıntı: Kariyer Kapısı açılamadı: sayfa açılamadı (alan adı çözülemedi (ağ/DNS))
+2026-10-23,11:20:56,SBB Kamu İlan,144,0,0,KISMİ (bazı ilanların içeriği okunamadı),"sitede toplam: 105, okunan: 144 (ham bağlantı: 144, tekrarlar elendi) — detay metni okunan: 0/144 — okunamayanlar: Page.goto: net::ERR_ABORTED at https://kamuilan.sb ×144"
+2026-10-23,11:32:59,ÇŞB Yerel Yönetimler,33,33,2,OK,"sitede toplam: 33, okunan: 33 (yalnız ilan/alım başlıklı duyurular; 3 sayfa gezildi)"
+2026-10-23,11:33:12,İŞKUR (e-şube),15,15,0,OK,"sitede toplam: 15, okunan: 15 (Kamu seçilerek arandı; 1 sayfa gezildi, sonraki sayfa yok)"
+2026-10-23,11:33:22,Memurlar.net İlan,72,72,22,KISMİ (tamlık doğrulanmadı),8/8 kategori sayfası gezildi (tam ilan metni); sitede toplam sayısı bilinmiyor (yapı doğrulanmadı)
