@@ -438,3 +438,10 @@ navigating to ""https://www.resmigaz — önceki günlerden 9 ilan taşındı (k
 2026-10-24,17:27:57,ÇŞB Yerel Yönetimler,33,33,0,OK,"sitede toplam: 33, okunan: 33 (yalnız ilan/alım başlıklı duyurular; 3 sayfa gezildi)"
 2026-10-24,17:28:10,İŞKUR (e-şube),15,15,0,OK,"sitede toplam: 15, okunan: 15 (Kamu seçilerek arandı; 1 sayfa gezildi, sonraki sayfa yok)"
 2026-10-24,17:28:20,Memurlar.net İlan,69,69,21,KISMİ (tamlık doğrulanmadı),8/8 kategori sayfası gezildi (tam ilan metni); sitede toplam sayısı bilinmiyor (yapı doğrulanmadı)
+2026-10-25,15:24:15,İlan.gov.tr,136,136,19,OK,"sitede toplam: 136, okunan: 136, sayfalama: currentPage"
+2026-10-25,15:24:57,Resmî Gazete,6,1,0,OK,"sitede toplam: 6, okunan: 6, personel ilanı: 1, PDF bulma: dizin linkleri"
+2026-10-25,15:25:02,Kariyer Kapısı,26,26,9,OK,"IlanDetay linkleri doğrudan bulundu; sitede toplam: 26, okunan: 26, harici siteye giden (İlana Git): 3"
+2026-10-25,15:25:18,SBB Kamu İlan,129,0,0,OK,"sitede toplam: 94, okunan: 129 (ham bağlantı: 129, tekrarlar elendi) — detay okunmuyor (yalnız liste); başka kaynaklarla eşleştirildi"
+2026-10-25,15:25:37,ÇŞB Yerel Yönetimler,33,33,0,OK,"sitede toplam: 33, okunan: 33 (yalnız ilan/alım başlıklı duyurular; 3 sayfa gezildi)"
+2026-10-25,15:25:51,İŞKUR (e-şube),15,15,0,OK,"sitede toplam: 15, okunan: 15 (Kamu seçilerek arandı; 1 sayfa gezildi, sonraki sayfa yok)"
+2026-10-25,15:26:01,Memurlar.net İlan,69,69,21,KISMİ (tamlık doğrulanmadı),8/8 kategori sayfası gezildi (tam ilan metni); sitede toplam sayısı bilinmiyor (yapı doğrulanmadı)
