@@ -494,3 +494,10 @@ navigating to ""https://www.resmigaz — önceki günlerden 9 ilan taşındı (k
 2026-10-30,13:07:27,ÇŞB Yerel Yönetimler,35,35,0,OK,"sitede toplam: 35, okunan: 35 (yalnız ilan/alım başlıklı duyurular; 3 sayfa gezildi)"
 2026-10-30,13:07:40,İŞKUR (e-şube),0,0,0,ŞÜPHELİ (0 ham kayıt),"Kamu seçilerek arandı; 0 ilan bulundu, detay sayfaları açılacak"
 2026-10-30,13:07:49,Memurlar.net İlan,66,66,19,KISMİ (tamlık doğrulanmadı),8/8 kategori sayfası gezildi (tam ilan metni); sitede toplam sayısı bilinmiyor (yapı doğrulanmadı)
+2026-10-30,18:43:47,İlan.gov.tr,143,143,16,OK,"sitede toplam: 143, okunan: 143, sayfalama: currentPage"
+2026-10-30,18:44:31,Resmî Gazete,15,11,1,ŞÜPHELİ (eksik okundu),"sitede toplam: 15, okunan: 14, personel ilanı: 11, PDF bulma: dizin linkleri — okunamayan PDF: 1 (taranmış görüntü olabilir; elle kontrol listesinde)"
+2026-10-30,18:44:51,Kariyer Kapısı,20,20,8,OK,"IlanDetay linkleri doğrudan bulundu; sitede toplam: 20, okunan: 20, harici siteye giden (İlana Git): 1"
+2026-10-30,18:45:00,SBB Kamu İlan,135,0,0,OK,"sitede toplam: 105, okunan: 135 (ham bağlantı: 135, tekrarlar elendi) — detay okunmuyor (yalnız liste); başka kaynaklarla eşleştirildi"
+2026-10-30,18:45:09,ÇŞB Yerel Yönetimler,35,35,0,OK,"sitede toplam: 35, okunan: 35 (yalnız ilan/alım başlıklı duyurular; 3 sayfa gezildi)"
+2026-10-30,18:45:23,İŞKUR (e-şube),1,1,0,KISMİ (tamlık doğrulanmadı),e-şube açılamadı (zaman aşımı (site yavaş ya da bu ağdan erişilemiyor)); yedek kamu ilanları sayfasından okundu (yapı doğrulanmadı)
+2026-10-30,18:45:44,Memurlar.net İlan,57,57,18,KISMİ (tamlık doğrulanmadı),8/8 kategori sayfası gezildi (tam ilan metni); sitede toplam sayısı bilinmiyor (yapı doğrulanmadı)
