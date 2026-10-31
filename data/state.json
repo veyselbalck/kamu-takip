@@ -4915,8 +4915,8 @@
    "last_seen": "2026-10-31",
    "detail_level": "İlan detay sayfası",
    "detail_checked": true,
-   "metin_len": 15774,
-   "metin_hash": "55c063e2d4da554ec1f71cfcf2a3573a184d226723205997f347a6d52eae99be",
+   "metin_len": 15775,
+   "metin_hash": "b48693d2744b351825902f707ca4c25473e61c5a6e3173d151371154301d5555",
    "p2": {
     "v": 2,
     "aday": false
@@ -4925,18 +4925,18 @@
     "kategori": "ILGISIZ",
     "kanit": "Tablo 2’de belirtilen öğrenim dallarından lisans düzeyinde mezun olmak",
     "kurum": "Batı Akdeniz Kalkınma Ajansı",
-    "pozisyon": "Uzman",
+    "pozisyon": "Personel Alım İlanı (3 Uzman)",
     "kadroSayisi": null,
     "basvuruBaslangic": "12.10.2026",
-    "basvuruBitis": "31.10.2026",
+    "basvuruBitis": "31.10.2026 23:59",
     "degerlendirmeSekli": "KPSS + YDS + diğer tercih alanları",
     "kpssDurumu": "Zorunlu",
-    "kpssTuru": "en az 80 puan",
+    "kpssTuru": "KPSS-P3 en az 80 puan",
     "ekSinav": true,
-    "ekSinavDetay": "YDS puanı, Tablo 4’te gösterildiği şekilde puanlanacaktır",
-    "ikametSarti": "Yok",
-    "ekSartlar": "İngilizce YDS C düzeyi, ikinci yabancı dil belgesi, denklik gösterir belge",
-    "kisaOzet": "Batı Akdeniz Kalkınma Ajansı, 12-31 Ekim 2026 tarihleri arasında Uzman kadroları için e-Devlet üzerinden başvuru kabul ediyor. Değerlendirme KPSS puanı, YDS puanı ve diğer tercih kriterlerine göre yapılacak.",
+    "ekSinavDetay": "YDS puanı, tercih sebebi olarak değerlendirilecek",
+    "ikametSarti": "Belirtilmemiş",
+    "ekSartlar": "İngilizce YDS C düzeyi, ikinci yabancı dil belgesi tercih sebebi, denklik belgesi zorunluluğu",
+    "kisaOzet": "Batı Akdeniz Kalkınma Ajansı, 12-31 Ekim 2026 tarihleri arasında e-Devlet üzerinden uzman kadroları için başvuru alıyor; başvuru için KPSS‑P3 en az 80 puan ve YDS puanı gibi ek şartlar aranıyor.",
     "_model": "openai/gpt-oss-120b",
     "_pv": 2,
     "_kanit_ok": true
@@ -56134,16 +56134,38 @@
   "https://ilan.memurlar.net/ilan/63464/istanbul-personel-yonetim-as-79-isci-alacak.html": {
    "first_seen": "2026-10-09",
    "kaynak": "Memurlar.net İlan",
-   "baslik": "10 Ocak 2022 | İstanbul Personel Yönetim Aş. 79 İşçi Alacak",
+   "baslik": "İstanbul Personel Yönetim Aş. 79 İşçi Alacak",
    "kurum": "",
    "last_seen": "2026-10-31",
    "detail_level": "İlan detay sayfası",
    "detail_checked": true,
-   "metin_len": 814,
-   "metin_hash": "fd9013a3918cd2434ccad8af926ea703c972f98a04939d0b003e479b3d240727",
+   "metin_len": 836,
+   "metin_hash": "a2dea098a95a5f9542fc05bd413d310288d959c6ab29da85ea66f249b3a4db08",
    "p2": {
     "v": 2,
-    "aday": false
+    "aday": true,
+    "analiz": {
+     "kategori": "ILGISIZ",
+     "kanit": "İstanbul Personel Yönetim Aş. 79 İşçi Alacak",
+     "kurum": "İstanbul Personel Yönetim Aş",
+     "pozisyon": "İşçi",
+     "kadroSayisi": null,
+     "bolumUygun": "Belirtilmemiş",
+     "engelliBilgi": "Yok",
+     "basvuruBaslangic": null,
+     "basvuruBitis": "16 ocak 2022",
+     "degerlendirmeSekli": "belirtilmemiş",
+     "kpssDurumu": "Belirtilmemiş",
+     "kpssTuru": "belirtilmemiş",
+     "ekSinav": false,
+     "ekSinavDetay": "Yok",
+     "ikametSarti": "Belirtilmemiş",
+     "ekSartlar": "Yok",
+     "kisaOzet": "İstanbul Personel Yönetim Aş. 79 İşçi Alacak ilanı, 16 Ocak 2022 son başvuru tarihli, detayları belirtilmemiştir.",
+     "_model": "openai/gpt-oss-120b",
+     "_pv": 2,
+     "_kanit_ok": true
+    }
    },
    "bitti": true,
    "sonuc": "ADAY DEĞİL (anahtar kelime yok)"
@@ -56173,33 +56195,11 @@
    "last_seen": "2026-10-31",
    "detail_level": "İlan detay sayfası",
    "detail_checked": true,
-   "metin_len": 718,
-   "metin_hash": "97420dafb803df6c55a159d3128cc18390c4f892cb0ada5bc318910e4dddda78",
+   "metin_len": 731,
+   "metin_hash": "8c7da726f31511effe9a27ba39d73537298d9b35709e0c7e01d44d425df1b501",
    "p2": {
     "v": 2,
-    "aday": true,
-    "analiz": {
-     "kategori": "ILGISIZ",
-     "kanit": "Aydın Koçarlı Belediyesi 7 İşçi Alacak.",
-     "kurum": "Aydın Koçarlı Belediyesi",
-     "pozisyon": "İşçi",
-     "kadroSayisi": 7,
-     "bolumUygun": "Belirtilmemiş",
-     "engelliBilgi": "Yok",
-     "basvuruBaslangic": null,
-     "basvuruBitis": null,
-     "degerlendirmeSekli": "belirtilmemiş",
-     "kpssDurumu": "Belirtilmemiş",
-     "kpssTuru": "belirtilmemiş",
-     "ekSinav": false,
-     "ekSinavDetay": "Yok",
-     "ikametSarti": "Belirtilmemiş",
-     "ekSartlar": "Yok",
-     "kisaOzet": "Aydın Koçarlı Belediyesi 7 işçi alımı yapmaktadır.",
-     "_model": "openai/gpt-oss-120b",
-     "_pv": 2,
-     "_kanit_ok": true
-    }
+    "aday": false
    },
    "bitti": true,
    "sonuc": "ADAY DEĞİL (anahtar kelime yok)"
@@ -62944,7 +62944,7 @@
    "detail_level": "İlan detay sayfası",
    "detail_checked": true,
    "metin_len": 27230,
-   "metin_hash": "30dae256287edac9430742ab976372c9a9bcecdb35d657f7ac459c896a89a03a",
+   "metin_hash": "f47137dbe9867ea1cf78c034818c60e88a540525e03fbf30e9968fed58a30683",
    "p2": {
     "v": 2,
     "aday": false
@@ -62957,14 +62957,14 @@
     "kadroSayisi": 15,
     "basvuruBaslangic": null,
     "basvuruBitis": null,
-    "degerlendirmeSekli": "Sözlü sınav",
+    "degerlendirmeSekli": "belirtilmemiş",
     "kpssDurumu": "Belirtilmemiş",
-    "kpssTuru": "Belirtilmemiş",
+    "kpssTuru": "belirtilmemiş",
     "ekSinav": false,
     "ekSinavDetay": "Yok",
     "ikametSarti": "Yok",
-    "ekSartlar": "En az 3-5 yıl mesleki tecrübe, en az iki programlama dili bilgisi, güvenlik soruşturması sonucu olumlu",
-    "kisaOzet": "Bankacılık Düzenleme ve Denetleme Kurumu sözleşmeli bilişim personeli alımı yapmaktadır. Bilgisayar mühendisliği mezunları, sözlü sınavla değerlendirilecek 15 pozisyon için başvurabilir.",
+    "ekSartlar": "657 sayılı Kanun genel şartları, en az 3/5 yıl mesleki tecrübe, iki programlama dili bilgisi, güvenlik soruşturması, takım çalışmasına yatkınlık",
+    "kisaOzet": "Bankacılık Düzenleme ve Denetleme Kurumu, sözleşmeli bilişim personeli alımı yapmaktadır. Bilgisayar mühendisliği mezunları, sözlü sınavla değerlendirilecek 15 pozisyon için başvurabilir.",
     "_model": "openai/gpt-oss-120b",
     "_pv": 2,
     "_kanit_ok": true
@@ -74014,15 +74014,15 @@
    "last_seen": "2026-10-31",
    "detail_level": "İlan detay sayfası",
    "detail_checked": true,
-   "metin_len": 11620,
-   "metin_hash": "4320f2fef766888927a0d8211a04b434e9cfa3f25de5d7efd044453301a174a9",
+   "metin_len": 11622,
+   "metin_hash": "1b13f65af462a32351912e5d7c4799c6302566340eb1a9b30c4f2a6241cbc19e",
    "p2": {
     "v": 2,
     "aday": false
    },
    "analiz": {
-    "kategori": "TUM_LISANS",
-    "kanit": "Bilgisayar İşletmeni kadrosuna atanabilmek için; 1) En az lise veya dengi okul mezunu olmak.",
+    "kategori": "ILGISIZ",
+    "kanit": "Müdürlük kadrolarında en az 1 yıl görev yapmış olmak ve en az 8 yıl toplam hizmeti bulunmak.",
     "kurum": "Atatürk Orman Çiftliği Müdürlüğü",
     "pozisyon": "Bilgisayar İşletmeni",
     "kadroSayisi": null,
@@ -74030,12 +74030,12 @@
     "basvuruBitis": "08.11.2026",
     "degerlendirmeSekli": "Yazılı sınav",
     "kpssDurumu": "Belirtilmemiş",
-    "kpssTuru": "Belirtilmemiş",
+    "kpssTuru": "belirtilmemiş",
     "ekSinav": false,
     "ekSinavDetay": "Yok",
     "ikametSarti": "Yok",
-    "ekSartlar": "En az üç yıl müdürlük kadrosunda hizmet, kadronun gerektirdiği hizmet süresi şartı",
-    "kisaOzet": "Atatürk Orman Çiftliği Müdürlüğü, Bilgisayar İşletmeni kadrosu için 30.10.2026‑08.11.2026 tarihleri arasında başvuru kabul ediyor; değerlendirme yazılı sınavla yapılacak ve lisans mezunları da başvurabilir.",
+    "ekSartlar": "En az 1 yıl müdürlük kadrosunda görev, toplam 8 yıl hizmet, en az lise veya dengi okul mezunu",
+    "kisaOzet": "Atatürk Orman Çiftliği Müdürlüğü personeline yönelik görevde yükselme sınavı 30.10.2026-08.11.2026 tarihleri arasında başvurular kabul ediyor. Sınav yazılıdır ve başvuru için en az bir yıl müdürlük kadrosunda ve toplam 8 yıl hizmet şartı aranıyor.",
     "_model": "openai/gpt-oss-120b",
     "_pv": 2,
     "_kanit_ok": true
@@ -75710,8 +75710,8 @@
    "last_seen": "2026-10-31",
    "detail_level": "İlan detay sayfası",
    "detail_checked": true,
-   "metin_len": 559,
-   "metin_hash": "6c693da9e3fe4505fdf529003ca7bb3b83534603c05ff852f9f0ef2c01606e28",
+   "metin_len": 758,
+   "metin_hash": "769785b78acbddfb54557fc8f5ad80d945ecebee064d26aa806c733527ce5f75",
    "p2": {
     "v": 2,
     "aday": false
@@ -76426,28 +76426,28 @@
    "last_seen": "2026-10-31",
    "detail_level": "İlan detay sayfası",
    "detail_checked": true,
-   "metin_len": 19031,
-   "metin_hash": "ebd3a2ce09deebdd1105d1c7f389aac14afd03c85b6de76511858702ad6d317c",
+   "metin_len": 19032,
+   "metin_hash": "517f8ff28aac51cb8b31ce949d1eaced7c2f8e4f3bbcc140c279f9c98c1100df",
    "p2": {
     "v": 2,
     "aday": false
    },
    "analiz": {
     "kategori": "BOLUM",
-    "kanit": "Fakültelerin dört yıllık bilgisayar mühendisliği, yazılım mühendisliği, elektrik mühendisliği, elektronik mühendisliği, elektrik ve elektronik mühendisliği ve endüstri mühendisliği bölümlerinden ya da bunlara denkliği Yükseköğretim Kurulunca kabul edilmiş yurt dışındaki yükseköğretim kurumlarından mezun olmak",
+    "kanit": "Fakültelerin dört yıllık bilgisayar mühendisliği, yazılım mühendisliği, ... bölümlerinden ya da bunlara denkliği ... mezun olmak",
     "kurum": "Türk Akreditasyon Kurumu",
     "pozisyon": "Sözleşmeli Bilişim Personeli",
     "kadroSayisi": 2,
-    "basvuruBaslangıc": null,
+    "basvuruBaslangic": null,
     "basvuruBitis": null,
     "degerlendirmeSekli": "KPSS + YDS + sözlü/uygulamalı sınav",
     "kpssDurumu": "Zorunlu",
-    "kpssTuru": "KPSS‑P3 en az %70 puan",
+    "kpssTuru": "KPSS-P3 puanının %70'u",
     "ekSinav": true,
-    "ekSinavDetay": "Sözlü/uygulamalı sınav; başarı sırasına göre",
+    "ekSinavDetay": "Sözlü/uygulamalı sınav",
     "ikametSarti": "Yok",
-    "ekSartlar": "5 yıl mesleki tecrübe, en az 2 programlama dili bilgisi, erkek adaylar için askerlik zorunluluğu",
-    "kisaOzet": "Türk Akreditasyon Kurumu, sözleşmeli bilişim personeli alımı için bilgisayar mühendisliği gibi bölümlerden mezunları 2 kişi istihdam edecek. Başvuru için KPSS‑P3 puanı %70 ve YDS puanı %30 oranında değerlendirilip sözlü/uyumlamsı sınav yapılacak.",
+    "ekSartlar": "5 yıl mesleki tecrübe, en az iki programlama dili bilgisi, erkek adaylar için askerlik durumu",
+    "kisaOzet": "Türk Akreditasyon Kurumu, sözleşmeli bilişim personeli alımı için bilgisayar mühendisliği mezunlarını kabul etmektedir. Başvuru için KPSS, YDS puanları ve sözlü/uygulamalı sınav değerlendirilecektir.",
     "_model": "openai/gpt-oss-120b",
     "_pv": 2,
     "_kanit_ok": true
@@ -76463,7 +76463,7 @@
    "detail_level": "İlan detay sayfası",
    "detail_checked": true,
    "metin_len": 13533,
-   "metin_hash": "8e14082b397542af7917c6654952c5d702e0aef5b6bb5974ab09f5af08b5f6c8",
+   "metin_hash": "865c9519ef1effecbdb389924506a1c02f195d1118681270ca4bde61d0c8eded",
    "p2": {
     "v": 2,
     "aday": true,
@@ -76492,7 +76492,7 @@
    },
    "analiz": {
     "kategori": "ILGISIZ",
-    "kanit": "Öğrenim Dalı: Gıda Mühendisliği, Metalurji ve Malzeme Mühendisliği, Endüstri Mühendisliği, Makine Mühendisliği, Elektrik/Elektronik Mühendisliği, Çevre Mühendisliği, Veteriner",
+    "kanit": "Öğrenim Dalı: Gıda Mühendisliği ... Elektrik Mühendisliği, Elektrik-Elektronik Mühendisliği veya Elektronik Mühendisliği ... Çevre Mühendisliği ... Veteriner",
     "kurum": "Türk Akreditasyon Kurumu",
     "pozisyon": "Akreditasyon Uzman Yardımcısı",
     "kadroSayisi": 7,
@@ -76500,15 +76500,15 @@
     "basvuruBitis": null,
     "degerlendirmeSekli": "KPSS + sözlü sınav",
     "kpssDurumu": "Zorunlu",
-    "kpssTuru": "Asgari KPSS puanı 70",
+    "kpssTuru": "KPSS puanı en az 70",
     "ekSinav": true,
-    "ekSinavDetay": "Sözlü giriş sınavı; puan şartı yok",
+    "ekSinavDetay": "Sözlü giriş sınavı",
     "ikametSarti": "Yok",
-    "ekSartlar": "Türk vatandaşı, 18 yaşını tamamlamış, YDS C seviyesi (70) veya eşdeğer belge, sağlık durumu uygun, suç kaydı olmama",
-    "kisaOzet": "Türk Akreditasyon Kurumu 7 Akreditasyon Uzman Yardımcısı alımı yapıyor. Bilgisayar mühendisliği mezunları ilan edilen bölümler arasında yer almadığından başvuramaz.",
+    "ekSartlar": "18 yaş, Türk vatandaşı, YDS C seviyesi (70) puan, sağlık durumu uygun olmalı",
+    "kisaOzet": "Türk Akreditasyon Kurumu 7 Akreditasyon Uzman Yardımcısı pozisyonu için sözlü giriş sınavı yapmaktadır. Başvuru için KPSS'de en az 70 puan ve YDS C seviyesi şartı aranıyor.",
     "_model": "openai/gpt-oss-120b",
     "_pv": 2,
-    "_kanit_ok": false
+    "_kanit_ok": true
    },
    "bitti": true
   },
@@ -83441,16 +83441,16 @@
    "detail_level": "İlan detay sayfası",
    "detail_checked": true,
    "metin_len": 8933,
-   "metin_hash": "b63bc0b5bd8e4cd3019350d592538a095d67a01bd0b6e601df183c05814508c7",
+   "metin_hash": "63ab1469620f9daebfd5c50b9fe67b757c59b2c3984475a49c4ad28822f9f8ef",
    "p2": {
     "v": 2,
     "aday": false
    },
    "analiz": {
     "kategori": "ILGISIZ",
-    "kanit": "13 adet uzman yardımcısı (genel alan) kadrosu için: ... hukuk, siyasal bilgiler, iktisat, işletme, iktisadi ve idari bilimler ile ticari bilimler fakültelerinden ... mezun olması",
+    "kanit": "13 adet uzman yardımcısı (genel alan) kadrosu için: ... hukuk, siyasal bilgiler, iktisat, işletme, iktisadi ve idari bilimler ile ticari bilimler fakültelerinden mezun olması",
     "kurum": "Kamu Gözetimi, Muhasebe ve Denetim Standartları Kurumu",
-    "pozisyon": "Uzman Yardımcısı Giriş Sınavı (2026)",
+    "pozisyon": "Uzman Yardımcılığı Giriş Sınavı",
     "kadroSayisi": 13,
     "basvuruBaslangic": "19.10.2026",
     "basvuruBitis": "02.11.2026",
@@ -83459,12 +83459,12 @@
     "kpssTuru": "KPSS P1, P17, P18, P22, P23, P24, P25, P26, P27, P28, P44, P45, P46, P47, P48 puan türlerinden 75 ve üzeri",
     "ekSinav": true,
     "ekSinavDetay": "Yazılı sınav ve sözlü mülakat",
-    "ikametSarti": "Belirtilmemiş",
-    "ekSartlar": "35 yaş sınırı, denklik belgesi gerekliliği, görevine engel durum olmaması",
-    "kisaOzet": "Kamu Gözetimi, Muhasebe ve Denetim Standartları Kurumu 13 uzman yardımcısı (genel alan) kadrosu için 19.10‑02.11.2026 tarihleri arasında başvuru kabul ediyor; başvuru için ilgili lisans bölümlerinden mezun olmak ve KPSS puanı 75+ şart.",
+    "ikametSarti": "Yok",
+    "ekSartlar": "35 yaşını doldurmamış olmak; görevine engel durum olmaması",
+    "kisaOzet": "Uzman Yardımcılığı kadrosu için 13 kişi seçilecek, başvuru KPSS puanı ve yazılı‑sözlü sınavla değerlendirilecek.",
     "_model": "openai/gpt-oss-120b",
     "_pv": 2,
-    "_kanit_ok": true
+    "_kanit_ok": false
    },
    "bitti": true
   },
@@ -85920,7 +85920,7 @@
    "detail_level": "İlan detay sayfası",
    "detail_checked": true,
    "metin_len": 1748,
-   "metin_hash": "181d98235cd799c2a19b304e0baae9fffcd397c3826b12acec00e9d2643487f3",
+   "metin_hash": "59a1839a1c780f200a7f6f98bffdc6ebcf06c9ef82d856600a5f78de1a667002",
    "p2": {
     "v": 2,
     "aday": false
@@ -88155,27 +88155,27 @@
    "detail_level": "İlan detay sayfası",
    "detail_checked": true,
    "metin_len": 15028,
-   "metin_hash": "43566d7cd91556a552ad1b78cedc9e9a1c567182de47eb73288045e05dc7750a",
+   "metin_hash": "86f23ef114c1ad4c9c7b9899c3881d1e887fbab721deab383894a15cf876fdc0",
    "p2": {
     "v": 2,
     "aday": false
    },
    "analiz": {
     "kategori": "ILGISIZ",
-    "kanit": "Diğer fakültelerin ... bölümlerinden mezun olmak: ... Yönetim Bilişim Sistemleri, ... (Bilgisayar/Yazılım Mühendisliği belirtilmemiş)",
+    "kanit": "Diğer fakültelerin aşağıda yer alan lisans bölümlerinin birinden mezun olmak: Endüstri Mühendisliği, İşletme Mühendisliği, Yönetim Bilişim Sistemleri, ...",
     "kurum": "Yurtdışı Türkler ve Akraba Topluluklar Başkanlığı",
     "pozisyon": "Yurtdışı Türkler ve Akraba Topluluklar Uzman Yardımcısı",
     "kadroSayisi": 15,
     "basvuruBaslangic": null,
     "basvuruBitis": null,
-    "degerlendirmeSekli": "belirtilmemiş",
-    "kpssDurumu": "Belirtilmemiş",
-    "kpssTuru": "belirtilmemiş",
+    "degerlendirmeSekli": "Mesleğe özel yarışma sınavı",
+    "kpssDurumu": "Aranmıyor",
+    "kpssTuru": "Belirtilmemiş",
     "ekSinav": true,
     "ekSinavDetay": "Yabancı Dil Bilgisi Seviye Tespit Sınavı (YDS) en az B düzeyi veya eşdeğer belge",
     "ikametSarti": "Yok",
-    "ekSartlar": "35 yaşını doldurmamış olmak (01 Ocak 1991 ve sonrası doğum), 657 sayılı Devlet Memurları Kanunu genel şartları, YDS B düzeyi yabancı dil belgesi",
-    "kisaOzet": "Yurtdışı Türkler ve Akraba Topluluklar Başkanlığı azami 15 Uzman Yardımcısı alımı yapıyor; başvuru için 35 yaş altı olmak, ilgili lisans bölümlerinden mezun olmak ve YDS B düzeyinde yabancı dil belgesi gerekmektedir.",
+    "ekSartlar": "35 yaşını doldurmamış olmak; Yabancı dil belgesi (YDS B düzeyi); yurt dışı mezuniyet için denklik belgesi",
+    "kisaOzet": "Yurtdışı Türkler ve Akraba Topluluklar Başkanlığı 15 Uzman Yardımcısı alacak. Başvuru için 35 yaş sınırı, ilgili lisans bölümlerinden mezuniyet ve YDS B düzeyi gereklidir.",
     "_model": "openai/gpt-oss-120b",
     "_pv": 2,
     "_kanit_ok": false
@@ -97957,7 +97957,7 @@
     "_kanit_ok": true
    },
    "bitti": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=G8s7GA58b%2fJtYFT9HEPZq2ZGsqLkSggsXgVX0u843%2fsM0bYPQuB7CtUe1go6hJFXZk9tkqxYPWydsDZi08PB1pDppnMP%2fmXv%2bOoBXP3cwYx8TrP92mZboF1bVaZvc1Mt"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=PNvAVLCc442RezYCK8rbRkuZZlEzE3RGYnsu5A%2bbcyYyauzQMb7GUVf98iah1Vd%2fdBT9DQXspXJlHiLMeKQRSHgqw8TcDOS7dEbAzBtDRAfXWFThHwnRBrG9xVEkImRK"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-a45f92a54c9b": {
    "first_seen": "2026-10-23",
@@ -97976,7 +97976,7 @@
    },
    "bitti": true,
    "sonuc": "ADAY DEĞİL (anahtar kelime yok)",
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=McHm%2foE5gu4p%2bqJ0Xdbbrta8C4Ls2B34gPTQNoJ8T%2fSS0yuy9tN0MRqR8J5vKBo8gLolF7QzgAn5l0IPPjsIauf2lfVcXwzHD56XTpS8XgAgKdSz9LEvgcwEfiUzsWfn"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=GyjRua2x7Fb4bqOWTXqWxInTcr7entQGMUsP99QVso5aCJtdSpxJfzInzWp91aBDDjROhNMe2p7efggfUZMHZ3x97vOpgBRg1dvU0efNixp%2b1sS9fswcyJL7ilHCQwxn"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-edc6828a4ad3": {
    "first_seen": "2026-10-23",
@@ -97995,7 +97995,7 @@
    },
    "bitti": true,
    "sonuc": "ADAY DEĞİL (anahtar kelime yok)",
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=AD4ICXQkMsdshMMCSU531V%2bjQiv77RoLEPvKBvaGDYMMcefgnuBuUaykR0QQ%2bZQvKHr7Ki4d0bC59%2fpsTVv3hgYf65Jw%2fUVuB3EQzzVm4GGIvGyqTyIYKILqLSDf80KK"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=n9nacpBylnPh3zejkiAXF%2fquqatcpun6GE1NunxJ7%2fS2GF%2blhN879j8drbh7jIPwAskcOaSuKcigp%2fWtpPTii1uw%2fF0yMw4pP%2bBdBisN5CoQEwYZ%2fxcrPu5pokIPQInQ"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-b29e17281d03": {
    "first_seen": "2026-10-23",
@@ -98014,7 +98014,7 @@
    },
    "bitti": true,
    "sonuc": "ADAY DEĞİL (anahtar kelime yok)",
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=wOJHNToVcEXGBieFoRgbT4IIZuAxc9oNyAHHj8TjU2g4uBV794hS%2bmrsKNWSS1ntyPdaLDdTIqzy8IN%2bW9n8Tbpk8xAMFOUfGusnhQqxuIloJxqph58pri2h%2bhXk1yGM"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=Yr9LcJBrJSMdjg1vafhDLME9gYygXeSARdd9lA3A3l9E8TYZLXeZkePhnVnIyP10hUtBvUS6ESpSk5oZ%2bswl%2bFZUdmaKP3dp%2fbvb3ig1Qwavu7FtmqP%2fDIVqOKEumB6%2f"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-0adfbe681b5a": {
    "first_seen": "2026-10-23",
@@ -98052,7 +98052,7 @@
     "_kanit_ok": false
    },
    "bitti": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=wnTFabvmgVQJ1MBUSPooQTok%2fLIX2dRJu4DzOjZiWdVVNp7JRYyVR9oAqp7sCQiM6gD489QWZneAxkjDNNMb30MbNFs8TwG67ONu580GScd7A5A4H8k5IKw%2f13Y0hce0"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=MxWxz%2fMP6iRKtIkVc8jrMdZXP23%2f8YyG37CETn8Muk4DB9DY9Zeo6DE1%2bOYovqkAh0bvdQuBFg005n3SzKPWiC%2bl4p8Ef9A5SqU6jABrG5ntY0OomXfyUpFwuMOO9cvQ"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-b2bf9b871d03": {
    "first_seen": "2026-10-23",
@@ -98090,7 +98090,7 @@
     "_kanit_ok": true
    },
    "bitti": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=Kw2mCUZD6tirBDR056CRiO372rqLEGGHyTUOthDK71YyZ%2b26NggAS4HmC9Zm58GzpAEvFYS1uNZmrDyWHl2CVuwmBYJhnm%2flOQg3D4m5u561KssJ2qZvauyFW9pOm6%2fJ"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=jG9oLfEFRqqQmweb6AQyO0ln2nghSEL4hGNPwmTXa3%2f%2birzGD3NHV%2bLy4TOAeRN0aNVM6VomCsdFUOGmrMZedUMM70C3NawyQZ6y%2fJ1MIrap706G6MxFAvZLwDhRKWBU"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-27111a8af867": {
    "first_seen": "2026-10-23",
@@ -98128,7 +98128,7 @@
     "_kanit_ok": false
    },
    "bitti": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=5Quhhp4xCAUZSjuwsv5O%2fpW8HVbw7lRcDEbnppf9himils7uTJUIEvAAZKb%2fd1AcItPxqkVxnQsfOZ9DX9SiV1xlOZp3KCskcj5dEZfMTFpOIldacl3Ynd0Uz%2f50wVqR"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=SBHGT%2bkEa2RoP8kHj4QX9xVuSfEuulmPLb7rQCV%2fAdaBPBdHD7Rh0UIJUOSCDQZvle0Czk2sgMBw%2f4Clh3rBV3MnvIpR%2bbVY2DwBnUzBK2YGpbrUAkph8ZMKuIuUfITB"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-91bfa4b25daa": {
    "first_seen": "2026-10-23",
@@ -98165,7 +98165,7 @@
    },
    "bitti": true,
    "sonuc": "ADAY DEĞİL (anahtar kelime yok)",
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=qO7eIs1i%2fy2yIrz3Ze0LTljw40BQLrygvXpdqsR6A56bF08DRoz5QSqF5DWoGRu%2bXZSyIGpE%2fd76tSv0siYsAKwvC3NW1Ot7MIVv%2b1hZzK4qiUC4VNvQkVecLbBK3asL"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=krGfvisMlXow6lGtuFGTRKb1c8JSm2KPUzbqFjSvokGAW1KrcTrYSszs7q9%2bHDOuP7AoWMCjUQy43eivG5TVhT2%2fFeFU780%2bxbNA7W0M2qLYvgHYMTHtmLmwu7ufzIJR"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-4da44b7e4651": {
    "first_seen": "2026-10-23",
@@ -98203,7 +98203,7 @@
     "_kanit_ok": true
    },
    "bitti": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=Dv8xJTaiRcCQpSbK5UwrYGyux%2bI1WrmzK8MREImrcdlE9JXtUY3T4ToG1wo8U5C8GnxRj6o7Z11mzDENE%2fWvsEGIZDHSEY84xSpZdJzZ73E5BAQWdtByMIde6sFPJTUJ"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=9Ub1BatoON0VkiWXLtqNGvjlIR8SocbADIC7dq5i03IAh%2b1Hdi1oKj8jZaUQAAP0R%2fCD%2b1%2fWoZofNYk3hNN9V1ZyATco7BGcUiaAVwfus%2faaiPGs8g61LVkKRroJXwTL"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-2397b8c4ae87": {
    "first_seen": "2026-10-23",
@@ -98241,7 +98241,7 @@
     "_kanit_ok": false
    },
    "bitti": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=HufKEM4FYkya8tzWqFlRngykfU5Mel%2fNuRNe6hAHRoNypGa91Yq7MLEAL2HVYpjKxg5FuGJi9hFZwWpMhTnpyBgxpswf8rjjy%2f1eFnysBN1ZNEc5CwlV%2bI5Ccg6JFNPD"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=A7FaH4qq1ISOFZ%2bdVuzTayt0Po0FhWpruYRZkr%2fZj2vxmVTk1f4z6e6U24I0sYG4wfLPWYvLPDTJJq%2fMhY4f8v1QSz8zFvTmmDiqsHUDL9%2bjQn1BqaVygEB%2fl6BA5XnI"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-06229e9a48b5": {
    "first_seen": "2026-10-23",
@@ -98415,7 +98415,7 @@
     "_kanit_ok": true
    },
    "bitti": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=k73drh7HcIo8mYcerJfZdCSuo2YcN6VvUfovOPWD9EHhiri8Pi3N3bH6LcrRp3x%2b9ksfwIIcKo%2f%2fmSIQx6DgrI3%2f6wT03foGF9WHPfPMdRKKkUi3FK%2bk2LGzcuc7trIx"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=J4F844IGg2AKjl2SMimkC8e5zq58Xv3UKfR%2bqf%2b9V5RU%2bmOoqVr54RU7DXJtyUFi0iuUKXD37cr1tZQiHWytaRlRk2sdLISHIVXoYNb7XWlUzstBNpQYwvqla%2fvoKeMN"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-33278f3bbdc9": {
    "first_seen": "2026-10-23",
@@ -98453,7 +98453,7 @@
     "_kanit_ok": false
    },
    "bitti": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=sfEm0otEuqduZV%2fHQ1Ghp8k68S1AX4GWrxKzGIgt%2bVdCw5a7mCBhgqbgYr4dzZVMVIlt4rgpdcMzAvmiRll6mpNwM17QeqPC5Dr2FRu6Bqu2nPkT1B4lIgyL%2bED47rEA"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=MWOC8tJ05boR2ochampH9JYNbhvMXToqp%2bXr%2b6Q6dwapighYzOCaFoyS9xhjbX%2fUgrNjvMxrYaZMQQ3IKpjrSVsf3dsqL7LfjPjWau8U2uUmVZZK0Sp7uJvqGjdyNdfw"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-df60e2552996": {
    "first_seen": "2026-10-23",
@@ -98568,7 +98568,7 @@
     "_kanit_ok": false
    },
    "bitti": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=SHnzb42%2fFi3OeRfLewcB0DpCa7Nlms%2f8irKiXEJiw12YQkFjGkt%2fhrEgGjx0eEah9fnsSAMvqdhOGq%2bSmI0AS7jmql%2fOTvbxWQd9pZk8W3dsSg9cZuU8pvgfOqgnHFkV"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=YQkQu3dWR1%2bslqNjbs19sPPs0w8Hf4irmpUJVTrnf76LGao5RJaELPCpfHu4ZgFIOMVyfdK2RYPgTcqzhBT6f3XRx0Jpmbj56rv%2b%2bQaKZLRx0U5X7q37ouKLP3dN3qkK"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-916b025d6ce9": {
    "first_seen": "2026-10-23",
@@ -98606,7 +98606,7 @@
     "_kanit_ok": true
    },
    "bitti": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=8M9hYitf%2flPA5BEAbhPiWexPbGjdZQQeuopUMO90ttr5dmvXOIucCtAMKBaLl2RwG2VwkYs6lxiaQritBNf9CxuDQMyrRtRvgTnQLZb8ZiGzOfjrVPYEhTgh5fvKZ%2fIK"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=TagfSg4to9b%2bwM2BVxum8qVwu92Ybs6E5%2fY6lb2GnHw1BDp1zWdmYgcaEjCLSIJy7oR8lNU5R0Nh%2fj5QayXnjDE690czW3Ahq1CVWA1hMEqGMUjEO%2bI1visN7SgecHd7"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-c5a01cddc224": {
    "first_seen": "2026-10-23",
@@ -98758,7 +98758,7 @@
     "_kanit_ok": true
    },
    "bitti": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=wuuFtbMMtxg7oz3BfhjuipbGK9hu%2br%2febRbhjJ1SeU0rxutx3tQFL%2b3rCHIgVqFUw7%2bY7oHDPIaJAGOJpVpZpmciF2oD1uz1dkh6Se6JupJXzZtzbRW%2frYEgS24WEnaO"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=6otkl9wv26rl%2bYe51qlukOAdwR%2fQ1i%2f%2fx6%2fU87rs9IMq2AM%2fdqSyhn6iuVnJSjnlB16sO7lbIMaXqJqwNGUgMNxIkVqhw74ad6TVTTl4olYJxBFSjKta4P9PwLqjSZnO"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-e22d041b4cf2": {
    "first_seen": "2026-10-23",
@@ -98796,7 +98796,7 @@
     "_kanit_ok": true
    },
    "bitti": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=zoRKVIeTsk%2b5mt8peDOcGmltfuWJuu3n0zGTj29ieiq9vP7%2fVCVOiuvB3rN%2fTOZqwxtD%2frNdSCido2OOHDT5cC%2bQmLyoeBpDpgkYuSrmvW0Mw7HUumV6OpfIwlUgurry"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=Lrf%2bT5xauGZjNUsQYEUAj4QhSg6s6pHobVqFCaYaAXlgj0jiliuazmwb6Jt8twkY28WnwvfeQnWBM1bQM9XZhweRe7dIhqcj2IPx2vZoVTLN86bRrFfLfaXsYvxUJHbD"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-cf5209504f22": {
    "first_seen": "2026-10-23",
@@ -98948,7 +98948,7 @@
    },
    "bitti": true,
    "sonuc": "ADAY DEĞİL (anahtar kelime yok)",
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=JfPBO%2fBuC37SyhJBqHka9JFGJdQBFS0kvnseiUYTpOTXkoYrj5rCy0f5f%2bpFssKS7WKRMLgyMEvKqTeGKbEkwf4NAlN3UOMG9ARJKDAENNzh4cClnRY3vqFZz6JyKR8b"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=qloKIfD0oz7Dr%2f2es6VGA1bFIJNDYDmceAHuKfLU1xUBssTPsRnlWIWdsc%2bdKeRlz%2fQUMugb6YFMiAWy5J9Es74zjOspTf0W%2f%2b%2fnhNd7UR0qmMIg0WPB78RazK%2fGyPJY"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-efb99585426d": {
    "first_seen": "2026-10-23",
@@ -98960,7 +98960,7 @@
    "detail_checked": false,
    "sonuc": "SBB: DETAY OKUNAMADI",
    "hata": "ilgisiz başlık (iptal/düzeltme/subay vb.), okunmadı",
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=KzUWpl1PiaiOkXuEmDamQWCbXbUzoxXLFhbIhnwIs4gyscIkXMZNPWp2BTh%2fkvpoTXu%2fVNCiL%2bWo7XWKc7BstU2TZysB5mZB99ETui89niaq6yYuzQtlDvQne7EY9649",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=a8okTQK1snq7XzaercjPkch6hLy5NjU3KD5D57krlQkCVe965pWzJJKw7%2f5bdpYFC3Q6ZQ4saPTV%2bD4LBfIuZ7egd2h5Vux503sTHGBF8Plw8CTBgZo1uuk6vReQP2Mz",
    "bitti": true
   },
   "https://kamuilan.sbb.gov.tr/#sbb-089f4768cd61": {
@@ -98999,7 +98999,7 @@
     "_kanit_ok": true
    },
    "bitti": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=ckidSHQbR0Lcbcr3FcaS9i7t%2fvMTWYp87NqW4sd9fl0cxiy7INCNukb%2b2Xed5IIwwFxj3SF%2bHvhMqGklvIItXOfQIJdhaS69GfW7Tn3uEFtd0RDqBw6cE7D0l6e5HHme"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=4xuCAShcTCOAuvKMFkj%2bQognWHaoCxA2BKaGbc4rYmTBpw12FASLwSuCMVDZKIPxKljEH6XcFem5fqc1ngeGXILxD5OK%2byOcCmZEbS97TGGPcVAD1nIpfDDDEbAxgbw7"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-7d1022cf6cc9": {
    "first_seen": "2026-10-23",
@@ -99074,7 +99074,7 @@
     "_kanit_ok": true
    },
    "bitti": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=WQJW0cmr%2bY6sPT8ouUIEn31dE%2fO2BtmCPhl7In7nIqpL4rTQKho6f5cEaG6bYknOzpXOSMAzFhv9n56eKIEBaj1qChPlMT%2faYccqxk%2f5nRRvPVS4Qwjo79b5VVdlJYQH"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=SkbEzKljKv91nSw5dcdeQIdJ%2b54DJip5rsEBxtApZABCvxquG4wSqc8WIdjGIhowV4JRdV2CnYUWwHgqZMsZgBRuIf70pTRlRL4fzzejLs%2fMxr5MB9nGsFZ0bXOzweNX"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-0d803a6e3640": {
    "first_seen": "2026-10-23",
@@ -99245,7 +99245,7 @@
     "_kanit_ok": true
    },
    "bitti": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=GE3b8P5qb70h5XWfo3O6q%2fZ0wX48UN2zZBI82vmhm5Cy%2bYzUcvTn6Cqw51MdrvXu0iwTKepYrA7FfxP7VbOwLRZTG0yyu191GYv4A7rnIFsMI1Dy2Y9doNoJq2zcpMg4"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=1NFQUOeDR7E7B2uD32%2fKHjyA94dY8dhQVtRQp1XKbeQBXdV5PVosBwK7KpnNapwYvtM0IxTsNGdZ%2bLjGmI7qAsonzNqlAk3xI55Ozejr1REZSPYPr1liKuxAjhWUaUnC"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-a53822c71387": {
    "first_seen": "2026-10-23",
@@ -99338,7 +99338,7 @@
    },
    "bitti": true,
    "sonuc": "ADAY DEĞİL (anahtar kelime yok)",
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=2d%2fWsDXulZSeRHWXcITNnGplal4NTaEiqW5CdrDhLne%2bV2ZNl3Fmwe9b1NDUnTTlhH%2fB5Qhzw%2bhgAcEOUkOoEkIuT42LZaxqozdIazO9xIWEDJrfed3nsJfnRpZCM8d1"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=R3VpB14j0sVCYvsmDU2fEeTu1Ze6ulxtZXB7NCotCtoRJmzIgYoU5BQKYi7OnFmuXlB7BOHMEiKK0T2O0K7qUb7l36PPLe85oAivi7zZS0xn3jtyKkRJGGOazc5WYNQg"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-d051788d44da": {
    "first_seen": "2026-10-23",
@@ -99398,7 +99398,7 @@
     "_kanit_ok": false
    },
    "bitti": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=FqNeRb008XorxNlMvZZXeMalcwG1olXxqXVZ9%2fwoNFg16OyoEowMon286j%2fHRxD4gReRP6q0ld0MlCT0B7zfFcXDEb8%2fgdo0L%2fwdG0hDhM9yETL0XYZhXVhVTMrKB6pM"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=0Nuk1vSP5jZ%2bhAzZvpOoL4JubmysoiFSnwPJkndVjoMkOQl7bY1W8ZfTRO0UtskBllaBrSoombziZN0IfORNk9D%2bPVPEJ8HZ0HB8p6YirjCQUfnSTZKJDPqBmxfdVNya"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-dfb5251b1e4b": {
    "first_seen": "2026-10-23",
@@ -99417,7 +99417,7 @@
    },
    "bitti": true,
    "sonuc": "ADAY DEĞİL (anahtar kelime yok)",
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=dOeqBdnDDU3dCmXXGSmfeFEu5an4W2uytMQJUF3XNgwcZmKgkMJxpJh%2fXgKrOm4wXu%2bMPL0sXt4Az2dkkyzFyYLQLK4XhiKbKOL7Nsfm3%2flGPay5gA23qPmju0%2fx%2fm1F"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=HWgaTYitQ5fP7TyuzJ1GFWAqjDWpsi58lO%2fbxKzpM9pCrBMpvykVr9niJBBS3d75pkj1y7B1vtpsUXr8xYXWR3fnp2MmLAZ07SL0EInfWHsQq0UZLXgNLCQzp3EM%2bsdW"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-9cf926668274": {
    "first_seen": "2026-10-23",
@@ -99436,7 +99436,7 @@
    },
    "bitti": true,
    "sonuc": "ADAY DEĞİL (anahtar kelime yok)",
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=CDna7LPzr6aH19rGyNNS3Z3eoADxEbmHVZ8hBUvT6u%2fFBUH%2bPSgBIliqRTA7N7jjz7%2fN9XsXhw0gX5teif2T3YX1c8msMChArp3QIukgrytZzcHHBhoeexQuo9gyRqF0"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=teTxZNuhfuII4hAfTioSJKid%2bEwO76W11JanTNNL%2f9Q6oiUBnIl%2beThd9Y0mEpUMuHkUtj%2bsaC3CPM8MnWJeDxQrZ%2fchZ3NoZAvUwN4ZpUtqv9Z0XyKAvLoHOhIZvmZ4"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-d5c8d438c2aa": {
    "first_seen": "2026-10-23",
@@ -99455,7 +99455,7 @@
    },
    "bitti": true,
    "sonuc": "ILGISIZ (akademik kadro)",
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=NnLhFkvOwjK4oUswZhUYEyNQwbinubu9ospVaqUuJ9Pwc8q%2bam%2fs303kNC03YcoHP1buOaFMT%2bV9EJ7mT8ndqm9jFKDp3SagbDaUyB0YzcCi5ilx8xEB%2bdQNefeb62BP"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=V%2fqnkVY%2b%2bLjbcs4MQTxWBC11uczJ8aJCDP%2fHYVEjVXPHP6uPf5kK%2bUNl5%2fkO67NfyKFvl6ZB%2foIkuM6z1MsYY%2f021gzGSHf6%2bfvtI68iT8q9nQ1g4HsjbHEcMTsgDWAf"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-be4de461c737": {
    "first_seen": "2026-10-23",
@@ -99474,7 +99474,7 @@
    },
    "bitti": true,
    "sonuc": "ILGISIZ (akademik kadro)",
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=eatDQa%2fj6Pgm%2bfW%2fTrAXCtuHMTbU1tLfca4OLBbBX74z7E1C24vZnDALbY6M6ylLN0qJkXbSZ803cKfSF%2ftmmkYhC3JJWvN8du7F0E3qwtrCYZhSqUjJF6SS17B4yL1o"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=pcVNJbIH0oYdjk%2fOHP1%2f5l2r9rfuDDIGkUeVm1oYwel%2fvahBdADmoPpuG8gdvtYAZyEbSKMatx6dPVHXsI2Bij%2f1PwlR514hVEN6%2fPZ4As0octf1j4z8pXK54duADtjx"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-22cb59e4fbcd": {
    "first_seen": "2026-10-23",
@@ -99493,7 +99493,7 @@
    },
    "bitti": true,
    "sonuc": "ILGISIZ (akademik kadro)",
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=Z7Q1BTrSdtlRtPETZeXsEegsh0pLe6EXACwnAmpIwd3giHs0ByQ5DEOWg1fDhnMW5QgQEGP64neJBEfWYpoaxNKuJ8ApKoyhZ5AHhON3LI429z00Utn0QX4O9bYWgiqk"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=VI1AW6TrKLoHmLTCredvTviMh4cemXIRwOeEzu5a2%2bhzYH9s4OJoQt2REn4L9vMt0N61EtRg%2bbG8xJ7MrSmu6CFGMuxWe%2fKc28vwn9MZT7zLjJenZ2tl8UyhTKTZt2ke"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-36944a514a78": {
    "first_seen": "2026-10-23",
@@ -99512,7 +99512,7 @@
    },
    "bitti": true,
    "sonuc": "ILGISIZ (akademik kadro)",
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=RSZdvR1lTV6cUEMFNodcxUR5FztllU4n8LDkVOKFK8lff8%2boDOH8ZUJayQbYylqpayhjkQzwjKOICDdBljLDtoAO8h2OTsslfASzrTv7pDGwqJEs9zOAiZ4pQG2etO5F"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=6mXzL2DrWdSCsh9Ghdf%2ffwGCluBDa79QXnTdloDRLLEGIv9s5FyaWsmLYXvYI8J7nSUpD7f0sIwB2XpA%2fxWHyZ%2fmFSwI561C%2f1D0Znw6xcT2ZQo1Hj3XtFHgcGmm8qND"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-69438a338b8d": {
    "first_seen": "2026-10-23",
@@ -99531,7 +99531,7 @@
    },
    "bitti": true,
    "sonuc": "ILGISIZ (akademik kadro)",
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=A1BIYfmQ%2fic7L8ptVw22tzNHlcyJixOlKDpcMKmIT81uxVsDK%2fQc1HmKFmyhqxzZuvPXz7hndwLMwgrbuarsuaHwp7adW87l4rhNbpRXs8Nk9%2bHt4zGYXDsWAgrc72V%2b"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=FbCiHNdmjJ8eES%2f2CAEs7Lkg2I9QSB7Q8pQPShhcyAE68OpdFERT9G86dFIyFFV7%2bmfAevKpIMI0c6JctpmMFWcr%2bFCUuVURZpgg4RJJ9qLJ%2fJbS2cdsK72%2bAkOAESQ1"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-8d6358d55af4": {
    "first_seen": "2026-10-23",
@@ -99591,7 +99591,7 @@
     "_kanit_ok": true
    },
    "bitti": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=qoN9IPOS0WPV06rClVppU9VGfgyLq%2ffVTe7DYAKI08yuTc%2fvQwA%2feXcfyob8r3NLCwYDy2Rtwpiw9UZXqAKvXf1X2jxZKKqP%2f4sZ8MtrhXRqcoIWGXHOhtpV%2f9t%2fMNxx"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=Wh9clQ9jtiaqKTb9N7eQzkE%2bwYtlfQquJ5RPURT2cpIXjK%2brPLW5ntjc%2bWH%2bsuKmpBMXzrjcrL1vB50rhkQ6kU0ydt1qAkdI0NNfz4qAOVojIv7u6OWoGnDmCuPjsclE"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-18acf43c27eb": {
    "first_seen": "2026-10-23",
@@ -99610,7 +99610,7 @@
    },
    "bitti": true,
    "sonuc": "ILGISIZ (akademik kadro)",
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=tsUljiv9bnybprD%2bCDV2YZTQvZJIYu8EByrrIEGmJF6aEf2%2beLsijeXLUKrVauBiw5%2f9i5YlH5treeC4Ch%2b%2b4Zo5oY1nRusqwHi0TpUWUXm5Tzi%2bd2OsuomTBWeaS2Zu"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=rPmiFpYdgTdsTL%2fQjg%2fiVENHPtCz4FjZ2XmB2F4KYcYQpUp0eGRvb%2fyFERvx3nnOG%2bdGwk6bKKnVIQ5MLy7aAiN%2fdoYQGJEn9wWkyIp1vDeQLm2%2bbrQqdTDOY1E%2bvA5s"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-724c86974acb": {
    "first_seen": "2026-10-23",
@@ -99629,7 +99629,7 @@
    },
    "bitti": true,
    "sonuc": "ILGISIZ (akademik kadro)",
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=wae7OH6MJoN%2bPkcOVlfDYN9mY45XaSrN6CgAlTY7x5VsOKjug6ZVRHzJlQnlmsrDNaslKjh3zuP%2f6zEgjat4yUuhyr%2bCAXBTszRyqR3wNl4g1M86K811%2fi1de4avRSaX"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=dXPB3mk8RZ8wPQm0TwhIhqcqNfyxDVMlyCiigUZ9dY68E7BoR%2b59zuY7%2b70jELgO7QMXRUkQcZOmNF6rgGh4q2qXuvBRT4BG7Rny8VuHr5fct1TNI0MJNi6Tm2k%2fPT6z"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-a9b62971f679": {
    "first_seen": "2026-10-23",
@@ -99667,7 +99667,7 @@
     "_kanit_ok": false
    },
    "bitti": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=gwOtZmqs%2f8dOj52v8kcPLAYwBDmTU8h06aR5jmJJkKrTiPH76xaCMhuPPnJDh7XiciLyABaqxO4b%2fd7HV1hqKmZzRBiP5QMGEbY2rNP6%2fcp%2brrxHj%2fooypJfuYJcAmND"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=JRdLeOEVyDaP2sWqJgCqiO%2bVQqweTpVq2gQb%2fZVZ2PEUbaGkIKM%2b2zIyiJRFGGmcZqTmkQ2ic%2bKmrXC7rCozDcXkwdgYzb40cvQgFIikEf96Oph8a1qbHmFZ8M4kYQCp"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-f146e06da773": {
    "first_seen": "2026-10-23",
@@ -99705,7 +99705,7 @@
     "_kanit_ok": true
    },
    "bitti": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=H8dfNNWlO5qfRL2EzFrVX5S7YnW8UbRCGPSficcniNBICAWOpC2svGcBISFC9qcHv5AnWT4olZMht3a13735QJbe4TUz8zSyH9wN%2bWrKA3XkbWL5s%2bVy32Onz9IU8NhF"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=dH1lEgYu7zhLKOY%2fVIJJlCja0LRtRcvS3S4OyfVlictCEtc7jQvRKSFGxuPoF95zkWj44pVEajOPp9DkPvDWVlg%2ftVCRDmFHsHFkE6jSl263mh6dLpRZBfYnJj%2boa1a4"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-cac51d98edfe": {
    "first_seen": "2026-10-23",
@@ -99743,7 +99743,7 @@
     "_kanit_ok": true
    },
    "bitti": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=Onix%2fnCtss9xrB8PzhCdtFbIyBn3O8wiuuCysZULMQ90bSE%2b%2f0fCcUznusYw332PxsLdqlPDdiDNFBq9ktTsqO89jZY25GKikcboVOuiCW764F%2by%2fm5DBHORX6gbZj7N"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=GJz1Is3%2fXkofYKAtIScJi6NB3fm3yjT1Gjwb79ad%2bTXVnFYGRMaE5E2RJdOweSbYzYKw%2fUwGvxWXNj1s7ZStDLi3Lktt%2f%2fMupRP%2fa0vVzQfuXls4PPOd3dOFn3VwjERj"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-f59fa190654c": {
    "first_seen": "2026-10-23",
@@ -99762,7 +99762,7 @@
    },
    "bitti": true,
    "sonuc": "ILGISIZ (akademik kadro)",
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=AZ8EE%2bWxSQaWjJhoQlgm5FI8u9wjlYKGN%2fqj4ZVIHEFIFiotvgnsOgUfO3I%2bwnVp7jZHQGTpF41I2A0BKP7JSZRNS8W3SyqKcLlmzRRJJE7jQjFlxBTpx%2f5jVvhCmfcy"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=xa4dvt40i1PqJl6zvwbiLXNcHZmMGn1qaxnD7QvQiezkZGPxwaIqhqts0PmhVY7UGpUJhluwghUhjmOyBmpib93Qqeesp5bUSJ1DeDLdQgyUY5aQzO1jamVFBj6i50FI"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-0a2237064dd6": {
    "first_seen": "2026-10-23",
@@ -99781,7 +99781,7 @@
    },
    "bitti": true,
    "sonuc": "ADAY DEĞİL (anahtar kelime yok)",
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=HBGfh3ohHuasbF%2bfWJ9cAKB5swbwtROWI5gYeThS4jDLmXhDWXhzmBAaqZU6H8nbryoG7nTshRe6ef3PY34v%2fLb86Lv65ck2lHVE%2f2VPmhENc%2f3UcioHNc1E9Co5brXq"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=%2fwttnuUgx9m611QOlC5Uaa9SueaSfUmPXFRI1Vxd1xeP6%2brzzqhOziOIVDXoGPCYGF61msuYfYGo%2bhczKG34CPO8ISQvWixeG1TGCbP0%2bGZqC3%2boOr0LD8hWxPtSSQpZ"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-ce05813a8a5b": {
    "first_seen": "2026-10-23",
@@ -99800,7 +99800,7 @@
    },
    "bitti": true,
    "sonuc": "ADAY DEĞİL (anahtar kelime yok)",
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=WwQVK%2bdGjmlRTS8Ue3GRRFwRVfOScOmJ90SILWols8dXinTobuMl4%2bd4BNx3hIAodhZI%2fXXyMjEwtqgyPZlh%2bzUXgd9O2iB28Cpla2VuaIwGbXZjj6pM3FnOSKQdsOix"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=dFicaT%2fHy96T4yi04zsJLh9Lt4VGPn7nD33IjkVnWlcXY7dxyxi%2bzSL3nSg3el%2fsuxTH85L3eQpPaMqER8j0csk5QUvvyLNIanO7tuwDkNb%2br02qLP%2bV0f7vxXQzLTZy"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-67486cbe1034": {
    "first_seen": "2026-10-23",
@@ -99856,7 +99856,7 @@
     "_kanit_ok": true
    },
    "bitti": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=teyQFn2KS6jRCJmtDFGcG1tOU0IrA65149wz00AhDV6zjVkaSOLHiruwoBLGXv712PvMOPOS17KqQNBhdbcdfltHNPKuRb37L5dPcqnyW3rKaJYliHzPKeo9BUvhMotY"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=XBYE4BP2mQ%2fRlsnrB1uoSxhm8FBqhlrSuemfFIcbjeZMsNW09e%2fJrCVZPBq%2fGBLygb8HpyS%2f1XTPkQ4Knz8jgUmy4wzEDeCR2Ks0ifoAmJ16OSB11Ja3FqCqpld%2bZJDv"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-53442f985549": {
    "first_seen": "2026-10-23",
@@ -99894,7 +99894,7 @@
     "_kanit_ok": true
    },
    "bitti": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=Mnex%2fCyjobVmzDeccGhyHLMiPY%2fXLwb7CeWwbQ0iIsqH3UT2Etk87PDauYdywUZanC7QhHRQvAKHtbI6%2f0Oi9qyvh4LCgaAKCpXn%2bs4wZRrby1KQX5zJF8jFk4dIl%2fT4"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=4UQSydZ0wf5Kk8V%2fJILhW86yD%2b%2fhzucdOhXviZW5PXiHXcAauX2SN3CdwNRKTYOnz14IEThojux3xpukTG4ENOr8EtL%2fN3jkjsXjbwsAz5raONPt8hw3ySaUhSpbiSvM"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-f2089d46d41d": {
    "first_seen": "2026-10-23",
@@ -99913,7 +99913,7 @@
    },
    "bitti": true,
    "sonuc": "ADAY DEĞİL (anahtar kelime yok)",
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=jtnsGFNgQAOX%2bnevqBbPNUoLiIxqN%2b3oPn%2bwj7QMqNArV0uy0FbCnDEutvS88hCDAxidONLIHKOT41MK5FtxKUh%2fI3p%2fTq2bxZnJdgqSMc7DbHAZGKzTXUFmCgdYRy9A"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=6v7QGZbzd7xha9IB6lNkytOzn4mTGJnA0Z1mXDv9YWfD3qS1I0%2fQ4XyYQALlOZ%2fBzcgOBGpx5nF%2f8kxXJR81IsohZfO2Sz9X0na%2flKST6A1zqP9NiekmprjyL1S9PCsw"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-e8f5fb98e7e1": {
    "first_seen": "2026-10-23",
@@ -99932,7 +99932,7 @@
    },
    "bitti": true,
    "sonuc": "ADAY DEĞİL (anahtar kelime yok)",
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=HCarE5M98iBygJjfsgvWbHX9S9eC%2bBwLfMuhsUIXkCcp2Id83o3qNWYUhwpYgOrC4TOjlmwlJdQwJi5vg0QTV8Z2dRuNU1H06qVLKm%2fOGMp7SoWaCWiXToCynzJkqhDG"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=Qw5%2fO9nMSCW7EwOlBQOln3NY9Gs00EO2fvTo4JFA78limD0XvlOh%2b5qgMNtRYPhjLUmf7oU6oFXLiAspl14clDp6BXUsfGXO2HZ3W%2bQf0wYm%2bTfiV6Y1JWgxyMAkuBd7"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-7db29202e74a": {
    "first_seen": "2026-10-23",
@@ -99951,7 +99951,7 @@
    },
    "bitti": true,
    "sonuc": "ILGISIZ (akademik kadro)",
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=1fiCxuI504qD5B%2bF3c2LtmQ9x6GqPVPvvxiyB1wnvFFlFwdMB9YCh2G7HY4SX3JlQ3douGOwapv4GsoL60xiEavEWk5r5rHXru4SI1vA513JZTZxsi3isUFAMt936F%2fo"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=QYRzg3kXusVaqW2twHyXyQP1u%2bmIAcE1fVhn6C24mM46yAvoZVTYmYZXxrXMKbDOarERPvtiqkedKvD7At9PZgXDO%2beypD7wEfaDSbQUUhzX6ck5UTLf9ozAeE8VJKlF"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-6716b8d40bde": {
    "first_seen": "2026-10-23",
@@ -99970,7 +99970,7 @@
    },
    "bitti": true,
    "sonuc": "ILGISIZ (akademik kadro)",
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=FrkEcwXZbqE%2fqPF3RotdddFc%2bWpDYBnR9ypRF6cqj4oyKDD1rEHqhFDcO5qB6cHgRgauRRcZzJJnfRzbdOWxqHIcMtYjzzMjZoD2oqE6Ck0zW64MN%2fszRquCmFrmMa%2fT"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=RuCTkoQjHBQllvxJ%2bg1vqHrt0Cs8fTIcnkO7F%2f25s7jIEnXWbznsRXGxSn8%2fop0vDXIAcEb9ZXM2K7SntSCdKZ%2bKIOCdW1H6jAFFeAS%2fTJwxPaMkHKVXBaXnIoLNVRYw"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-2401acfc3474": {
    "first_seen": "2026-10-23",
@@ -99989,7 +99989,7 @@
    },
    "bitti": true,
    "sonuc": "ILGISIZ (akademik kadro)",
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=QIqzxUpueimPag0hStOMIcyjBTHOA2liKuWKqEKFvqUFvBpmtjNKZAu0Z122feM3mQErldBAvqUmEUFviuZVTYiBKmM7kndwtjv0qCg8%2bwNPNgUJWLdm%2bXPuNQAb0WqG"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=0oY93wnRfRSaugDgRJElV8VPQW4TRB0J4qep2kX5k5MvrSTU6r9t36qv7Smxh2sbdIQ2bsNsCwnzeSIBoyvJTtJZFqlD%2buX%2b8MLVJNyfIj7Jw%2bxRJopKBk2ftmicGHAK"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-30671abeeec9": {
    "first_seen": "2026-10-23",
@@ -100008,7 +100008,7 @@
    },
    "bitti": true,
    "sonuc": "ILGISIZ (akademik kadro)",
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=NMJR1DK7FYOUpGsyu41p398ujcGL3Fa6Nk%2f5jDRAth2eMU7Q3njd%2bVJjXyl%2b6VqWTDeK%2b7yA4Se9VNrGWaYc3Ga3laVx3phSaSHhgDfH3%2fe%2fy37UZ4ilE%2blPGfyuaOmo"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=iusp63RtH8b28QI4WPL4UhvfqQJvTVtUsIMUweefKCd8o7hr5QmAtmW1howYbuPQaMw8vXoJRLBvfFqWVmJQdaWeA7mh%2fHpxNRMiBXPs4nLWi%2fYkU2w5OVAkoDBjyj04"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-0aa38de79697": {
    "first_seen": "2026-10-23",
@@ -100027,7 +100027,7 @@
    },
    "bitti": true,
    "sonuc": "ILGISIZ (akademik kadro)",
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=4%2f8KhJlBB0ZjX3AgxrtxXq7Gv5r8N0xAnjzS1U5OT603lb8QV4jdyT%2bzCe6Jh2UFY90Rb3INc0S0KzBaSi2kSmljIM88T%2f2Z6etN0K%2b2W8fu7IPM4C%2bdb%2fz9%2berrheUM"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=3LRkpu%2b%2bbCCRHKn%2buRV9mAWvr%2b5xInWNX7XyQV0rVE8wdr1TGWW40cU9BOB%2fOzXYSqVU3x%2f73VaBLVakF2bkFmHi5HavYt%2fX%2flsX1D%2bmJ7xrUoZkLabzHIJYadKBcJoW"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-bcb8a72f496c": {
    "first_seen": "2026-10-23",
@@ -100083,7 +100083,7 @@
     "_kanit_ok": true
    },
    "bitti": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=laXxjDVqRjU7VVzBolNtEdvJ0jTlUAtRctiqtirHBhy9nYsTyr8bzC6aV0SBi2ZFND%2fNbbbGbd8L9UPhyk72kxquuEiwYaEdLTZY5ZtdzjnIq%2biCHul4x89yQmuMl%2bd9"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=kRLcnHekGEW0P2VApOwl%2f5x6%2bIltlejgWlpdIlmOQEXlRYLIopZZtoPM3UyYYf5yL%2fZn%2fvucQp8U%2bzlGkQoPchcppwLbY5WAAtXvQgSo4J3f03AO2IbMRcGmB861Ygd6"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-a20012de4310": {
    "first_seen": "2026-10-23",
@@ -100102,7 +100102,7 @@
    },
    "bitti": true,
    "sonuc": "ILGISIZ (akademik kadro)",
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=0vpW2lHxtKSq2AXIbMWBltiMqXWkVicPfiweA5sE51g1AcEAQ7gK7JTsX5yV04S5%2fUcP6eHYh%2bp%2bd3irgvNB1xbtQXo7lFMMPTauyMgSnp1PlflKvoiXLc54zA9MKh1F"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=GIoo0hd7WJ1Mn0D7cQ4vqZTJ3vGMZn5UleriamllLoZiMjHT3B6nhxDkHZRaLoGRi1AjAU80TLxCrloeeCGlO5udvl3U4kbqkFCZVE39sRAyTMKzodZxi15MGzur133w"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-363818d830e0": {
    "first_seen": "2026-10-23",
@@ -100139,7 +100139,7 @@
    },
    "bitti": true,
    "sonuc": "ILGISIZ (akademik kadro)",
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=aMWg3Cpy0RxE8mcXbrq1fnedwH3VQwe32S12RKowJUp5piF16IgGRd4pVJgnMykyGsFhriMV6MZjO0h9SzIoprRhy2H136pxZW9EdzW6Bx7D3%2bZSJZAyVWUfNKNRz3A0"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=cE2dmQq48jjG7npAVKNszMHYz2OwOJ39pK5A04oN2Sr3EQgrYJNZ0%2fA54ZfM3SzC2ApfJUiqTvWB0XMmjzFGiMqi1msW7lB2nVPNAgdjbCabItMRszI3HLqlaYPBiJhS"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-aa1b4de869f0": {
    "first_seen": "2026-10-23",
@@ -100199,7 +100199,7 @@
     "_kanit_ok": true
    },
    "bitti": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=yzUWPL%2bX283oJEglvH5SpS6xZ7yFfB884M%2ffkHoyrADAqC0Ds6R8KV232zLknVUV75m3Cx5njq%2f3J4xylanqQ%2biSRQwwkJNRfk2hQlmJZTO8Zj4GxLzj9exNFKtJcthi"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=oepfsDtLxp8kp9vEuifxF8U9H4cmQPExIbfUYYONOZLl4NcqBaSyKpRmYQ1gEA0xa1PUQjV0vOHQbR0b1onEF7e%2fx0kvy9zjSozIIai129es3mWx%2f7CWJPFgmQpm%2fn1A"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-8e22b31a2e5d": {
    "first_seen": "2026-10-23",
@@ -100218,7 +100218,7 @@
    },
    "bitti": true,
    "sonuc": "ILGISIZ (akademik kadro)",
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=RJK%2bi09KynJi%2bm%2bvLYueaiXC%2bWzWehjD%2bvJ59JWbDSxBROihlv1iHtW0nZkdQpk%2fZV8OKoWlEpMDO3iwNK6BgOnJrDZSzxGf8ARODYDIDf9N5kvCYIhjR8djGT0YgBy7"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=ut8UtyWdnTbtlWfka0RYM15vyJ8SAtBbiJMwXPghmvbVQO0PFjei1Sx7%2bn6NvOAElj4z%2f6pcDASNRGi6GW%2fo7opbNVaeRiuREqWBz%2bkTQAr%2bqbBmzgyHcqLKXugu9rUV"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-2360babf582f": {
    "first_seen": "2026-10-23",
@@ -100256,7 +100256,7 @@
     "_kanit_ok": true
    },
    "bitti": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=kOhsxQtZISSqTLzuYeZ3Tui4rGft7XTp6UU6mWHowwbOBz1sGj2tj0GaGR7teyknxQ4YNoE0cPWY1I8i98EW024pwSVoqbE1MLU3O1XAZnmtXrMXCxHbkul%2fXyw9AvS%2b"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=jCtdN9G4Kmo01N2e83S8%2fgP1VM%2f1UcDfUOY%2bdj%2f2CYaGvOhC7Q10HTe4f2qXX3Sd%2fRd3Q%2fPsUYAZyJuhSyEJW%2fUgUmB44FtF%2bFJIaVRlXFhjBuRCO%2bOiCY5Mcvrht62x"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-69be6ef0a29e": {
    "first_seen": "2026-10-23",
@@ -100294,7 +100294,7 @@
     "_kanit_ok": false
    },
    "bitti": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=x0oVu4ZAJ8%2bez6rZK7vdLawM7ng%2bTxHtMIoGZjUvewB8GVQNm2u9syILuV3Caa%2bgDR06qUrFzvO4T4yuniyWdLj0ZNo4gHffn7OlcA8GxFCN%2bqKq41BZVkhfaoUVj%2fkT"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=FwuBifqJR8YiabLQEIA7rR%2fLu8papf805FrC76aP4PxbxzdPnLUtDYLLX9ygi8Nj2Xgyc%2bdz6UpZD3KPbfryo7FW2FY0LqMg3%2fEwl4Ahgp3rLHBQuU2DI7Jz4jDZ5Pn%2b"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-21f01e30bd7b": {
    "first_seen": "2026-10-23",
@@ -100450,7 +100450,7 @@
     "_kanit_ok": true
    },
    "bitti": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=3bwHZKR6ZiNyIufUoINzd%2bYIKq6ihUbRPFMezifrqTLDmLulTZRhK8uUsjlFzbPVl4BwhqarYlpDKqzKdfDSuOI%2fbEnzHCFDBSNIGNVzJu4Khwwv6gjGS8gHn7t64aBU"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=PPodi3uT7vzhZfOPM43HGfKhxfeyiKZkzOnJOS7t0eZ7mmPwPlYwa0FKCDYlFBER%2fCDT8u%2bTskttCEMhUAqx5Zbl9ycCk8YPhXm3jisZCJJfiHgSYoRrHAmMxDTsOp0M"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-389b5c503550": {
    "first_seen": "2026-10-23",
@@ -100487,7 +100487,7 @@
    },
    "bitti": true,
    "sonuc": "ILGISIZ (akademik kadro)",
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=fSuTWk%2bXFWlzl1sLxMpTQZCfNRHH7rc1sCl3sMwCdUSZZYXmyyZtqgKSB7Iw4TMQZF0qW%2flWl4q0THpkyRAnz8NmrhBIQuZhycaNb8TvHTmNHbw3ccgdhjRGC%2byvVNsG"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=S2j7EeJPdodNjX9WE%2f%2b2ZBqJKGVmy6MEHQXDYKxIYj90wjkLwqcp3Z2NHg%2fEb6eDSY3sE0QDEDRKj3uRmeKa3Zf8mKDSgUeepJhdwa6WyofriSX7F4RYQjUaLXhD%2flHE"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-df941c203d98": {
    "first_seen": "2026-10-23",
@@ -100506,7 +100506,7 @@
    },
    "bitti": true,
    "sonuc": "ILGISIZ (akademik kadro)",
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=CbXZ60JF5oxs2wipds35Yicy41B3omls6dwh46ZP8Zp7hizPUWTgcObOb0xIaqWbfnqQv9UpSp0B3d127El6m%2fJUEDJsxA8KAk1aE74EnkJsaMkgAkBuT3cqlNlcgTYF"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=Um7czQtT0An3VvHYeyYLRdat52lmFO8xK4BwC40ACpstYdWllf2omlhUU9BZQ546L7JD1byv1Vy%2fXEgsrL4FwB5%2bGUWxU%2b6zkFrR5%2bdd3zsixnl4XX71EYGN7XUy8oDf"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-4e3aaa33cc5c": {
    "first_seen": "2026-10-23",
@@ -100544,7 +100544,7 @@
     "_kanit_ok": true
    },
    "bitti": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=9YCTpYsm6vAghDE8ApIQ5DXK67nnxzWLKXBf5PDw6Ymf6JKVT61bDbflAMFDuQ3ezHzaeBYWq4o9k9by1jH%2fQxRoIiF3%2b37c3Al2LjfHya40X43i0ZYfg%2fwm5%2f6USuZu"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=GqB75ZH3nLlP84nQhtt%2b3ByrZZhlHGpEK6uFURL9zJhcUYSURh8LWaXd3ZDb47g4NiZmmolbC%2bIxaaZnnDAwui75NIjM63HlTrMZYHnkreFymJArJEo0TNX%2b4mdLhpdH"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-649227e6d368": {
    "first_seen": "2026-10-23",
@@ -100713,7 +100713,7 @@
     "_kanit_ok": true
    },
    "bitti": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=R2oOUH%2f8steutbXafs9z%2fLb3qiR%2fvy9TOj5i7p3YmHOkjFAEXR7%2bcQQKv5tVoL3gZzIWZQzO%2fIb1AA3sploLw6fK3sPdEEGy%2f6blbVTNVoqNaqIJso9COYCHOD58mXKs"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=HpRBxAaUeNhXBxVFvCnjUX5wodj%2f8cOj1LMF8aSSB0mscoVfjNiQS0i%2fhhyfITIMQbscmtkr9VTxhwnT6WBkVci8kwxnX27oKZg3Rp3qh3A1g1wMx9RnVCldcUiZlA%2fY"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-8651317c87cb": {
    "first_seen": "2026-10-23",
@@ -100773,7 +100773,7 @@
     "_kanit_ok": true
    },
    "bitti": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=IxDwJ821XplIoPkbcAowgVvjzSGAMpVpGju3GThmUTdEbKUW3hHLbsmDRg6XFTBbJPdGuuR8YwGmM5PRRLzW3V4KU4CgDqqJz5F%2bMBYL9sLMxokwFYEJI2VzwzbGgopi"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=1Laq%2fzDdjCdOhPcGg32nBiX0gQHEetE2dHPd27GWneojEfSSbF%2bbefLg5mWEj3iD6UW3Gm%2b59tUJI56rRFhy6hCG%2fT5eEWH7da4f4qrkMARKgXEtinnkBzAzVBgt%2fVU3"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-ca4460e23cfb": {
    "first_seen": "2026-10-23",
@@ -100866,7 +100866,7 @@
     "_kanit_ok": true
    },
    "bitti": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=gvBcG0LfW0bLPE61PTyaniJT4Q%2bMx1sNIJPFox4whtVUAYHpPq6pU3FF%2b68MGOvw3viAv4hj%2fZDAcqT2qAeUiTHhRJPBvugoGZIz%2fLFGx2%2fhrbo8K3x0P2%2b%2fe4Qo816x"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=w44nZu6yYArJMZ0JZQMNbb1AWJsmbyVuaXyR3LGjybX5sbIJCZW3hHediQzILg4YDWros2keh9Hpm49AefNZzeBH3JuS1WXEQP8xAUu9c5HuQyywNcphOkRunYrjqZpf"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-c80a8921d735": {
    "first_seen": "2026-10-23",
@@ -100959,7 +100959,7 @@
     "_kanit_ok": true
    },
    "bitti": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=VajrhjyZDah4mV6TYu0UCrukpV1HP2kBLb3uAOh8C%2fdoxxyewJvOWE1VloEikIuXg%2bO5CXUmMglyqfFhBBpWwNLB7XYZ9M6ib9GNdxw8PVYn7aLC4xKrtqRX8BmzXiH0"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=AWRzXaQWT6FAZ1VjKpjewJPUzXp9jSxlZXwUrbDVMtzUpHuBnSqyIBsseKkpHQU4tyUyNSrqlwlt9njqfJMRYSI0Ng%2fto4Qaj2jxXdDJcTDWWd%2bAuzCAMPjuTrlKgYiJ"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-e5b60ae67e9f": {
    "first_seen": "2026-10-23",
@@ -101202,7 +101202,7 @@
     "_kanit_ok": true
    },
    "bitti": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=n6t3KCb79XcrOBykVVpzzOYMHNQIVJjESPhVodC6hvcjF4wnn6%2bQLgzu94yJ7i0qqgeNf8fkX39ub9btVZDdRXyYoLT%2bDcIWjBCeSNAW%2blA7zqTdzKZEJazUibrzMenR"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=vUUt1U%2bFzAWbwa4Pydnw7WtiXBK8NzBaaAah%2bAzzIbVXJ59pwt3wipEJ0vfr%2frG9Z%2bkb2ayJj2WKHm7Ji4bHcK6nqbgkvrPQTNa2UwzCb%2fiyHcC1YZB%2f7WKQJsaE%2bGRz"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-c8efcd1ab812": {
    "first_seen": "2026-10-23",
@@ -101240,7 +101240,7 @@
     "_kanit_ok": true
    },
    "bitti": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=cVVACgsV8rWXMGO0OMcb4%2fPkM1xQwzIeQ0V56v9eO%2fUMfCqq2tFgu10y%2bp%2bEp%2bMpojueO0g223kqo021WpeC8EMiCJUM6HF0V8nBweJONL4KfSWeYN5JCUgHq09enZ1T"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=6LN3htGrQ%2f4QqLyXOpNAsAjiqwW2NptJiCyczXomRCqgBpQcW3mpbZdgcdWme7XfecSTfSWZQj89g%2b%2fCIhkeLqfQMU2Hv%2bu9nzgb4VYGz9wxExZaHuDzDbhpiHSyvuqc"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-652ffdee45e1": {
    "first_seen": "2026-10-23",
@@ -101424,7 +101424,7 @@
     "_kanit_ok": false
    },
    "bitti": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=VB6IaEWw1yR5UfMrBuPVua4VnyZc0txepH5vd%2bs%2ffYAuFFhoJYBIeraLTl8wP%2bElgERblLrEuHZV9QfEMBKhil3GETR77SEtxucKFmdE0nylXB1CLXjrtf86OdzwFjUr"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=tsnko82VDMXMCdMRcJsFChjh2d2%2bfnonEBGOB9daPtwwjaqHcNvF%2bUE40DEKMHfs2ADeLQy77dEHKSCDuXQ%2fk4LPMlB7tgKVQ%2fhlQUxZ7%2bHmg34Mt%2fdQPuPMkehP8s57"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-6660155b1a72": {
    "first_seen": "2026-10-23",
@@ -101462,7 +101462,7 @@
     "_kanit_ok": false
    },
    "bitti": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=Scsj1uJLHezkNHo6RGbYJgcKbAAWHfj6Fxo2fxgupy87yUjUOYO0ej0%2bb%2bmuvvaa6m0ZsBiBAgZqlygOsgQFCsqJm1t5DrFacRcmwLyfITEYx2kBw2kUK2nOTGb4d2%2bq"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=13z9r5CbGLRV%2bAn5yfBlSAa0rfQnVsxMFes0agkR2peEqHkFd%2fERUMFD4fEr2ffidsm07Xhb0vb5bn1uKPxjO6ZWKw2cZjRPy3zNsh1oQ4eQIDKzgVD7stRlB6f2pM%2fj"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-64621f7fbc36": {
    "first_seen": "2026-10-23",
@@ -101540,7 +101540,7 @@
    },
    "bitti": true,
    "sonuc": "ADAY DEĞİL (anahtar kelime yok)",
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=Wd0PkXiPWOK64aD1nCVLuSck0hy4RVTsXqg4DduL4DZ2sv9fNtrn6tRUAOqX%2f6laWTj%2ftN7vN6Q1pilw6aOwE6N4VE30mdNybGT7CTeayB7ZGFm4IFTuBcA1f0Ie7y4G"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=pDSu6rRjnn18JgSb77I0M0NJhW5OBsDFieLZohLTy0eGinuU9AAW6Mh96KfT%2f%2fYc9AWPvCfu%2fLGqQcLWU6BQuAhTU4ckFIuOLx7j%2blXoDWS0ar1NNfK0OlUaDjnm9O5%2b"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-f5b33bb16eb9": {
    "first_seen": "2026-10-23",
@@ -101552,7 +101552,7 @@
    "detail_checked": false,
    "sonuc": "SBB: DETAY OKUNAMADI",
    "hata": "ilgisiz başlık (iptal/düzeltme/subay vb.), okunmadı",
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=5pAAZdYKc1BpirjKn%2fn0%2bu1tOOW5C1jhsda6SUWF1xMffPPNUXTSzr7DxUwFxvyMVtrmL7eNwsUooUB8u25uWhOQMNPO37t6gpnspQYvhJk7G90zvsouS7UHO14v%2b7FJ",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=TD6I8smhJGi4qnPwywMCIUHu92JbrxBqlVL507P%2bU30S3u0uU8CfdgBkD3ugnTv%2fcQBEMYOmJh5avk%2bNVCgGpXQ1DmINCQsf18H0ywf%2bRphrNDRTT1NhRl8OubTeTnYE",
    "bitti": true
   },
   "https://kamuilan.sbb.gov.tr/#sbb-018b7ebe87f8": {
@@ -101736,7 +101736,7 @@
     "_kanit_ok": true
    },
    "bitti": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=kp2gkVRFYGxw6q%2brB0DhRKdpQ1sT2%2bx%2fopSSQJzDgBXL7hD1Y0azWUAs%2f1d%2fAlrd%2b1G7sQYJmug1cf4WXZ%2fgG4%2fFZSQc3%2bcpkmGwO3n2skFBZc5FzTpG7vqqNHgwUGBu"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=MpQSPa2%2feinubXWipDzSPYb1XXRan361YNzrAGnd81T3ZDMN9bNgjSC25Hlg4nYVfxaJzgmr5Be3MxOhI6%2fYkuWc6mZYDyyMh6b8L7H0XqZ6YR6AyF2XMsZk7M0DugI%2f"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-5a82ac735bdd": {
    "first_seen": "2026-10-23",
@@ -101792,7 +101792,7 @@
    },
    "bitti": true,
    "sonuc": "ADAY DEĞİL (anahtar kelime yok)",
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=9QOe5XbHn92KvMBBSog3c%2fqn0gRU5fdv2xJIeijjH7Rauxlu69yMj7nqryxY4E1Vpr%2bT%2bPFgk7DUBfmhT63BA2GGxtjp4G6h982ll%2bRZ0l6UwnLpBgil06X%2faaMC4uHo"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=bQ62PWHTUDJL8wliaZbKAjLhGk0a8hP5uejTw%2fg1xkusfyf%2b1B2zbZK%2b20tLZpBWEd4IoID0JHEoBqOP6Kt4tZTHqu7EMaqM5Mco%2fBLzXMMWZyUh8dnmucORX0bZXL6D"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-773acfb7a0bc": {
    "first_seen": "2026-10-23",
@@ -101911,7 +101911,7 @@
     "_kanit_ok": true
    },
    "bitti": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=WPwStY9UXlpUtul27j96WGuUFVvGXGPQXpb4%2fXNm0dDrg2gjnNqAG9GRCajIVX%2bjUH%2bAZtmC12qJFPiaFNA5C4thjI5XQQfwjkqS4dyoVdVPM4kOfZGtwoFK4vF%2bUCS7"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=SM8tNbQmSMemFYzhHGeKWqtE4DSxLOceeM2AAaGjxJdfO5PkYZXZH%2f23GSoAZEK75J0bBl66JQbYVnMqUU6C3iIElqdHeCV5B9M%2bN1rPS4GCxmUMGh8WLz4Iv%2b56N25M"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-32c63199e90f": {
    "first_seen": "2026-10-23",
@@ -101949,7 +101949,7 @@
     "_kanit_ok": true
    },
    "bitti": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=3hx5DWjYNKNKMRyNu9gAZnSlr30K5wYDD9602oDNqFZnuVL3rR06zoSqkMBmWWlkX5tbtRg4CrWBJMzxqMGAoPX7Nh0ZYq%2fK%2b%2fflsVI3Ry0YLArDzbQDq8UszbxUeFkY"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=oDn80rdF31AM9sgt39fJvJt5B9clYKEeAB7RCoJujeNdck8GAjZXm0EyHMq3gKLkaMnnfhBxeakMvEDwBoP4jy1qp1AsZzPPpT9v1MM64Dp1h8iHp8TZhmWgnPoCdXRx"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-46c9902812b9": {
    "first_seen": "2026-10-23",
@@ -102009,7 +102009,7 @@
     "_kanit_ok": true
    },
    "bitti": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=%2bL6BJIAwGEbymWJO3lUpsWWb9pMD1QUnnbK%2fDvu%2fcXJQF2a09qbBqZfuZcnFoHyIepH7%2bESJy7MvMVYSmvEcSCXvhb%2bcgD%2f0aG2yDa5gGBS6wIJMz2ms2e72SS07v4tu"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=xw7DfNZTd3z1Q%2fVMWAF%2f%2bM4mSCxbTL8LK1EwJeWUuRBT991s5wX0ocg2RYs2dQZaePckjOtJjNLzXJ0Xn7W7mQ5wX7AnNIsN81iOK6bEYSM6MUPtPCW52ZqHNBECGbsT"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-7077fa08b375": {
    "first_seen": "2026-10-23",
@@ -102047,7 +102047,7 @@
     "_kanit_ok": false
    },
    "bitti": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=OOl%2fcQYfwvA0WB%2fGaGrnrhBiqNB%2fbBrdHhGbXIPHGuMhjQhRtT3mSxvuZ2m%2fwVjJFDvHjmGrzT9CmyFcJL45UaIlTcNi88Y8XrY9B3WUrICWENa3LmWz4bGEJUnd9ihs"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=oPTvnp4LK2VbtZy3F%2ficpXnDAZFG%2fejWp1gzRv8OQSEDRQQ0oFArzc%2fwexnKjDS3XLnbLsh6sr%2b%2bCNH8aLg8nbemzRsYkmnqt3ZFfCc2wOLkbVVozX%2b6%2fwEvCrJqK8%2bE"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-6dc172717cde": {
    "first_seen": "2026-10-23",
@@ -102066,7 +102066,7 @@
    },
    "bitti": true,
    "sonuc": "ILGISIZ (akademik kadro)",
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=6v0DdQi83cDZa%2fxbrbpxOE5uM0pszuH75DFD1afcBQ2cKuvQCVE%2bJ0vb57wLWe7N%2fiAkSwtrlglFNAhmlsQnljSjg90DZR9rOQXvXVTDEUs5ZlaOPpv9QTvJOvYER%2bP1"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=vuP9EmcJxWTjUCA%2fYZtRxH6p4RXdXwMPyWyg5QpXsvP3f78ZQxgQnUSQ66%2fg4JKCehGNdjHEbjljPlxU0W8PLJ7pqEZiq09kSlo9ILEE5oLa9FAashyVK%2fl1DBE%2fmPeq"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-89970a8962c9": {
    "first_seen": "2026-10-23",
@@ -102163,7 +102163,7 @@
     "_kanit_ok": true
    },
    "bitti": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=ZsRvXyxJVTVjhqNRqvijKV6I1dwXTkJ%2bvMN7o83CwYBm%2bAHK5YXuH%2bb%2fRhzug25BvWOg4fnOHtzpkmlnUTcbZ34w9KLSG5ARlxyJn4DcHGTbbLHa%2fLi6ikF%2fDoRLZd7Y"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=GtUDZcfNGFZLxB7aZin6Dat9B4eo5EXCHfD0vBAsRVUlTR5W2GI2u74UnfvOZZ7x30zcBtavvZqPCzcfYNU92fZ%2b30mVsGVpfL4hBS1Lz5nIZYuJnKB0jbCa0AaM2pSc"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-05cd8523e152": {
    "first_seen": "2026-10-23",
@@ -102201,7 +102201,7 @@
     "_kanit_ok": true
    },
    "bitti": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=hQtyANNqMHDL0glLsRr%2bggTc32JeHrPzmGzuYBbtzqXsgqIrS9aFIPFe%2b7MHeizh3vng2jLIxN29zhm4HCex5itPpqD6XFfx74k8DLjxGxad2szOsDtoAKisCc62KXVg"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=Zzs4mFW7ItmcX3f%2fiDJPRiQL3PM93sQ6T06p1YwnasiyjoweBAoYDaX8nUNE%2fXV8FXxsLhhO5UkZ8qLzCPAik8oD0ddtZlXDmUnfYu3DxGCs%2fqfk%2bkHcYFqLch%2bibY%2ba"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-023bf2c0ce03": {
    "first_seen": "2026-10-23",
@@ -102276,7 +102276,7 @@
     "_kanit_ok": true
    },
    "bitti": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=Q2W%2bcQzHNe7mj1AzCVC%2b9clAHEG%2bP0YayqmXaoJJ5PTCoSmF01Ye2D3WlxB9WX5MwVQC%2bQPW8Wly60dmH2v6SiUvqLFFnDLlRjXFmmHIXMkTmonSFe%2bgbXihGZXPNpF6"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=gPuq79fOG3f8mHepXWv1DlVs3hmfIYt6Zbe3zvsLyfnwU2tlvLV7%2b99xrIwD%2ft4GHNE5NqQOTPO3cUXrCCu4bi06YLMBVjHpIvz%2fSlRTBfNc59TmZx6%2fN%2bjEo6XT4qNE"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-218403653138": {
    "first_seen": "2026-10-23",
@@ -102447,7 +102447,7 @@
     "_kanit_ok": false
    },
    "bitti": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=xjdpygc11ot0W61DBLO%2bhd%2bRLQgp1ADgpBxwQdxJKrQLV5RdjdxgASu2t6QgO%2b9wkffF0%2fm3xoM0jpavQU5luLimD%2b6zkzJJbbufhkiIuIZDuP7krdloXaM7RJGB5Ee3"
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=M647MHObuquTlpcL6jQvGoGpQO2fApj%2b3MVEC3qJd%2bO871QiNJQATPTdckhzaXKWSjzaIxDWOXr3gZ%2fS9jfjAEAniu5uq%2fR%2fzRgs4p5pbwRaklrYiLpYyyw2WfE0bPup"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-114f0e473705": {
    "first_seen": "2026-10-23",
@@ -103041,15 +103041,15 @@
    "last_seen": "2026-10-31",
    "detail_level": "İlan detay sayfası",
    "detail_checked": true,
-   "metin_len": 11292,
-   "metin_hash": "55874b733e6c9d24d2188e36c019df507766fad9de107839afad4226b266d1a6",
+   "metin_len": 11291,
+   "metin_hash": "624884a856eaf1fa4c797490159d63fce2f0f313af3c64aafb3a245a1fe98d90",
    "p2": {
     "v": 2,
     "aday": false
    },
    "analiz": {
     "kategori": "BOLUM",
-    "kanit": "Fakültelerin dört yıllık bilgisayar mühendisliği, ... bölümlerinden ya da bunlara denkliği ... mezun olmak",
+    "kanit": "Fakültelerin dört yıllık bilgisayar mühendisliği, sistem mühendisliği, ... bölümlerinden ... mezun olmak",
     "kurum": "Galatasaray Üniversitesi",
     "pozisyon": "Yazılım Geliştirme Uzmanı",
     "kadroSayisi": 1,
@@ -103061,8 +103061,8 @@
     "ekSinav": false,
     "ekSinavDetay": "Yok",
     "ikametSarti": "Yok",
-    "ekSartlar": "En az 3 yıl (veya 5 yıl) mesleki tecrübe, .NET, C#, ASP.NET, REST/SOAP, Microsoft SQL Server, ağ yönetimi ve güvenliği bilgisi, iki programlama dili bilgisi",
-    "kisaOzet": "Galatasaray Üniversitesi Bilgi İşlem Dairesi, sözleşmeli Bilişim Personeli olarak Yazılım Geliştirme Uzmanı aramaktadır. Bilgisayar mühendisliği mezunu adaylar, teknik ve deneyim şartlarını sağladıkları takdirde başvurabilir.",
+    "ekSartlar": "En az 3‑5 yıl mesleki tecrübe, .NET/C# ASP.NET, REST/SOAP web servisleri, Microsoft SQL Server, ağ yönetimi ve iki programlama dili bilgisi",
+    "kisaOzet": "Galatasaray Üniversitesi Bilgi İşlem Dairesi, sözleşmeli bir Yazılım Geliştirme Uzmanı arıyor. Başvuru için bilgisayar mühendisliği gibi ilgili mühendislik bölümlerinden mezun olmak ve belirtilen teknik deneyime sahip olmak yeterlidir.",
     "_model": "openai/gpt-oss-120b",
     "_pv": 2,
     "_kanit_ok": true
@@ -103078,14 +103078,14 @@
    "detail_level": "İlan detay sayfası",
    "detail_checked": true,
    "metin_len": 35917,
-   "metin_hash": "b028f0161d5bfceaf77898f3b03aacf7eef815fea575e6cef898b385a9455288",
+   "metin_hash": "babca8a7b73011eb42f695773e2682c843a9f65ab66da164ce607c2f6a1aca61",
    "p2": {
     "v": 2,
     "aday": false
    },
    "analiz": {
     "kategori": "BOLUM",
-    "kanit": "Fakültelerin dört yıllık bilgisayar mühendisliği, yazılım mühendisliği, ... bölümlerinden ya da bunlara denkliği ...",
+    "kanit": "Fakültelerin dört yıllık bilgisayar mühendisliği, yazılım mühendisliği, elektrik mühendisliği, elektronik mühendisliği, elektrik ve elektronik mühendisliği ve endüstri mühendisliği bölümlerinden ... mezun olması",
     "kurum": "Tarım ve Orman Bakanlığı Bilgi Teknolojileri Genel Müdürlüğü",
     "pozisyon": "Sözleşmeli Bilişim Personeli",
     "kadroSayisi": 13,
@@ -103093,12 +103093,12 @@
     "basvuruBitis": null,
     "degerlendirmeSekli": "Sözlü ve uygulamalı sınav",
     "kpssDurumu": "Belirtilmemiş",
-    "kpssTuru": "Belirtilmemiş",
+    "kpssTuru": "belirtilmemiş",
     "ekSinav": true,
-    "ekSinavDetay": "Sözlü ve uygulamalı sınav; puan şartı belirtilmemiş",
+    "ekSinavDetay": "Sözlü ve uygulamalı sınav",
     "ikametSarti": "Yok",
-    "ekSartlar": "3-5 yıl mesleki tecrübe, en az iki programlama dili, akıl hastalığı yok, askerlik durumu",
-    "kisaOzet": "Tarım ve Orman Bakanlığı Bilgi Teknolojileri Genel Müdürlüğü, 13 sözleşmeli bilişim personeli alacak. Başvuru için bilgisayar mühendisliği gibi ilgili bölümlerden mezun olmak ve mesleki deneyim şartı aranıyor.",
+    "ekSartlar": "En az 3 yıl (yazılım) veya 5 yıl (diğer) mesleki tecrübe, iki programlama dili bilgisi, askerlik durumu (erkek), akıl hastalığı yok",
+    "kisaOzet": "Tarım ve Orman Bakanlığı Bilgi Teknolojileri Genel Müdürlüğü 13 sözleşmeli bilişim personeli alacak. Başvuru için bilgisayar mühendisliği gibi ilgili bölümlerden mezun olmak ve belirli deneyim şartlarını sağlamak yeterlidir.",
     "_model": "openai/gpt-oss-120b",
     "_pv": 2,
     "_kanit_ok": true
@@ -116550,33 +116550,11 @@
    "last_seen": "2026-10-31",
    "detail_level": "İlan detay sayfası",
    "detail_checked": true,
-   "metin_len": 786,
-   "metin_hash": "af64b5afc046c62c13767d82bbd8e53c0b6c4e69e321dc70dd576ca4e4aa6125",
+   "metin_len": 824,
+   "metin_hash": "9c10ab20282b5cda772248971d12f51436193de6200d767203d45d61a961dbbb",
    "p2": {
     "v": 2,
-    "aday": true,
-    "analiz": {
-     "kategori": "ILGISIZ",
-     "kanit": "Şanlıurfa Eyyübiye Belediyesi 9 Zabıta Memuru Alacak",
-     "kurum": "Şanlıurfa Eyyübiye Belediyesi",
-     "pozisyon": "Zabıta Memuru",
-     "kadroSayisi": null,
-     "bolumUygun": "Belirtilmemiş",
-     "engelliBilgi": "Yok",
-     "basvuruBaslangic": null,
-     "basvuruBitis": "10 Aralık 2026",
-     "degerlendirmeSekli": "belirtilmemiş",
-     "kpssDurumu": "Belirtilmemiş",
-     "kpssTuru": "belirtilmemiş",
-     "ekSinav": false,
-     "ekSinavDetay": "Yok",
-     "ikametSarti": "Belirtilmemiş",
-     "ekSartlar": "Yok",
-     "kisaOzet": "Şanlıurfa Eyyübiye Belediyesi 9 Zabıta Memuru alımı yapılacak. Başvuru son tarihi 10 Aralık 2026.",
-     "_model": "openai/gpt-oss-120b",
-     "_pv": 2,
-     "_kanit_ok": true
-    }
+    "aday": false
    },
    "bitti": true,
    "sonuc": "ADAY DEĞİL (anahtar kelime yok)"
@@ -120520,33 +120498,11 @@
    "last_seen": "2026-10-31",
    "detail_level": "İlan detay sayfası",
    "detail_checked": true,
-   "metin_len": 794,
-   "metin_hash": "f2414971a47bd1d80f2975474219ca0ae04f6f6622e61f051f99265a83b71dfa",
+   "metin_len": 739,
+   "metin_hash": "c70ef4f214f8721dde600dfa63596a71406807413e743f32d066365ca2f081b5",
    "p2": {
     "v": 2,
-    "aday": true,
-    "analiz": {
-     "kategori": "ILGISIZ",
-     "kanit": "Antalya Kaş Likya Turizm Geçici 76 İşçi Alacak.",
-     "kurum": "İşkur",
-     "pozisyon": "İşçi",
-     "kadroSayisi": 76,
-     "bolumUygun": "Belirtilmemiş",
-     "engelliBilgi": "Yok",
-     "basvuruBaslangic": null,
-     "basvuruBitis": null,
-     "degerlendirmeSekli": "belirtilmemiş",
-     "kpssDurumu": "Belirtilmemiş",
-     "kpssTuru": "belirtilmemiş",
-     "ekSinav": false,
-     "ekSinavDetay": "Yok",
-     "ikametSarti": "Belirtilmemiş",
-     "ekSartlar": "Yok",
-     "kisaOzet": "Antalya Kaş Likya Turizm geçici 76 işçi alımı yapılmaktadır. İlan detayları ve şartları belirtilmemiştir.",
-     "_model": "openai/gpt-oss-120b",
-     "_pv": 2,
-     "_kanit_ok": true
-    }
+    "aday": false
    },
    "bitti": true,
    "sonuc": "ADAY DEĞİL (anahtar kelime yok)"
@@ -122260,7 +122216,7 @@
    "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=GOEvucB%2bvTNZDUg4jgEmwzgG9cVmKAcWXq63lr%2be4FhnQWnTQ7jpGkcuw%2f2tw%2bTLhgpvuPm%2bNzkVgFq%2bsrmLlV3f3%2buBd%2b2pU%2bPDgeW3EjrWpy5jpxeGl%2bOnxccfF%2bfx",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=eHmJ7utDNfy2sfjPqJw1VAUYZBSrqZLrR6UrMbuVAVCRrL9MR8ByJr7Oj03pTbNfljMG16jsa0yEvD609iFbNlN2U21AyS9Sc3vx2YXJWqLPrc2%2f%2bDC%2fL44cBinxWPO6",
    "metin_len": 12574,
    "metin_hash": "627155812140fa0dc447a82e6704ef8e45e74a264d229d246da98214f9109bbf",
    "p2": {
@@ -122278,14 +122234,34 @@
    "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=M5HT1oqQp6aOqALl1L%2bxxh%2bbiOm9a9SDZ4uLtqPrmEMg6OZJzAqvm%2fasQ9DUUYJWRBFJTrucOIHtffdF4fe8NzL426ctd576%2fBDG%2b1v2OjfMPkKSV26ZTpkETh6r8q0H",
-   "metin": "Sayfa 1 / 5  \n2026 YILI 3. DÖNEM İLK DEFA VE YENİDEN ATAMA KURASI \nİLAN METNİ \n \nSağlık Hizmetleri Temel Kanununun ek birinci maddesi ile Kamu Kurum ve Kuruluşlarına Açıktan \nKura ile Atanacak Bazı Sağlık Personelinin Atama Usul ve Esaslarına İlişkin Yönetmelik hükümlerine göre \nSağlık Bakanlığı ve Bağlı Kuruluşları ile diğer kamu kurum ve kuruluşlarının ihtiyaçları için, tıpta uzmanlık \nmevzuatına göre uzman olanlar ile uzman tabip, tabip, uzman diş tabibi, diş tabibi, uzman eczacı ve eczacı \nkadrolarına ilk defa veya yeniden yapılacak atama-yerleştirme iş ve işlemleri ilan edilen takvim \nçerçevesinde noter tarafından bilgisayar ortamında kura ile yapılacaktır. \n \nBu kura eczacı unvanlı adaylar için 1. yerleştirme ve 2. yerleştirme olarak iki ayrı yerleştirme \nşeklinde yapılacak olup diğer unvan ve branşlar için sadece 2. yerleştirme işlemi uygulanacaktır. \n \n• 1. Yerleştirmede ‘Türkiye İlaç ve Tıbbi Cihaz Kurumu için yabancı dil yeterliliğine sahip ve \nbelirlenen yüksek lisans veya doktora programlarından mezun olmuş eczacı unvanlı per sonel \nalımı’ yapılacaktır.  \n• 2. Yerleştirmede ‘Sağlık Bakanlığı ve Bağlı Kuruluşlar ile diğer kamu kurum ve kuruluşları için \nuzman tabip, tabip, uzman diş tabibi, diş tabibi, uzman eczacı ve eczacı unvanında personel \nalımı’ yapılacaktır. \n \n \nA- BAŞVURU İŞLEMLERİ VE GENEL ESASLAR \n \n1) Kura başvuruları,  https://ekip.saglik.gov.tr adresinden erişim sağlanan Entegre Kurumsal İşlem  \nPlatformu (EKİP) üzerinden giriş yapılarak kura takviminde belirtilen süreler içinde yapılacaktır. \n2) Münhal kadrolar, kura  yeri ve saati  ile kura sonucu yerleşenler listesi Yönetim Hizmetleri Genel \nMüdürlüğünün internet sitesinden (https://yhgm.saglik.gov.tr) ilan edilecektir. \n3) Başvuru yapacak adaylar, kura takviminde belirtilen tarihler arasında EKİP üzerinden başvuru formunu \nelektronik ortamda doldurarak tercihlerini kaydedip kesinleştireceklerdir. Kesinleştirme işlemi yapıldıktan \nsonra başvuru bilgileri ve tercihlerde değişiklik yapılamayacaktır. Kesinleştirilmeyen başvurular dikkate \nalınmayacaktır. \n4) Kesinleştirilen başvuru formu fiziki evrak olarak ayrıca gönderilmeyecektir.  \n5) Başvuracak adaylar , EKİP üzerinden açılacak münhal yerleri göz önünde bulundurarak ilan edilen \ntakvim çerçevesinde en fazla on (10) tercih yapabileceklerdir. Başvuru formunda genel kura seçeneğini \nişaretleyen ve tercihlerinden birine yerleşemeyen adaylar, boş kalan münhal yerler için genel kuraya dahil \nedilecektir. \n6) Başvurusunu kesinleştiren adaylar, “B- BAŞVURUYA ESAS İSTENEN BELGELER” başlığı altında \nyer alan durumlarına uygun istenen belgeleri başvuru sistemi üzerinden kaydedeceklerdir. Hatalı bilgi veya \neksik belgeler ile yapılacak başvurular nedeniyle doğacak sonuçlardan adayın kendisi sorumlu olacaktır. \n7) “Türkiye İlaç ve Tıbbi Cihaz  Kurumu için yabancı dil yeterliliğine sahip ve belirlenen yüksek lisans \nveya doktora programlarından mezun olmuş  eczacı alımı ” için 1. yerleştirmede başvuruda bulunacak \nadayların aşağıda belirtilen şartları sağlaması ve buna ilişkin istenen belgeleri Ekip sistemine kaydetmeleri \ngerekmektedir. \n Aranılan şartlar: \n- İngilizce alanında yapılan yabancı dil sınavından (YDS veya ÖSYM tarafından eş değerliği kabul \nedilen sınavlardan herhangi birinden) en az 60 puan alındığını gösteren belgeye sahip olması. \n- Eczacılık fakültesi bölümlerinde (Farmasötik Teknoloji, Farmasötik Toksikoloji, Analitik Kimya ) \nlisansüstü eğitim derecesin i (yüksek lisans veya doktora) tamamladığını gösteren belgeye sahip \nolması.   \nSayfa 2 / 5  \nBu şartlara sahip olan eczacı unvanlı adaylar, 1. Yerleştirme ‘T ürkiye İlaç ve Tıbbi Cihaz Kurumu \niçin yabancı dil yeterliliğine sahip ve belirlenen yüksek lisans veya doktora programlarından mezun \nolmuş eczacı alımı’ için başvurabileceği gibi, istekleri halinde her iki yerleştirme (1.yerleştirme \nve/veya 2.yerleştirme)  için de tercihte bulunabileceklerdir. Bu durumda olan adaylardan \n1.yerleştirmede yerleşenler 2.yerleştirmeye dahil edilmeyecektir. 1.yerleştirmede yerleşemeyenlerin \n2.yerleştirmeye ait tercihleri var ise 2.yerleştirmeye katılacaklardır. Bu kişiler açılan münhallerden \n1.yerleştirme için en fazla bir (1) adet, 2.yerleştirme için ise en fazla on (10) adet tercihte \nbulunabilecektir. 1.yerleştirmede genel kura seçeneği bulunmayacaktır. \n8) 13/07/2023 tarihli ve 32247 sayılı Resmi Gazete’de yayımlanan “Kamu Kurum ve  Kuruluşlarına \nAçıktan Kura ile Atanacak Bazı Sağlık Personelinin Atama Usul ve Esaslarına İlişkin Yönetmelik te \nDeğişiklik Yapılmasına Dair Yönetmelik ” kapsamında; uzman diş tabibi, uzman eczacı, diş tabibi ve \neczacı kadrolarına yapılacak olan yerleştirmel erde, her bir adaya başvurusunun kabul edildiği fakat \nyerleşemediği her bir kura dönemi için bir (1) puan verilmek suretiyle hesaplanan toplam kura puanına göre \nyerleştirmenin yapılacağı puanlı kura sistemi uygulanacaktır. Bu sistemde adayların isimleri te rcihleri ile \nbirlikte, hesaplanan toplam kura puanı sayısınca tekrarlanarak kuraya dahil edilecektir.  Yönetmeliğin \nyürürlüğe girdiği tarihten önce yapılmış olan kuralar puan hesaplamasına dâhil edilmeyecektir. \n9) Kura başvurusunu iptal etmek isteyen adaylar, 06.11.2026 – 24.11.2026 (saat 18.00’e kadar) tarihleri \narasında EKİP üzerinden elektronik ortamda başvurusunu iptal edebilirler.  Kura başvurusunu iptal eden \nadaylar, bu kuraya yeniden başvuruda bulunamazlar. \n10) Başvuru değerlendirme sonuçları, tebligat yerine  geçmek üzere EKİP üzerinden açıklanacaktır. \nBaşvurusu uygun görülmeyen adaylar, ret gerekçelerine elektronik ortamda itiraz edebilecek olup; alınan \nitirazların incelenmesi neticesinde sonuçları EKİP üzerinden açıklanacaktır.  \n11) İlan edilen münhal kadronun birim adlarının devamında veya münhal kadronun açıklama alanında \nistenen diğer şartlar varsa, başvuruda bulunacak adayın bu şartları göz önünde bulundurarak tercih yapması \ngerekmektedir. Kurada yerleşen adayın atama işlemleri sürecinde istenen bu şartlara sahip olup olmadığı \nyerleştikleri kurumlarca incelenecektir. Bu şartları sağlamayan veya gerçeğe aykırı beyanda bulunan \nadayların atamaları yerleştikleri kurumlarca yapılmayacaktır. Yerleşen aday atanması yönünden bu duruma \nilişkin bir hak talep edemeyecektir. \n12) Kura son başvuru tarihine kadar, başvuru yapılmak istenen unvan ve branşa ait diploma  veya \nuzmanlık belgesi Sağlık Bakanlığı  tarafından tescil edilmemiş  olanlar veya tescili iptal edilenler  \nbaşvuruda bulunamayacaktır.  Adaylar, diploma ve uzmanlık belg elerine ilişkin tescil bilgilerini, \n“Sağlık Bakanlığı Doktor Bilgi Bankası ” sistemi üzerinden kontrol edebilirler. Söz konusu sisteme  \nhttps://www.turkiye.gov.tr/saglik-bakanligi-doktor-bilgi-bankasi adresinden erişim \nsağlanabilmektedir. \n13) Adayların 657 sayılı Devlet Memurları Kanununun  48 inci maddesinde belirtilen şartları taşımaları \ngerekmektedir.  \n14) 5335 sayılı Kanun’un 30 uncu maddesi kapsamında emekli olan tabip ve uzman tabipler, Bakanlığımız \nve Bağlı Kuruluş kadrolarını tercih ederek başvurabilirler.  Aynı kanun gereği emekli tabip ve uzman \ntabiplerin Bakanlığımız sağlık tesisleri  dışındaki kurumlara yerleş meleri halinde atamaları \ngerçekleştirilmeyecektir. \n15) 3359 sayılı Sağlık Hizmetleri Temel Kanununun Ek 17’nci maddesi kapsamında, kura tarihi \nitibarıyla 65 yaşını doldurmuş ancak 72 yaşından gün almamış olan ve daha önce Sağlık Bakanlığı \nveya bağlı kuruluşlarında görev yapmış tabip ve uzman tabipler, Bakanlığımız ve bağlı \nkuruluşlarının kadrolarını tercih ederek başvuruda bulunabilirler. \nBu kapsamda yerleşen tabip ve uzman tabiplerin atama işlemleri; 3359 sayılı Kanunun Ek 17’nci \nmaddesiyle Bakanlığa verilen uygun görme yetkisi ve Sağlık Bakanlığın 2017/19 sayılı “72 yaşına \nkadar çalışma izni” konulu Genelgesinde belirtilen hususlar çerçev esinde İl Sağlık Müdürlüğünün \ngerekçeli görüşü de dikkate alınarak değerlendirilecektir.  \nSayfa 3 / 5  \nAynı Kanun hükmü gereğince, 65 yaşından gün almış tabip ve uzman tabiplerin Bakanlığımıza bağlı \nsağlık tesisl",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=Gz8cw0MOAxcL5ZKzfwVfxoswbHrTw8Mu2K6DeuI1LarZ9HMqZ9B187eUbzlvOkRnhbjmnPo6EUwRBAvV6jnczmLekaD5gmD9TNvGZA9YBF%2bTnMJeAAgd8B50AgQjyyjn",
    "metin_len": 16570,
    "metin_hash": "8ef2a4fcc6b1e55a437eb331f6bbce83edf409b700750f75036a908ae741b7d6",
    "p2": {
     "v": 2,
     "aday": false
-   }
+   },
+   "analiz": {
+    "kategori": "ILGISIZ",
+    "kanit": "uzman tabip, tabip, uzman diş tabibi, diş tabibi, uzman eczacı ve eczacı kadrolarına ilk defa veya yeniden yapılacak atama-yerleştirme",
+    "kurum": "Sağlık Bakanlığı",
+    "pozisyon": "Sağlık Personeli (uzman tabip, tabip, diş tabibi, eczacı vb.)",
+    "kadroSayisi": null,
+    "basvuruBaslangic": null,
+    "basvuruBitis": null,
+    "degerlendirmeSekli": "belirtilmemiş",
+    "kpssDurumu": "Belirtilmemiş",
+    "kpssTuru": "Belirtilmemiş",
+    "ekSinav": true,
+    "ekSinavDetay": "Yabancı dil sınavı (YDS veya eşdeğer) en az 60 puan",
+    "ikametSarti": "Belirtilmemiş",
+    "ekSartlar": "Yabancı dil (YDS) en az 60 puan; 1. yerleştirme için yüksek lisans veya doktora mezunu olmak",
+    "kisaOzet": "Sağlık Bakanlığı ve bağlı kuruluşları için uzman tabip, tabip, diş tabibi ve eczacı gibi sağlık personeli alımı yapılmaktadır; bilgisayar mühendisliği mezunları bu ilana başvuramaz.",
+    "_model": "openai/gpt-oss-120b",
+    "_pv": 2,
+    "_kanit_ok": true
+   },
+   "bitti": true
   },
   "https://kamuilan.sbb.gov.tr/#sbb-c7f4346e7962": {
    "first_seen": "2026-10-31",
@@ -122295,7 +122271,7 @@
    "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=IFhz9LantTGqYWl9KUAG53BvYkbhdvNsCjXyigd9SfWv7ynIT7OVN57X8ib8s9%2f%2bdTSZdjNsCh3USG7J%2bf1yDhu28NXlLlpcaVfG7SFpxFytzEmfGoemr%2b8g9MdLHW9n",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=Frsl2YEHQpEkmGSp67CgmgaZtLAYi72OrmSSO3%2fljMDQ5qX1n7hFXTh4dSNWj9PHxlBezBs5Y4cr6Ufg01GyXlCpSOAiIRRwmM%2bDvvu4CQJ1iXfcMGRqA7Htg3KS4%2f3e",
    "metin_len": 40000,
    "metin_hash": "2d39a3aae3c9f5612d7c3294da5c37551f72922b2ca32c48771485823ddc3b47",
    "p2": {
@@ -122332,7 +122308,7 @@
    "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=m8%2fJkoRmJQm4zmPSIE7D1WEa0njOBEq%2fqLGO7kuJQV3RAUkGWL5SvpPowdKfknwkWPnK9cFMSmr6wM%2bb6ay5nu%2fKpywEpmEk1ZFpIKwlr2RG0uoaeiMFillH4FfSFshB",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=WQwCz1BMKH3nrPaFabqrh%2b5ghrIN1DF3wDyI2GscIPev1uJfuPLMPMI2rx1V13m8qlUH09s8VnHuzsZAaZv27YWp7D98YygjxwddZxk3qVLpUSBFpUvgRrxEaD8arM8L",
    "metin_len": 25217,
    "metin_hash": "a714aebd4b954b92c253ea1c6e28693de773d7e9cd074a6e32c2f99f825fb399",
    "p2": {
@@ -122391,7 +122367,7 @@
    "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=AtUkt27G%2f4Rs%2bZRBG6c63iiauLLycPF8CAMPxGec62BHhisIbPs5YuPjIuFTyhWXbPvlA6J4OZGaV8l%2bLdyyJFW%2bSXQBLaGKVEK43%2bAnnKTRNfoAKmUpxDFbhFS%2fvOTs",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=JG70tFL2pH4XgG82Yjz2HkGzYbfPSAThEs4z1niTzQdvm3nErsAQlrnWB6bM08RcWwr2hFDZ2%2fS2B69wpKxyXu6n2YJlTCvY3%2f35ZIBF8u5NM8fX2rktiSdV05Ier%2b%2fQ",
    "metin_len": 15676,
    "metin_hash": "8bbfc5e89a61c35183477a5468d1c30848ec8be4cd94c616856febebcf4223aa",
    "p2": {
@@ -122428,7 +122404,7 @@
    "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=cfqvNdwA4mfOvHGmFx3Y0IlXD7U5Tzr7yOCzC5AMgH81Jib8dQv0iWC1B7rQLBzeqyspf5AwJpU4jTD9dpZeD4aJtKfsNHAbYEf8uuZAJMH5L5iLJg060vm6drTlue%2fN",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=3Im%2bhsaJbsHkH0NLhS17fKqs4TkhD5KVXt0OM2tG9%2fUJsrqHOa%2bcp%2bkN53mH9XsYhEw1hdaCc3eJ%2btXiGUi9nqP08vbvnUBaV57OQFTCvdEx%2fYm%2fjjGq7N79D9kNr%2fbc",
    "metin_len": 241,
    "metin_hash": "63f7fe2b0b83112233c293e1d0c90f040fe138a37c9321f670f9e5d8533f5626",
    "p2": {
@@ -122446,7 +122422,7 @@
    "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=Fmjd%2bYD7KQ4OXw%2fHL59%2b8WbDZ2PH%2fV1%2bgtuIy7VVW3y2FVXU48uOR%2fFOZFkXtBlJolg4ztttN1IsUg%2bD5edDBVjD54LIGEnSbkcbzXR9EdlUbUXAG%2blrKyYK5DdjU%2bY8",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=olH7zYYjb%2fa9n%2fABWHAuWMLMIP7D50WHrIlDV%2bFtnKRBODrarnG09tdvomSgiQt01LB5IZCJbYsqGiy2sfGZoLX2V9n%2fykSrlbllUQ%2f4Z299Yx02EvuAKeQuqefHoMQp",
    "metin_len": 5298,
    "metin_hash": "36112eeb0c4d2ff03e5b2171d6492efd695aa10a4a61e2e7f0fd20cf7cb054ba",
    "p2": {
@@ -122464,7 +122440,7 @@
    "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=Tl85Pl2xLrDD54YTyvYCBdR2Whq%2fOZ7zO47M0KsOlMnLSdfbtnUFzL03OoCP5pDZvjMbBTVsHUeSrqu1%2fNrOulWQBRpORmJtDWFlxcCxsFirymfA%2bqdZc4RfNXH8xZeg",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=5rw%2fHIXcYB7UPCfDM%2bPjXVSTFb%2fipfT5Ph2Z5%2bzkt0AnVO1AQpOI9AsF6OJ0dDMmMgQDDz67xSHamhNl3BPt%2bdaA3Bm0PiBRn5b7FrWSHQnS2C7RWsIeV8QPE7P0jYhK",
    "metin_len": 6502,
    "metin_hash": "7a90f5dde188257d137331015629923b107a5704026da33835e8e84511576777",
    "p2": {
@@ -122482,7 +122458,7 @@
    "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=Xmgy0Kk0IDvac%2fx2XA58qISYZepdwcScAfWcCnWpy%2bG%2b9yQ1bPnthZ61KqxxymAWH7JCraoqhE9jswDOvCa1xySw0zEidNCCTAWoZX2boqUnuxnrF%2fWNDhL22updKc6I",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=ZPwLZf%2bA12Un6nOV0qpUkBqHinknPvmcl8CxLXx6XYGvgVSXRhMyGB1Q%2b5%2bZZEiWFbWmPBRUjMcHfCO06s0Mz2ZqIUPCOeUcwv7jVufIN8p5arDNpnTX6P2FoJEBex2J",
    "metin_len": 7590,
    "metin_hash": "6f437d642385721e7cc4babcc02e70d095fe8aac2bccf656437e0226fe744e9a",
    "p2": {
@@ -122500,7 +122476,7 @@
    "last_seen": "2026-10-31",
    "detail_level": "İlan detay sayfası",
    "detail_checked": false,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=7w%2fodqNWzvQfjs0Qq1%2fqYGWwNet4VLdATqEPJZcbGanI5VowQHOZQ5r8y9KSuo%2b0s04YvCsKuj6IA6vkQOM%2bXuDxZlaB84O9pH5SjquYvAhnFLjr%2bPLNNAXc88a4jRLf",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=X2mNeJzWUAPC46El7ofJwK4Rvioe5ADj9kfRbyLlV7O61r2%2bLQwxCAiJJkhhvvMGx%2bGkFkqe5s61buiVPNVe01wVZ64k7zVCsrAk9cV%2bzKhGjBp6lpqcUwkinBoNdqK0",
    "bitti": true,
    "sonuc": "SBB: DETAY OKUNAMADI",
    "hata": "ilgisiz başlık (iptal/düzeltme/subay vb.), okunmadı"
@@ -122513,7 +122489,7 @@
    "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=8NLP%2bg3eCMh%2bpPoDWV9puAVYUb5IPxE65LJaquCUqaWu7oeCvhSyMKwgBI3edUcTRcVtAJg3uUHq56tY%2f52ta7vfskyGMtTS7nBWDdCJ5204SA3NEzguv38%2f70KEie1I",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=dDOw3msPLMeBQZAmNhAGnJYawxiEkwvNyAaetAeZbXLEx4zQ1US7wxNQrjzBVP6yzdjbZvZdE8RZB2dKdNlND7zjcFsNF5qkH7QGcCgH9BvJh2HgL8w3mAF0xoGnvhl6",
    "metin_len": 2789,
    "metin_hash": "c3f8e7a129698b3a58df50e6058be69e0fe84378e2f949b8218c9640947f6f73",
    "p2": {
@@ -122531,7 +122507,7 @@
    "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=EE0OCWmRBeW5q%2fvl0AmqXkRJ3HqfONNb%2fWSWxk53i1q4oCDpqLdJp0lm08dZqJV6T%2b0fHf%2bgL0rX%2bcKRpxSiH0QFhWULhz%2fl%2bvnU7kCVEh2OCL%2fdUsMtrzp%2flHorn9yi",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=eM1O69v7MnvRLpt7jUAWEn6NAke2I9P3Oa2mNRTFGM%2fefQYQfAg7SFnRPJ4UGr3OzhfEJWcPhBfdaWb2nzFvjo%2fQggonYlp8%2bv8UFIkvTj1bdfXN%2bIB24mb3VOUWL5sr",
    "metin_len": 36662,
    "metin_hash": "1e4a334710d6c42f27b780ba3983c5d6b513fabf60176b06edb4a50488fec9f7",
    "p2": {
@@ -122549,7 +122525,7 @@
    "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=pSYrEaUtLd9PCrAIUiWP2KdHDFe0sw35rCLdyxQY6txNuttpac%2bnOy2apYFqAJZf7LS0fJjt1OnWL8wxUmHPNkUxWlFHW77dgXp8k3N8RPi3f7adALa3G0ZQUvZQ9MGI",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=6KJF%2fOy4IySDzLoblh0ZlFvjxbtDtE5AjUxyiBDyyK7cxu7J%2bxHwGT43cgO4zXT0qZx87wV9gdgU8Y2riDzRWKsmFzZeUAV%2bfAQdqtQynOE9gRRu0oUvwFQO8b9tHXTh",
    "metin_len": 10695,
    "metin_hash": "75ce6d02d391427e0e122b6780d3a25ace2da19693fff01f1db5a6485e05d0af",
    "p2": {
@@ -122567,7 +122543,7 @@
    "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=6vHgZJBEBefVUDTiNpn8RCCEI3DARmfwpOCvOy6FzJbldXFKy08M3oY1dWpte92iThYAJB%2buQqna2vc9K%2bOaoM68LMtzl1vQCYl0kkeJCx56QbAH7Uwx3IYjitoLGQB2",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=JB5SwB31v6yUx4l9wY0mhuelsadvT16av9OmulXLv2zi1RZDcRyDvgJeoz6OssE8squcuME1UrLW4BOSbLsvTfGtMltOu20KFSRBZ3wzf8e5lmu3EU9PaRO8%2bzXHo38a",
    "metin_len": 16570,
    "metin_hash": "7f3230ebb2e3210266470202f0130787e0c6229ad9c5b472760089f2dcbf88aa",
    "p2": {
@@ -122604,7 +122580,7 @@
    "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=YaA4sDbgfB2Ws8MBjdVi4nvAxhdW4srEdxvT6Xlhg1zEY5cY%2f3bmAHIY%2fmm5FCrVKGHllBadrVxsKo1ICkwbyFXHBulkvqUwZ3kQ1RQ9evBNU7O%2b0T96z8GXj1ywa57g",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=DGgGYLCZnW2QVhaqCmtsR0T44yI9aYBqjAEBUwEnkfPaVCpCcGRHM3eULdjnvdEO8pSV16WL0F5kY3LBj2IXdGnDwPjK%2bJO7yodHlBqq6gt0npEvxRR6HYwg%2fKrWIYaC",
    "metin_len": 12574,
    "metin_hash": "333ab840b1dfae282e28a98fa7e009be06fb28db8e96d656696f5531e3acf405",
    "p2": {
@@ -122622,7 +122598,7 @@
    "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=9Sq%2f%2bJu1VnXynM%2bj0YYx4PdwktpWAYq%2b0JlUpG0yk83NVzTCEdqtJTEndQr16yLPMBYHDrJdfybxps9kHJ2DfvN0v5YjkaZ0y6S0MB7dCacMj3LPY2q655BDEkvZSqEI",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=v6Sd2k%2fb3yMg8s1U0FrvR25h5H73IKpn9oZqlrHaT1b8A%2bGPM6Lk4PUi93kJZuBQpV7Igf%2bE%2brqAiN29q3BOQC2ZAQ4rVYVr3uPRqnBZNLwtGBFjFI1qrsbt1p1vwtb3",
    "metin_len": 40000,
    "metin_hash": "b8dc57bc3f5bfb056dfa1f0ffabc9ce7cbdc45d4401c46fd2754cebf58deba84",
    "p2": {
@@ -122659,7 +122635,7 @@
    "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=JtQi5LPqqKlX%2bkSVSJnF4H18IHYWWbPrruaNuV9Wpc5SmaDRYPo0IoOrMMTtdyKSWIJ9hTMQDgTWu%2bgZyTZX6lNfLQ5EIphZU0Q%2fH17lJdOo%2b5g521SPP%2bwl9npfseoj",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=6ZBadQxo6YJe3SLlOu8FPmdQeV6OTrRjbzYvqg8i6kAw7%2fP9vQIarU5pR%2bnwPuj0PmR6omKdxNIRqaJe17IHDw91fSu%2bNuIuvC9bCaPHJitpFt91g9eosPIvYZWduph8",
    "metin_len": 8150,
    "metin_hash": "fb43a0d0801ee6be37ac917ed6ffc4970168cb555f8632652991825ae4393547",
    "p2": {
@@ -122677,7 +122653,7 @@
    "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=SIRY8vrjcCqDlnzmOkGRmHNhgFX6fShxloZTyLO3Yh3P%2fs2SKH9R40BA4foEJgi0GGCzseisr2Ww3kMgRHN5KRn168q2wYkbTQVvFx%2fCv%2b5FwIadt9UvtRZHC9xq52dp",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=luXa566uU52%2b4cfL6eYAKBXslSWNxPejG%2bl4HJ3UVTPSr9kGWKbldcmafBuycsQ8uRnNd7rxIw0nfmrS3Slx4NM%2b2hWqpAIaPhxFWOHj6TSi2d3DZLTHhPxxtIAp5p3s",
    "metin_len": 4188,
    "metin_hash": "e1a89d10484dcbd8005ca4d9cd181ce65920e4311a8ca2ec490d287d884f915c",
    "p2": {
@@ -122695,7 +122671,7 @@
    "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=2ROQBfApFnSde5ElgCJ8mTicZTqIwH5X7K777NXC3%2fyzqBBUMfTmtVSyeja1JLsncn%2bdkSRToMPaNejOC7Ibxm232NVXROuVj6bSWVrocsNfr0aQumMQxaE8vkMWupzf",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=d6cuolQTKiHBWSK2077E%2bJ1vXrG9Ifr5e33NE6iSLjeRp7d3EUQbvHXKArmh3YT1yZdgAQ7OMiPnE9uN%2bj%2brkuSPhvfJueaPPD935kGdSYmd%2bt5aYJ6DTjKVIqrtw7yv",
    "metin_len": 25217,
    "metin_hash": "4f59562f6dfd6fc59a466e67bca4f960b1cce725da6c09a21cc03969e754b48f",
    "p2": {
@@ -122754,7 +122730,7 @@
    "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=RRcXT%2bFqMPGTcxA4lod1R6w6p7fi9rLNJg7NQsAvhcZj88wBER4HML2V%2bYh4cp%2f4VAcSDORZnqpa0TfC47MdiHcITiZSxhaVUNoiPx7T9t05EyZFYsvONoQwUlf5XEiR",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=xNuSnB4SFG7Zr9V16%2fC2PnJ5xtrHCL3MSMteHQbEqzHhXV3iFNVKX4r4fO3oOvcuL7vfPT6dhTZ7%2fbpxSYoFJU0f8p9DI2xbsw%2bxxhY9VmFfaNPw8HxyJGfp8Sr39%2b3Z",
    "metin_len": 9863,
    "metin_hash": "fccdc7554d7bc68a3f47f55d43065b76ec12f5d7cee0fc3320e18c7911f6472d",
    "p2": {
@@ -122791,7 +122767,7 @@
    "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=lxskUrYXzQ2%2b5hJqwqieSBmp%2b%2fAOnmwdFxjdAL%2bbUqsRNSGyLdXunNFWkre%2fSUSYRppmTFRtX3uP0ZhKE6t2T6vuG4u6%2fzwQ8pZfXgKEYH4o9sMVay3f586Xz8VzJX2s",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=X05zkiIp%2bdAbK69wPu1uhlptVNj5nSwJYQYjRiryGZ7c%2f7BA6YmiI1vp%2foo5oIK1pNYWyGFJEfDSzsSVaRxPyzCoVum5eQ22D8gxbgie9O3yJTzuLaEa0BnwoKBchkT0",
    "metin_len": 10436,
    "metin_hash": "a4a6539204c01c5e17202b76ce08a1520e459f4a283e0eb93534b8b9b6c4c2e7",
    "p2": {
@@ -122850,7 +122826,7 @@
    "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=aVCNc6UnKaA9oPY0QMTYgV79Uzxn%2bsI3w42bDSqy7LwKfVQEdsei238EajkmyAt93aMzRRI2EeHei%2b%2frWJQQwpD0l2X6nburFTV6pVhQVeni8Cmf%2f%2bSC96BoH56JyL9S",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=dT5Qwt1BzMUO1psokYmsStWXGvbiYIRePdDngM030w%2bl4u5Nrr4WLIa3omwj5cdqLJ3wCrhSJv2z6h2dbe3GZEx9AH4xNJf7%2fv62kUCKQayLfmnyGPBRr1n3Xnoa%2f8SF",
    "metin_len": 9084,
    "metin_hash": "9939e5d3f62df3a83af72b61df2cfc6a062411e50ca3b9ae793946d769dc3da5",
    "p2": {
@@ -122887,7 +122863,7 @@
    "last_seen": "2026-10-31",
    "detail_level": "İlan detay sayfası",
    "detail_checked": false,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=djBxC1b6xYD0m7IGSQI0b4ybau%2fKtpVKrPq%2bmfFtFnq74nKGKn3Mqq5myqFbG34cpuR8aS3MBybOtHO0WyEjy%2bfecTRo5rrjiF2Y5kDvuYToY1sgE%2bTdqydq5Pea683w",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=JIKCSKswr7vot9azfr1%2bH7UoiNSZ3Ez4nHEj7SKK0aH8rEb9aXGFWJhXUbmYEThwsivyAPCfH6%2fTMuAs8WJz5Wvfc5SIFc%2bLHN%2fyFb%2bGarH4mC6wnEeYjOQYKXU7zEw4",
    "bitti": true,
    "sonuc": "SBB: DETAY OKUNAMADI",
    "hata": "ilgisiz başlık (iptal/düzeltme/subay vb.), okunmadı"
@@ -122900,7 +122876,7 @@
    "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=6TV8WOJnoVahJYArbkPYD1e4qpY%2bA%2fEr8gTu5rB65dBQ3wT437zRXwfAESZPgZLX8W1cNuieMQQWI%2b8bq3iuxiX%2fbkSrkFMSuE4Lis8geaR57S4L7xdtBCeymcisZWZd",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=Sg8OgaVJdysvyKhntdnN%2fuS6%2b%2fGVRpL6vt8LAV4jcBOeYxJZ1IcjvzaOQo2BR2MKp3fuiqVKIW9nA7A88yyt1PzwXFdauHzQORjsFJFUkiFwR6p52QhP%2fGmJ2%2fdTTae%2b",
    "metin_len": 15676,
    "metin_hash": "72c31308433703985127e5e47576e422939e90a95d990bc7fcaa2dd261d07f48",
    "p2": {
@@ -122937,7 +122913,7 @@
    "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=vNWk3nRNSElZQ0P0OTgJ1XSnhyu1KJtZFEczGP1zdQwcaJYwdxkmcgNhewVBWOeNseBRFju1FvA5I5DyQKYcPJQqOtVG7FvTxRpFl%2f40udgC50z4p41jp1wN13QWnSo1",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=aEcd3EPvXIVXgXg4J5z48xeDuKTE5Ja%2fFRXrKl4c2sm6an1WrxR%2btM7PWabFBb0FdOE%2fTipBwHFSfA2cM%2fe1VPIkmfUP72tXw1wfomdGYcgWgeR%2bYt1c9jiVzWKntIRO",
    "metin_len": 23913,
    "metin_hash": "7a3ca3204579bf5ae4027a2f9f4391233c12a3a0406ec42dd288a5579a015dfb",
    "p2": {
@@ -122955,7 +122931,7 @@
    "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=Fl7JpmixZPGz9gIHk%2fNTMQ6nwS1HPC6BQuowdNrxcVGMwgxfvJP33p9hMy6wgAHQRGYgFOeI5mh%2bSqumuXuuczVeZyXdtLRNtGKX9r0ydtTh1fdqnTyiJ1YXLFqUfLqp",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=g49tsDG7YZtm1qDskPhyRzw0aFvuBUN7VtvS3YDhTyptg0sl16y%2f%2fS3SF1sBM8zKse09Du8fNQRbDqXwqUJPsVLblMho97QjmK03qb%2fVHKuvbAq3xw5cUFIL8%2bz%2fORxj",
    "metin_len": 11207,
    "metin_hash": "59c386fef9f280349fc895db63ca34babd76b65275a2a22ad1ef268803a6de53",
    "p2": {
@@ -122973,7 +122949,7 @@
    "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=lvsSAJj4f0e%2fB07h2fHOSHXjUeamaSPCqHSFiJLNHPq79StCO3HKZT6BGwVhzI1MYeG4S9IIpzihdgjhOcXaNb1toBQmm3gkZkbT0igIKMmGG39KvVAx60y%2bZMQ1691A",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=TBktegBfQQporGhoTOvKPrCxular2ApJObz7E1yZ3B4EtKVcX%2bkPx7Qorf6%2fe7ZonT1m%2bKAgwt4OMPrf0PKP%2f6sb8CB72hTxtuQGQ5tGAU%2ftD6neHBGHL59uM1dAdOna",
    "metin_len": 13736,
    "metin_hash": "bf91b4045bc3ec4f468759be5c5822661842d96bc04816692fc1d67b6d8e06cb",
    "p2": {
@@ -122991,7 +122967,7 @@
    "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=5bcHJHT1JqDFOZ0akus7vhOPVK%2fK218XbzPPAy52v%2fLrDtf5Bygdsvl%2fnki0qL8irw1mLcXqL%2fWUKdWq5PVI0fJhk1ByQko8q6TuriIm331Z%2fXVJiHhGmp8dKuRs5Yz7",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=ouZhWuaOtKwk4A36H2umkdp2cRU3eKxhCsv16b8kkOns7yioYK%2fRy5HTUWXliG5tc7yB0YyAtRNFu8WMH4IZkZXy9OSrtNjDQgoECAE2KagYNZyTSyi9r1WJQS5rc7TU",
    "metin_len": 9316,
    "metin_hash": "004df930aa17707cb9874af263b6fb2a8e7dac468bee9350f1b58f88b9c7e37f",
    "p2": {
@@ -123028,7 +123004,7 @@
    "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=RvLAWtNPwulMMIbpNi321SiO7%2flwGl282b6U9sMMk97M42bOXQc7ewWARwvOcCWvdDEbXcRqaiHC83tKyLOMkvMrpB7PdYEL5SR2sfpv5JZxekUNZPcYyxucjAmNt6mc",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=TFW9k4VS5Hthn8dgWxq24ymOZf7PQYbA%2bXUWVrg4WWxSBvOqg2oYywzAYrZ7rd%2fCF0EDimSdxOHuNCSyO5BYnEPCAOGvC1xmZaWDSvI5LGWUYCFczHBVvRdbcjOVkKhS",
    "metin_len": 9536,
    "metin_hash": "4f22b6a2aaf570a06579cda57e77b9fff295135e97870615ca540fe41e5ea1e9",
    "p2": {
@@ -123087,10 +123063,10 @@
    "last_seen": "2026-10-31",
    "detail_level": "Okunamadı: dosya okunamadı",
    "detail_checked": false,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=FYv9SWBCIzY2dPZTCITzJ13puoVZRjWK1K6lqf9Vk0uXAAlsPxsiSdY3f2f%2fR2d%2bvglXtjJICJS8zK7bR3TBGyJm75J51umjJRjBT2NU8i%2btfJfQ73wOxd094XLAkImR",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=f%2fz568q8jWJW0T4qguCW%2bwXqPq09bEKmbN4fNMMdTfdFVjFwFdQY9hi9FdVcgiywGXO6iZEK9IAYaefEAWUUE3FVarNuh76lC75n0NJi0u6xKgDMIzN3W5vhDsPANcD2",
    "bitti": true,
    "sonuc": "SBB: DETAY OKUNAMADI",
-   "hata": "pdf-okunamadı; application/pdf; charset=utf-8; 273054 bayt"
+   "hata": "pdf-okunamadı; application/pdf; charset=utf-8; 273052 bayt"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-89b042cc8eb0": {
    "first_seen": "2026-10-31",
@@ -123100,10 +123076,10 @@
    "last_seen": "2026-10-31",
    "detail_level": "Okunamadı: dosya okunamadı",
    "detail_checked": false,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=fGktYG8faxVB%2bc%2b5zbVxquEP8XAqD9ZnBkLzqu9kMDg6j8VVkjeMbD3l9hXZR95GYRMJ6hF3tOTs%2fmrsnEx6xQqV4GukOsUsTzhUY3SQLKf0k9rp%2byYcXEisAjDdOUFk",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=OUun1njcmcQU%2fNwK0S4Db%2bs06hVYWT89dx0oXgFVF%2f%2bJlnBV3EbCvtyu3t9A9nvl31mOkqbbr6j0cv%2bPbR%2blCW%2fmBAbQD025Inp8QuRxMqDSplqHep3YfKnBFvrUwf8d",
    "bitti": true,
    "sonuc": "SBB: DETAY OKUNAMADI",
-   "hata": "pdf-okunamadı; application/pdf; charset=utf-8; 1288119 bayt"
+   "hata": "pdf-okunamadı; application/pdf; charset=utf-8; 1288125 bayt"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-47872bc43d73": {
    "first_seen": "2026-10-31",
@@ -123113,7 +123089,7 @@
    "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=zkoYPy2XrDcR0MW1NoZibKeoQmyfTjRKa8G%2bruog5PZQhnEwYWYx8r0zNouWZennCo8GzWP8AHTPKHExX79uemlaQxepa0WtzoowVXFC1C67qW9XyZWG1Q%2bi6sMD9SQY",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=S9%2fwPLZuHwaYqoGkbLcI8YFTvTrUqCRMasT4lc7QuhlYq9rA15RWuQVws8DJV0iA11edC3u3%2f6gyyZa6OCSXLwKcb0QQJAJ44KAB3fxFZIngcghqfCRNEMv5cUEWnXxN",
    "metin_len": 241,
    "metin_hash": "5301dbac2491d5a162728c3d12462be38fa81beda21e03812d7815ab5f8182f1",
    "p2": {
@@ -123131,7 +123107,7 @@
    "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=WgYL8Li61INqFjWRi6qVJ%2bMly0HTNMKps3hJXvMcR3oHgoTn2G2ZTDIoIHrGBwEyIGfXlDggEZFbVYB21PyV3Vhn0neLFgjEYZEvzjRriMOgWDG1VGd%2fpOwYrjuf5%2f5Y",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=YAP9JoD5tmyyl0pvGekdg5KC36O1B3sIZqQ8ebcjX6B2S7KRmgp6QNk6bY10rss14iphX0%2bcAXVosWm76OU9Z%2fF6gahqiayCT7L523jL%2bseW2EIgSguss5lqWRBTs3uR",
    "metin_len": 9038,
    "metin_hash": "e615edfaf7a64d38e10fa19fd00e0ca488a12ae7d1d22935a2e8b4763a20fff4",
    "p2": {
@@ -123168,7 +123144,7 @@
    "last_seen": "2026-10-31",
    "detail_level": "İlan detay sayfası",
    "detail_checked": false,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=MU22MZyM2C69FQdYSie%2bdg8TuGJ0%2bZv3BlqgE%2bPQFmYjcaevz5cCSgQetAxSnBOZUVRVca0QAsM7kedg4HBX8rn51gCJJEQAPZCBHmrRq8lQUKcIIm0LbG3nHlXm54it",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=JKjnJRDyEQJjMsQOfUTgfxWovrNzGMFFqNHYT9KFQpOATc3OqLLgSq5DF2uSJKioIep%2bISj2nK35Fe4q9KT1oJwuJML4SjzBpkeO3rnyulP6s7gzzSBhOYTVlc7IJ26Q",
    "bitti": true,
    "sonuc": "SBB: DETAY OKUNAMADI",
    "hata": "ilgisiz başlık (iptal/düzeltme/subay vb.), okunmadı"
@@ -123181,7 +123157,7 @@
    "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=ar0DctGqod%2bQi1Nz3weJMUVMDvF9n%2fYpexNTZgFv2jp%2fm4h3%2brfaoJe5JiupADMmtMXzu5aElgCpAoGZ9jJbWK6K1Cr7z3KQ1Fcgd2nboG0fLHtqiduN9gg841WukHm6",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=64x2I6JYy7lx%2fXOHkQDoLm7gw3soaNSWnrfuw5roFsyoBKLQroDC2fMtNvlH8c3Rs0rNXKGjyrx0ItW5dhcxqHRk6k27nluB%2fOmy05MUErawFmntQ1G5CxT7Ad7tzETA",
    "metin_len": 5338,
    "metin_hash": "b4a520c0c48940ec79be4dadde589cc384d80289e7cd2588272f6a2e9603656f",
    "p2": {
@@ -123199,7 +123175,7 @@
    "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=YGMR82vphIKTSHiMJl4hzKREGMkQyBkQ6E3iNsuc%2b9ieCf4M4h%2fwoRnZPMiCvr%2bu6lQWS%2bL%2f1QVgV6uGHEmCXluXQbQEx6s6FRuY4DvFNaQb8%2bN%2fdRmcedk%2fQSHjy%2f9n",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=tCmIajiGYWJiDEzPO3LfCRw9gkZdDfFXmChKdHE9PUtuShjo4yk0O7IRaz0pFWv%2fTpG%2bq8vLdtnifghUCn2WgY7GekcHuqrW0SJRPej6uu1V%2b8MSoAV1rvmdfXIIP0al",
    "metin_len": 25552,
    "metin_hash": "31e736cc95b93ec22541ae1a028ed52df32f27c772895bfb242f0174ae053bb9",
    "p2": {
@@ -123217,7 +123193,7 @@
    "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=TNQqguE0HQuvmvTebvIoeG0VRMl9HQHzpsm5j13s2iWTeRbWR6piSdHK1%2fBx69sEb%2badJwetaaGwvOJ1Nnm8WnAs%2bhSFxwfhHI2EzTWmEh9h62kKsIeebBmOr%2bFEkyCc",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=CzFCoDflIMZ%2fNyWLzb8OjIVwxIHv6ly8G%2fSDTt8%2bkWl53QsdE9P4T3cSxjln8A4lyAZz6ErQFXC%2fLj5IYCjNhpqHKirfQBDzHOyPftYQVFDahcx17G8qQatsATMoQCJ6",
    "metin_len": 25552,
    "metin_hash": "780faabd95ed632036499b6cfb4baba6e5261c9a0a16233fd2efd193d5082637",
    "p2": {
@@ -123235,7 +123211,7 @@
    "last_seen": "2026-10-31",
    "detail_level": "İlan detay sayfası",
    "detail_checked": false,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=HH0fLoKhqquqrrt1BFbc1zizTQ1liCH2SHoDKLLgmtqGc2ftohqgs2VTB35itSD%2bc%2fX80pBbbAC0tvrgB8VNIO2IJeTqDSwg4KqgHju7D6cZQ3FzdKrxMEyTyKSTPG98",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=fKGnTEqjuvX8SZkdRusw8utvGd4v%2fxoEHVtLAhZWB53on3zBoN6x6AcMWQnH%2bJ6jc34UMLrkQPDpDxADZLaxEgOrF126mk8jcrWJzQsStmkw%2fGR58nGe1sDF3Dq8yO2H",
    "bitti": true,
    "sonuc": "SBB: DETAY OKUNAMADI",
    "hata": "ilgisiz başlık (iptal/düzeltme/subay vb.), okunmadı"
@@ -123248,7 +123224,7 @@
    "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=0%2fOUAOiUu1w8gEI%2fOumVChn%2b2x8Yeq35m5ufymLITtaKd95Jh9O4k%2fRXlkRBc7CYtcM6Ac0c%2bQ1RqA7an%2fotw%2bz%2bQU%2f7bansxVpHz%2bOCX%2fq5id8b2DmV1iMeqLqrqaSB",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=sda78LLK1SWLX4YcmBHgIsINDyvpTBkymJszSClbKbMbiAIan3eSiivFwNLSatRD99%2bQikXB4LDhBsfFAu4O0mQHdfaeqasaVPGyL0x1RJuUtunJcqxtIJSCxhUDikP7",
    "metin_len": 16224,
    "metin_hash": "3bc04d88b0c8c276f23b119b6114d97a5a8474fe26acf309d7784dc32cc32540",
    "p2": {
@@ -123266,7 +123242,7 @@
    "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=GZ%2fh5uyC7JEpBkV3mYyuYFWt5rmoEbdd7VYUgU%2b4JHRQW1H2D7HfzTIzC1FPb%2f7ACg%2fIarb%2fyw7CXd0JMmUT3K8AE9B9E0p9af4PYZkL1PTiEkpxTjmtx1BqiHtSniDA",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=e5aKJ1mQyWK7xngmw3KXZieBoJTsrtFpmboNahI76YIBKTVUofuvPIqn0jYZ1DDbsTa0q9zduM9JGQCn0j%2bi9qfebIOEt5u135f%2fNSxY2kAsDyLr%2bT7lGZSjXtBOpYIS",
    "metin_len": 5313,
    "metin_hash": "deb60d50467b3f4409c7b3388f487143596bdcca241ba7d61c82e0ea8d7be409",
    "p2": {
@@ -123284,7 +123260,7 @@
    "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=C44ecnGEYM0o3rIXOaO2mmdjQzivZ0JuA96JHi8xDcZ1Mj0HDcqvPMqhYjRl2cAd5Na8L3qcesW2JrV91DowQq8pirloIo7yZek2wzRkx%2f3pH%2faLGGeUmD6vJfk5QKjt",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=eXvjXNak6eyGt6OH4IyDgVJwSpBHaWQMtBKydke7cfnjIH6QYD1nIfih8kKVTG5JJL6sEArRh5NM5cdxjpkhYHfMx1hoYnu7xmW%2fojAVesMtQUDIr66RTsNR98C46CAV",
    "metin_len": 5535,
    "metin_hash": "7580b8029f1de6efefab98a2202d7cede04bedf3f32030707ee1fe48ab5a1b3e",
    "p2": {
@@ -123302,7 +123278,7 @@
    "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
-   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=%2fO4Q%2fTQMJrCOK9VNBaxgDo8xeOG6VDXFQgznQI%2b9MfNcWZQK7jkjDzE1qV%2bEtafYZE2SVbNsMlYdjjyrVayaZHk%2fMVbKA4bu6ThOZWxQjgvY0O58q50BOy%2bgIQcwHGVX",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=g7OkBgZN2UEyLk9Hu5k8ygFsMpwDklF5IBNIjhe%2baL0JpWv05mJahs%2bFxe5oo2JkPZRaE7erzXWPJVlXYKnogtjey0G%2bUArjr3ITNAiEJNBjyNXLjQudDLDSobPbRLDb",
    "metin_len": 7878,
    "metin_hash": "3e048622ab312101245dedb905621542105b141c4d731a5807f1c1a30d418eae",
    "p2": {
