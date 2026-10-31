@@ -4915,8 +4915,8 @@
    "last_seen": "2026-10-31",
    "detail_level": "İlan detay sayfası",
    "detail_checked": true,
-   "metin_len": 15776,
-   "metin_hash": "7699599d30caf05556d6984526459525ebbd77cbaabfe1ee953da9c08ce86230",
+   "metin_len": 15774,
+   "metin_hash": "55c063e2d4da554ec1f71cfcf2a3573a184d226723205997f347a6d52eae99be",
    "p2": {
     "v": 2,
     "aday": false
@@ -4928,15 +4928,15 @@
     "pozisyon": "Uzman",
     "kadroSayisi": null,
     "basvuruBaslangic": "12.10.2026",
-    "basvuruBitis": "31.10.2026 23:59",
-    "degerlendirmeSekli": "KPSS + YDS puanı",
+    "basvuruBitis": "31.10.2026",
+    "degerlendirmeSekli": "KPSS + YDS + diğer tercih alanları",
     "kpssDurumu": "Zorunlu",
-    "kpssTuru": "KPSS-P3 en az 80 puan",
+    "kpssTuru": "en az 80 puan",
     "ekSinav": true,
-    "ekSinavDetay": "YDS puanı, puan türü Tablo 4'te belirtilir",
-    "ikametSarti": "Belirtilmemiş",
-    "ekSartlar": "İngilizce YDS C düzeyi, ikinci yabancı dil belgesi, denklik gösterir belge, lisans mezuniyet belgesi",
-    "kisaOzet": "Batı Akdeniz Kalkınma Ajansı, 12-31 Ekim 2026 tarihleri arasında Uzman kadroları için başvuru alıyor. Değerlendirme KPSS puanı, YDS puanı ve diğer tercih kriterlerine göre yapılacak.",
+    "ekSinavDetay": "YDS puanı, Tablo 4’te gösterildiği şekilde puanlanacaktır",
+    "ikametSarti": "Yok",
+    "ekSartlar": "İngilizce YDS C düzeyi, ikinci yabancı dil belgesi, denklik gösterir belge",
+    "kisaOzet": "Batı Akdeniz Kalkınma Ajansı, 12-31 Ekim 2026 tarihleri arasında Uzman kadroları için e-Devlet üzerinden başvuru kabul ediyor. Değerlendirme KPSS puanı, YDS puanı ve diğer tercih kriterlerine göre yapılacak.",
     "_model": "openai/gpt-oss-120b",
     "_pv": 2,
     "_kanit_ok": true
@@ -47058,8 +47058,8 @@
    "last_seen": "2026-10-31",
    "detail_level": "İlan detay sayfası",
    "detail_checked": true,
-   "metin_len": 747,
-   "metin_hash": "bde2cd8d17c2dfa3e4e6f385e47ae60f419f8adea2465bf2487e9ed8255344dc",
+   "metin_len": 780,
+   "metin_hash": "3be927453b8dfc68e7bfa13680f2e091b3ff8821d017583017db1330cda00667",
    "p2": {
     "v": 2,
     "aday": true,
@@ -47073,14 +47073,14 @@
      "engelliBilgi": "Yok",
      "basvuruBaslangic": null,
      "basvuruBitis": "31 Ekim 2026",
-     "degerlendirmeSekli": "belirtilmemiş",
+     "degerlendirmeSekli": "Belirtilmemiş",
      "kpssDurumu": "Belirtilmemiş",
-     "kpssTuru": "belirtilmemiş",
+     "kpssTuru": "Belirtilmemiş",
      "ekSinav": false,
      "ekSinavDetay": "Yok",
      "ikametSarti": "Belirtilmemiş",
      "ekSartlar": "Yok",
-     "kisaOzet": "Ordu Ören Çevre Enerji, 5 işçi alacağını duyurmuştur. Başvuru son tarihi 31 Ekim 2026.",
+     "kisaOzet": "Ordu Ören Çevre Enerji, 5 işçi alımı yapacak. Son başvuru tarihi 31 Ekim 2026.",
      "_model": "openai/gpt-oss-120b",
      "_pv": 2,
      "_kanit_ok": true
@@ -47114,33 +47114,11 @@
    "last_seen": "2026-10-31",
    "detail_level": "İlan detay sayfası",
    "detail_checked": true,
-   "metin_len": 849,
-   "metin_hash": "cced9b2f619325430825a1b15cb628f9a6c0e29ffce9465fad16f6bfc71c0d63",
+   "metin_len": 662,
+   "metin_hash": "d3b9a39a737b1e51059d3f3b73722740882ea3a6c87c83be603035b187a47c3f",
    "p2": {
     "v": 2,
-    "aday": true,
-    "analiz": {
-     "kategori": "ILGISIZ",
-     "kanit": "İstanbul Bilişim ve Akıllı Kent Teknolojileri, 2 İşçi Alacak.",
-     "kurum": "İstanbul Bilişim ve Akıllı Kent Teknolojileri",
-     "pozisyon": "İşçi",
-     "kadroSayisi": 2,
-     "bolumUygun": "Belirtilmemiş",
-     "engelliBilgi": "Yok",
-     "basvuruBaslangic": null,
-     "basvuruBitis": "31 Mayıs 2022",
-     "degerlendirmeSekli": "belirtilmemiş",
-     "kpssDurumu": "Belirtilmemiş",
-     "kpssTuru": "belirtilmemiş",
-     "ekSinav": false,
-     "ekSinavDetay": "Yok",
-     "ikametSarti": "Belirtilmemiş",
-     "ekSartlar": "Yok",
-     "kisaOzet": "İstanbul Bilişim ve Akıllı Kent Teknolojileri 2 işçi alacak. Başvuru son tarihi 31 Mayıs 2022.",
-     "_model": "openai/gpt-oss-120b",
-     "_pv": 2,
-     "_kanit_ok": true
-    }
+    "aday": false
    },
    "analiz": {
     "kategori": "ILGISIZ",
@@ -47149,10 +47127,10 @@
     "pozisyon": "İşçi",
     "kadroSayisi": 2,
     "basvuruBaslangic": null,
-    "basvuruBitis": "31 Mayıs 2022",
+    "basvuruBitis": "31 mayıs 2022",
     "degerlendirmeSekli": "belirtilmemiş",
     "kpssDurumu": "Belirtilmemiş",
-    "kpssTuru": "belirtilmemiş",
+    "kpssTuru": "Belirtilmemiş",
     "ekSinav": false,
     "ekSinavDetay": "Yok",
     "ikametSarti": "Belirtilmemiş",
@@ -56161,33 +56139,11 @@
    "last_seen": "2026-10-31",
    "detail_level": "İlan detay sayfası",
    "detail_checked": true,
-   "metin_len": 803,
-   "metin_hash": "f7fce07de8d3ff7db2333423817993cff70fa3c51cd032547060ad06f4ec1bdb",
+   "metin_len": 814,
+   "metin_hash": "fd9013a3918cd2434ccad8af926ea703c972f98a04939d0b003e479b3d240727",
    "p2": {
     "v": 2,
-    "aday": true,
-    "analiz": {
-     "kategori": "ILGISIZ",
-     "kanit": "İstanbul Personel Yönetim Aş., 79 İşçi Alacak. Son başvuru tarihi 16 ocak 2022",
-     "kurum": "İstanbul Personel Yönetim Aş.",
-     "pozisyon": "İşçi",
-     "kadroSayisi": null,
-     "bolumUygun": "Belirtilmemiş",
-     "engelliBilgi": "Yok",
-     "basvuruBaslangic": null,
-     "basvuruBitis": "16 ocak 2022",
-     "degerlendirmeSekli": "belirtilmemiş",
-     "kpssDurumu": "Belirtilmemiş",
-     "kpssTuru": "belirtilmemiş",
-     "ekSinav": false,
-     "ekSinavDetay": "Yok",
-     "ikametSarti": "Belirtilmemiş",
-     "ekSartlar": "Yok",
-     "kisaOzet": "İstanbul Personel Yönetim Aş. 79 işçi alımı duyurulmuş, son başvuru tarihi 16 Ocak 2022. İlan detayları belirtilmemiş.",
-     "_model": "openai/gpt-oss-120b",
-     "_pv": 2,
-     "_kanit_ok": false
-    }
+    "aday": false
    },
    "bitti": true,
    "sonuc": "ADAY DEĞİL (anahtar kelime yok)"
@@ -56217,11 +56173,33 @@
    "last_seen": "2026-10-31",
    "detail_level": "İlan detay sayfası",
    "detail_checked": true,
-   "metin_len": 748,
-   "metin_hash": "e757c92fffecf2b426850f363cd1feac279c557377f607b06df0df4b9bee0ef2",
+   "metin_len": 718,
+   "metin_hash": "97420dafb803df6c55a159d3128cc18390c4f892cb0ada5bc318910e4dddda78",
    "p2": {
     "v": 2,
-    "aday": false
+    "aday": true,
+    "analiz": {
+     "kategori": "ILGISIZ",
+     "kanit": "Aydın Koçarlı Belediyesi 7 İşçi Alacak.",
+     "kurum": "Aydın Koçarlı Belediyesi",
+     "pozisyon": "İşçi",
+     "kadroSayisi": 7,
+     "bolumUygun": "Belirtilmemiş",
+     "engelliBilgi": "Yok",
+     "basvuruBaslangic": null,
+     "basvuruBitis": null,
+     "degerlendirmeSekli": "belirtilmemiş",
+     "kpssDurumu": "Belirtilmemiş",
+     "kpssTuru": "belirtilmemiş",
+     "ekSinav": false,
+     "ekSinavDetay": "Yok",
+     "ikametSarti": "Belirtilmemiş",
+     "ekSartlar": "Yok",
+     "kisaOzet": "Aydın Koçarlı Belediyesi 7 işçi alımı yapmaktadır.",
+     "_model": "openai/gpt-oss-120b",
+     "_pv": 2,
+     "_kanit_ok": true
+    }
    },
    "bitti": true,
    "sonuc": "ADAY DEĞİL (anahtar kelime yok)"
@@ -62965,8 +62943,8 @@
    "last_seen": "2026-10-31",
    "detail_level": "İlan detay sayfası",
    "detail_checked": true,
-   "metin_len": 27231,
-   "metin_hash": "2ce50bc0ec6f55fc95d7f7344c2dffba37cd5a171ebd478d896653ff812d134d",
+   "metin_len": 27230,
+   "metin_hash": "30dae256287edac9430742ab976372c9a9bcecdb35d657f7ac459c896a89a03a",
    "p2": {
     "v": 2,
     "aday": false
@@ -62979,14 +62957,14 @@
     "kadroSayisi": 15,
     "basvuruBaslangic": null,
     "basvuruBitis": null,
-    "degerlendirmeSekli": "belirtilmemiş",
+    "degerlendirmeSekli": "Sözlü sınav",
     "kpssDurumu": "Belirtilmemiş",
-    "kpssTuru": "belirtilmemiş",
+    "kpssTuru": "Belirtilmemiş",
     "ekSinav": false,
     "ekSinavDetay": "Yok",
     "ikametSarti": "Yok",
-    "ekSartlar": "657 sayılı Kanun genel şartları, en az 3/5 yıl mesleki tecrübe, iki programlama dili bilgisi, güvenlik soruşturması, takım çalışmasına yatkınlık",
-    "kisaOzet": "Bankacılık Düzenleme ve Denetleme Kurumu, sözleşmeli bilişim personeli alımı yapmaktadır. Bilgisayar mühendisliği mezunları, sözlü sınavla değerlendirilecek 15 pozisyon için başvurabilir.",
+    "ekSartlar": "En az 3-5 yıl mesleki tecrübe, en az iki programlama dili bilgisi, güvenlik soruşturması sonucu olumlu",
+    "kisaOzet": "Bankacılık Düzenleme ve Denetleme Kurumu sözleşmeli bilişim personeli alımı yapmaktadır. Bilgisayar mühendisliği mezunları, sözlü sınavla değerlendirilecek 15 pozisyon için başvurabilir.",
     "_model": "openai/gpt-oss-120b",
     "_pv": 2,
     "_kanit_ok": true
@@ -75732,8 +75710,8 @@
    "last_seen": "2026-10-31",
    "detail_level": "İlan detay sayfası",
    "detail_checked": true,
-   "metin_len": 750,
-   "metin_hash": "6ddc8fcaf462e7376f903c4294454c0546f7ef5c9dc573d0ba73f7a345d932c9",
+   "metin_len": 559,
+   "metin_hash": "6c693da9e3fe4505fdf529003ca7bb3b83534603c05ff852f9f0ef2c01606e28",
    "p2": {
     "v": 2,
     "aday": false
@@ -76448,28 +76426,28 @@
    "last_seen": "2026-10-31",
    "detail_level": "İlan detay sayfası",
    "detail_checked": true,
-   "metin_len": 19033,
-   "metin_hash": "5fab03619c8a1d99da466fff79c9a63f6543e87c86d61316e643d41558d75e5b",
+   "metin_len": 19031,
+   "metin_hash": "ebd3a2ce09deebdd1105d1c7f389aac14afd03c85b6de76511858702ad6d317c",
    "p2": {
     "v": 2,
     "aday": false
    },
    "analiz": {
     "kategori": "BOLUM",
-    "kanit": "Fakültelerin dört yıllık bilgisayar mühendisliği, yazılım mühendisliği, ... bölümlerinden ya da bunlara denkliği Yükseköğretim Kurulunca kabul edilmiş ... mezun olmak",
+    "kanit": "Fakültelerin dört yıllık bilgisayar mühendisliği, yazılım mühendisliği, elektrik mühendisliği, elektronik mühendisliği, elektrik ve elektronik mühendisliği ve endüstri mühendisliği bölümlerinden ya da bunlara denkliği Yükseköğretim Kurulunca kabul edilmiş yurt dışındaki yükseköğretim kurumlarından mezun olmak",
     "kurum": "Türk Akreditasyon Kurumu",
     "pozisyon": "Sözleşmeli Bilişim Personeli",
     "kadroSayisi": 2,
-    "basvuruBaslangic": null,
+    "basvuruBaslangıc": null,
     "basvuruBitis": null,
     "degerlendirmeSekli": "KPSS + YDS + sözlü/uygulamalı sınav",
     "kpssDurumu": "Zorunlu",
-    "kpssTuru": "KPSS-P3 puanının %70'i",
+    "kpssTuru": "KPSS‑P3 en az %70 puan",
     "ekSinav": true,
-    "ekSinavDetay": "Sözlü/uygulamalı sınav, başarı sırasına göre",
+    "ekSinavDetay": "Sözlü/uygulamalı sınav; başarı sırasına göre",
     "ikametSarti": "Yok",
-    "ekSartlar": "5 yıl mesleki tecrübe, en az iki programlama dili, erkek adaylar için askerlik şartı",
-    "kisaOzet": "Türk Akreditasyon Kurumu, sözleşmeli bilişim personeli alımı için bilgisayar mühendisliği mezunlarını kabul etmektedir. Başvuru KPSS ve YDS puanlarıyla sıralanıp sözlü/uygulamalı sınavla değerlendirilir.",
+    "ekSartlar": "5 yıl mesleki tecrübe, en az 2 programlama dili bilgisi, erkek adaylar için askerlik zorunluluğu",
+    "kisaOzet": "Türk Akreditasyon Kurumu, sözleşmeli bilişim personeli alımı için bilgisayar mühendisliği gibi bölümlerden mezunları 2 kişi istihdam edecek. Başvuru için KPSS‑P3 puanı %70 ve YDS puanı %30 oranında değerlendirilip sözlü/uyumlamsı sınav yapılacak.",
     "_model": "openai/gpt-oss-120b",
     "_pv": 2,
     "_kanit_ok": true
@@ -76484,37 +76462,37 @@
    "last_seen": "2026-10-31",
    "detail_level": "İlan detay sayfası",
    "detail_checked": true,
-   "metin_len": 13534,
-   "metin_hash": "30fba2719d2079d0004f0fb9777e24d3a1d4eef47c6cfdc0c10ce6bc15034eff",
+   "metin_len": 13533,
+   "metin_hash": "8e14082b397542af7917c6654952c5d702e0aef5b6bb5974ab09f5af08b5f6c8",
    "p2": {
     "v": 2,
     "aday": true,
     "analiz": {
      "kategori": "ILGISIZ",
-     "kanit": "İlan sadece Gıda Mühendisliği, Metalurji ve Malzeme Mühendisliği, Endüstri Mühendisliği, Makine Mühendisliği, Elektrik‑Elektronik Mühendisliği, Çevre Mühendisliği ve Veteriner bölümlerinden mezunları kabul ediyor.",
+     "kanit": "En az dört yıllık lisans eğitimi veren fakültelerin ... bölümlerinden ya da bunlara denkliği Yükseköğretim Kurulu tarafından kabul edilen ... mezun olmak",
      "kurum": "Türk Akreditasyon Kurumu",
      "pozisyon": "Akreditasyon Uzman Yardımcısı",
      "kadroSayisi": 7,
-     "bolumUygun": "Hayır (yalnız: Gıda Mühendisliği, Metalurji ve Malzeme Mühendisliği, Endüstri Mühendisliği, Makine Mühendisliği, Elektrik‑Elektronik Mühendisliği, Çevre Mühendisliği, Veteriner)",
+     "bolumUygun": "Hayır (yalnız: Gıda Mühendisliği, Metalurji ve Malzeme Mühendisliği, Endüstri Mühendisliği, Makine Mühendisliği, Elektrik-Elektronik Mühendisliği, Çevre Mühendisliği, Veteriner)",
      "engelliBilgi": "Yok",
      "basvuruBaslangic": null,
      "basvuruBitis": null,
-     "degerlendirmeSekli": "Sözlü giriş sınavı",
+     "degerlendirmeSekli": "KPSS + sözlü mülakat",
      "kpssDurumu": "Zorunlu",
-     "kpssTuru": "KPSS puan türü, asgari 70",
+     "kpssTuru": "KPSS puanı en az 70",
      "ekSinav": false,
      "ekSinavDetay": "Yok",
      "ikametSarti": "Belirtilmemiş",
-     "ekSartlar": "18 yaş, Türk vatandaşı, KPSS, YDS C seviyesi, sağlık durumu, sabıka yok",
-     "kisaOzet": "Türk Akreditasyon Kurumu, 7 adet Akreditasyon Uzman Yardımcısı için sözlü giriş sınavı düzenliyor. Başvuru sadece belirli mühendislik ve veteriner bölümlerinden lisans mezunlarına açıktır.",
+     "ekSartlar": "Yaş, vatandaşlık, sağlık, YDS, suç kaydı",
+     "kisaOzet": "Türk Akreditasyon Kurumu 7 Akreditasyon Uzman Yardımcısı pozisyonu için lisans mezunu adayları, belirli mühendislik bölümlerinden ve en az 70 KPSS puanı ile sözlü sınavla değerlendiriyor.",
      "_model": "openai/gpt-oss-120b",
      "_pv": 2,
-     "_kanit_ok": false
+     "_kanit_ok": true
     }
    },
    "analiz": {
     "kategori": "ILGISIZ",
-    "kanit": "Öğrenim Dalı: Gıda Mühendisliği, Metalurji ve Malzeme Mühendisliği, Endüstri Mühendisliği, Makine Mühendisliği, Elektrik Mühendisliği, Çevre Mühendisliği, Veteriner",
+    "kanit": "Öğrenim Dalı: Gıda Mühendisliği, Metalurji ve Malzeme Mühendisliği, Endüstri Mühendisliği, Makine Mühendisliği, Elektrik/Elektronik Mühendisliği, Çevre Mühendisliği, Veteriner",
     "kurum": "Türk Akreditasyon Kurumu",
     "pozisyon": "Akreditasyon Uzman Yardımcısı",
     "kadroSayisi": 7,
@@ -76522,12 +76500,12 @@
     "basvuruBitis": null,
     "degerlendirmeSekli": "KPSS + sözlü sınav",
     "kpssDurumu": "Zorunlu",
-    "kpssTuru": "Asgari KPSS Puanı: 70",
+    "kpssTuru": "Asgari KPSS puanı 70",
     "ekSinav": true,
-    "ekSinavDetay": "Sözlü giriş sınavı",
+    "ekSinavDetay": "Sözlü giriş sınavı; puan şartı yok",
     "ikametSarti": "Yok",
-    "ekSartlar": "18 yaş, Türk vatandaşı, YDS C seviyesi, sağlık durumu, suç kaydı olmama",
-    "kisaOzet": "Türk Akreditasyon Kurumu 7 Akreditasyon Uzman Yardımcısı pozisyonu için sözlü giriş sınavı düzenleyecek. Başvuru için ilgili mühendislik bölümlerinden en az 70 KPSS puanı ve YDS C seviyesi şarttır.",
+    "ekSartlar": "Türk vatandaşı, 18 yaşını tamamlamış, YDS C seviyesi (70) veya eşdeğer belge, sağlık durumu uygun, suç kaydı olmama",
+    "kisaOzet": "Türk Akreditasyon Kurumu 7 Akreditasyon Uzman Yardımcısı alımı yapıyor. Bilgisayar mühendisliği mezunları ilan edilen bölümler arasında yer almadığından başvuramaz.",
     "_model": "openai/gpt-oss-120b",
     "_pv": 2,
     "_kanit_ok": false
@@ -83462,8 +83440,8 @@
    "last_seen": "2026-10-31",
    "detail_level": "İlan detay sayfası",
    "detail_checked": true,
-   "metin_len": 8934,
-   "metin_hash": "2978bf8c081603f051ea45709d8c5df020cf87aaf5de027e7a5dbe6cc5cfa903",
+   "metin_len": 8933,
+   "metin_hash": "b63bc0b5bd8e4cd3019350d592538a095d67a01bd0b6e601df183c05814508c7",
    "p2": {
     "v": 2,
     "aday": false
@@ -83472,7 +83450,7 @@
     "kategori": "ILGISIZ",
     "kanit": "13 adet uzman yardımcısı (genel alan) kadrosu için: ... hukuk, siyasal bilgiler, iktisat, işletme, iktisadi ve idari bilimler ile ticari bilimler fakültelerinden ... mezun olması",
     "kurum": "Kamu Gözetimi, Muhasebe ve Denetim Standartları Kurumu",
-    "pozisyon": "Uzman Yardımcılığı Giriş Sınavı (2026)",
+    "pozisyon": "Uzman Yardımcısı Giriş Sınavı (2026)",
     "kadroSayisi": 13,
     "basvuruBaslangic": "19.10.2026",
     "basvuruBitis": "02.11.2026",
@@ -83480,10 +83458,10 @@
     "kpssDurumu": "Zorunlu",
     "kpssTuru": "KPSS P1, P17, P18, P22, P23, P24, P25, P26, P27, P28, P44, P45, P46, P47, P48 puan türlerinden 75 ve üzeri",
     "ekSinav": true,
-    "ekSinavDetay": "Yazılı sınav ve sözlü mülakat; puan şartı belirtilmemiş",
+    "ekSinavDetay": "Yazılı sınav ve sözlü mülakat",
     "ikametSarti": "Belirtilmemiş",
-    "ekSartlar": "35 yaşını doldurmamış olması (01/01/1991 ve sonrası doğmuş), görevine engel durum olmaması",
-    "kisaOzet": "Kamu Gözetimi, Muhasebe ve Denetim Standartları Kurumu 13 uzman yardımcısı kadrosu için 19.10.2026‑02.11.2026 tarihleri arasında başvuru kabul ediyor; KPSS puanı 75+ ve ek yazılı‑sözlü sınav şartı var.",
+    "ekSartlar": "35 yaş sınırı, denklik belgesi gerekliliği, görevine engel durum olmaması",
+    "kisaOzet": "Kamu Gözetimi, Muhasebe ve Denetim Standartları Kurumu 13 uzman yardımcısı (genel alan) kadrosu için 19.10‑02.11.2026 tarihleri arasında başvuru kabul ediyor; başvuru için ilgili lisans bölümlerinden mezun olmak ve KPSS puanı 75+ şart.",
     "_model": "openai/gpt-oss-120b",
     "_pv": 2,
     "_kanit_ok": true
@@ -97948,7 +97926,7 @@
    "kaynak": "SBB Kamu İlan",
    "baslik": "BATI AKDENİZ KALKINMA AJANSI | 3 UZMAN ALACAK | 12 Ekim - 31 Ekim",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=JF1fQq2W0rrk",
@@ -97978,14 +97956,15 @@
     "_pv": 2,
     "_kanit_ok": true
    },
-   "bitti": true
+   "bitti": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=G8s7GA58b%2fJtYFT9HEPZq2ZGsqLkSggsXgVX0u843%2fsM0bYPQuB7CtUe1go6hJFXZk9tkqxYPWydsDZi08PB1pDppnMP%2fmXv%2bOoBXP3cwYx8TrP92mZboF1bVaZvc1Mt"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-a45f92a54c9b": {
    "first_seen": "2026-10-23",
    "kaynak": "SBB Kamu İlan",
    "baslik": "MARMARA ÜNİVERSİTESİ | 63 SÖZLEŞMELİ PERSONEL ALACAK | 23 Ekim - 6 Kasım",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=HL%2baw1UNgL",
@@ -97996,14 +97975,15 @@
     "aday": false
    },
    "bitti": true,
-   "sonuc": "ADAY DEĞİL (anahtar kelime yok)"
+   "sonuc": "ADAY DEĞİL (anahtar kelime yok)",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=McHm%2foE5gu4p%2bqJ0Xdbbrta8C4Ls2B34gPTQNoJ8T%2fSS0yuy9tN0MRqR8J5vKBo8gLolF7QzgAn5l0IPPjsIauf2lfVcXwzHD56XTpS8XgAgKdSz9LEvgcwEfiUzsWfn"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-edc6828a4ad3": {
    "first_seen": "2026-10-23",
    "kaynak": "SBB Kamu İlan",
    "baslik": "ORMAN GENEL MÜDÜRLÜĞÜ | 12 MÜFETTİŞ YARDIMCISI ALACAK | 26 Ekim - 9 Kasım",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=uWuCT9i7QCrR",
@@ -98014,14 +97994,15 @@
     "aday": false
    },
    "bitti": true,
-   "sonuc": "ADAY DEĞİL (anahtar kelime yok)"
+   "sonuc": "ADAY DEĞİL (anahtar kelime yok)",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=AD4ICXQkMsdshMMCSU531V%2bjQiv77RoLEPvKBvaGDYMMcefgnuBuUaykR0QQ%2bZQvKHr7Ki4d0bC59%2fpsTVv3hgYf65Jw%2fUVuB3EQzzVm4GGIvGyqTyIYKILqLSDf80KK"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-b29e17281d03": {
    "first_seen": "2026-10-23",
    "kaynak": "SBB Kamu İlan",
    "baslik": "KÜLTÜR VE TURİZM BAKANLIĞI | 162 SÖZLEŞMELİ KÜTÜPHANECİ ALACAK | 2 Kasım - 16 Kasım",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=Wu9XdIxx0mIW",
@@ -98032,14 +98013,15 @@
     "aday": false
    },
    "bitti": true,
-   "sonuc": "ADAY DEĞİL (anahtar kelime yok)"
+   "sonuc": "ADAY DEĞİL (anahtar kelime yok)",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=wOJHNToVcEXGBieFoRgbT4IIZuAxc9oNyAHHj8TjU2g4uBV794hS%2bmrsKNWSS1ntyPdaLDdTIqzy8IN%2bW9n8Tbpk8xAMFOUfGusnhQqxuIloJxqph58pri2h%2bhXk1yGM"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-0adfbe681b5a": {
    "first_seen": "2026-10-23",
    "kaynak": "SBB Kamu İlan",
    "baslik": "STRATEJİ VE BÜTÇE BAŞKANLIĞI | 7 SÖZLEŞMELİ BİLİŞİM PERSONELİ ALACAK | 22 Ekim - 5 Kasım",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=kimPdD2%2b4o",
@@ -98069,14 +98051,15 @@
     "_pv": 2,
     "_kanit_ok": false
    },
-   "bitti": true
+   "bitti": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=wnTFabvmgVQJ1MBUSPooQTok%2fLIX2dRJu4DzOjZiWdVVNp7JRYyVR9oAqp7sCQiM6gD489QWZneAxkjDNNMb30MbNFs8TwG67ONu580GScd7A5A4H8k5IKw%2f13Y0hce0"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-b2bf9b871d03": {
    "first_seen": "2026-10-23",
    "kaynak": "SBB Kamu İlan",
    "baslik": "TARIM VE ORMAN BAKANLIĞI | 13 SÖZLEŞMELİ BİLİŞİM PERSONELİ ALACAK | 22 Ekim - 6 Kasım",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=YAKbGlSFvYsG",
@@ -98106,14 +98089,15 @@
     "_pv": 2,
     "_kanit_ok": true
    },
-   "bitti": true
+   "bitti": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=Kw2mCUZD6tirBDR056CRiO372rqLEGGHyTUOthDK71YyZ%2b26NggAS4HmC9Zm58GzpAEvFYS1uNZmrDyWHl2CVuwmBYJhnm%2flOQg3D4m5u561KssJ2qZvauyFW9pOm6%2fJ"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-27111a8af867": {
    "first_seen": "2026-10-23",
    "kaynak": "SBB Kamu İlan",
    "baslik": "GALATASARAY ÜNİVERSİTESİ | 1 SÖZLEŞMELİ BİLİŞİM PERSONELİ ALACAK | 22 Ekim - 6 Kasım",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=CBwgvhQkL3oz",
@@ -98143,7 +98127,8 @@
     "_pv": 2,
     "_kanit_ok": false
    },
-   "bitti": true
+   "bitti": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=5Quhhp4xCAUZSjuwsv5O%2fpW8HVbw7lRcDEbnppf9himils7uTJUIEvAAZKb%2fd1AcItPxqkVxnQsfOZ9DX9SiV1xlOZp3KCskcj5dEZfMTFpOIldacl3Ynd0Uz%2f50wVqR"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-91bfa4b25daa": {
    "first_seen": "2026-10-23",
@@ -98168,8 +98153,8 @@
    "kaynak": "SBB Kamu İlan",
    "baslik": "İZMİR KALKINMA AJANSI | İPTAL İLANI | 21 Ekim - 1 Kasım",
    "kurum": "",
-   "last_seen": "2026-10-24",
-   "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
+   "last_seen": "2026-10-31",
+   "detail_level": "İlan detay sayfası",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=WbrW3nbAP%2f",
    "metin_len": 200,
@@ -98179,14 +98164,15 @@
     "aday": false
    },
    "bitti": true,
-   "sonuc": "ADAY DEĞİL (anahtar kelime yok)"
+   "sonuc": "ADAY DEĞİL (anahtar kelime yok)",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=qO7eIs1i%2fy2yIrz3Ze0LTljw40BQLrygvXpdqsR6A56bF08DRoz5QSqF5DWoGRu%2bXZSyIGpE%2fd76tSv0siYsAKwvC3NW1Ot7MIVv%2b1hZzK4qiUC4VNvQkVecLbBK3asL"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-4da44b7e4651": {
    "first_seen": "2026-10-23",
    "kaynak": "SBB Kamu İlan",
    "baslik": "YURTDIŞI TÜRKLER VE AKRABA TOPLULUKLAR BAŞKANLIĞI | 15 YURTDIŞI TÜRKLER VE AKRABA TOPLULUKLAR UZMAN YARDIMCISI ALACAK | 20 Ekim - 16 Kasım",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=JsozIFRr4DDj",
@@ -98216,14 +98202,15 @@
     "_pv": 2,
     "_kanit_ok": true
    },
-   "bitti": true
+   "bitti": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=Dv8xJTaiRcCQpSbK5UwrYGyux%2bI1WrmzK8MREImrcdlE9JXtUY3T4ToG1wo8U5C8GnxRj6o7Z11mzDENE%2fWvsEGIZDHSEY84xSpZdJzZ73E5BAQWdtByMIde6sFPJTUJ"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-2397b8c4ae87": {
    "first_seen": "2026-10-23",
    "kaynak": "SBB Kamu İlan",
    "baslik": "KAMU GÖZETİMİ, MUHASEBE VE DENETİM STANDARTLARI KURUMU | 13 UZMAN YARDIMCISI ALACAK | 19 Ekim - 2 Kasım",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=5F0d%2bUVS2h",
@@ -98253,7 +98240,8 @@
     "_pv": 2,
     "_kanit_ok": false
    },
-   "bitti": true
+   "bitti": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=HufKEM4FYkya8tzWqFlRngykfU5Mel%2fNuRNe6hAHRoNypGa91Yq7MLEAL2HVYpjKxg5FuGJi9hFZwWpMhTnpyBgxpswf8rjjy%2f1eFnysBN1ZNEc5CwlV%2bI5Ccg6JFNPD"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-06229e9a48b5": {
    "first_seen": "2026-10-23",
@@ -98396,7 +98384,7 @@
    "kaynak": "SBB Kamu İlan",
    "baslik": "ORTA ANADOLU KALKINMA AJANSI | 6 UZMAN, 1 DESTEK PERSONELİ ALACAK | 9 Kasım - 3 Aralık",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=pQezqNDkTomZ",
@@ -98426,14 +98414,15 @@
     "_pv": 2,
     "_kanit_ok": true
    },
-   "bitti": true
+   "bitti": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=k73drh7HcIo8mYcerJfZdCSuo2YcN6VvUfovOPWD9EHhiri8Pi3N3bH6LcrRp3x%2b9ksfwIIcKo%2f%2fmSIQx6DgrI3%2f6wT03foGF9WHPfPMdRKKkUi3FK%2bk2LGzcuc7trIx"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-33278f3bbdc9": {
    "first_seen": "2026-10-23",
    "kaynak": "SBB Kamu İlan",
    "baslik": "TÜRKİYE İŞ KURUMU GENEL MÜDÜRLÜĞÜ | 11 ALACAK | 26 Ekim - 8 Kasım",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=gxNU%2fFuNHg",
@@ -98463,7 +98452,8 @@
     "_pv": 2,
     "_kanit_ok": false
    },
-   "bitti": true
+   "bitti": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=sfEm0otEuqduZV%2fHQ1Ghp8k68S1AX4GWrxKzGIgt%2bVdCw5a7mCBhgqbgYr4dzZVMVIlt4rgpdcMzAvmiRll6mpNwM17QeqPC5Dr2FRu6Bqu2nPkT1B4lIgyL%2bED47rEA"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-df60e2552996": {
    "first_seen": "2026-10-23",
@@ -98525,7 +98515,7 @@
    "kaynak": "SBB Kamu İlan",
    "baslik": "TÜRK AKREDİTASYON KURUMU | 7 AKREDİTASYON UZMANI YARDIMCISI ALACAK | 16 Ekim - 2 Kasım",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=X3yX8814kBTW",
@@ -98577,14 +98567,15 @@
     "_pv": 2,
     "_kanit_ok": false
    },
-   "bitti": true
+   "bitti": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=SHnzb42%2fFi3OeRfLewcB0DpCa7Nlms%2f8irKiXEJiw12YQkFjGkt%2fhrEgGjx0eEah9fnsSAMvqdhOGq%2bSmI0AS7jmql%2fOTvbxWQd9pZk8W3dsSg9cZuU8pvgfOqgnHFkV"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-916b025d6ce9": {
    "first_seen": "2026-10-23",
    "kaynak": "SBB Kamu İlan",
    "baslik": "TÜRK AKREDİTASYON KURUMU | 2 ALACAK | 16 Ekim - 31 Ekim",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=iXIb8byLxHv4",
@@ -98614,7 +98605,8 @@
     "_pv": 2,
     "_kanit_ok": true
    },
-   "bitti": true
+   "bitti": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=8M9hYitf%2flPA5BEAbhPiWexPbGjdZQQeuopUMO90ttr5dmvXOIucCtAMKBaLl2RwG2VwkYs6lxiaQritBNf9CxuDQMyrRtRvgTnQLZb8ZiGzOfjrVPYEhTgh5fvKZ%2fIK"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-c5a01cddc224": {
    "first_seen": "2026-10-23",
@@ -98735,7 +98727,7 @@
    "kaynak": "SBB Kamu İlan",
    "baslik": "MEVLANA KALKINMA AJANSI | 1 UZMAN PERSONEL ALACAK | 2 Kasım - 13 Kasım",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=fCpgofuZiFHe",
@@ -98765,14 +98757,15 @@
     "_pv": 2,
     "_kanit_ok": true
    },
-   "bitti": true
+   "bitti": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=wuuFtbMMtxg7oz3BfhjuipbGK9hu%2br%2febRbhjJ1SeU0rxutx3tQFL%2b3rCHIgVqFUw7%2bY7oHDPIaJAGOJpVpZpmciF2oD1uz1dkh6Se6JupJXzZtzbRW%2frYEgS24WEnaO"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-e22d041b4cf2": {
    "first_seen": "2026-10-23",
    "kaynak": "SBB Kamu İlan",
    "baslik": "ORTA KARADENİZ KALKINMA AJANSI | 5 ALACAK | 2 Kasım - 22 Kasım",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=itBj6BX%2fAJ",
@@ -98802,7 +98795,8 @@
     "_pv": 2,
     "_kanit_ok": true
    },
-   "bitti": true
+   "bitti": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=zoRKVIeTsk%2b5mt8peDOcGmltfuWJuu3n0zGTj29ieiq9vP7%2fVCVOiuvB3rN%2fTOZqwxtD%2frNdSCido2OOHDT5cC%2bQmLyoeBpDpgkYuSrmvW0Mw7HUumV6OpfIwlUgurry"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-cf5209504f22": {
    "first_seen": "2026-10-23",
@@ -98942,8 +98936,8 @@
    "kaynak": "SBB Kamu İlan",
    "baslik": "MİLLİ SAVUNMA BAKANLIĞI | DENİZ KUVVETLERİ KOMUTANLIĞINA 2026 YILI DENİZ SINIFI MUVAZZAF SUBAY ADAYI TEMİNİ | 12 Ekim - 2 Kasım",
    "kurum": "",
-   "last_seen": "2026-10-24",
-   "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
+   "last_seen": "2026-10-31",
+   "detail_level": "İlan detay sayfası",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=lerdbsWeURSG",
    "metin_len": 40000,
@@ -98953,25 +98947,28 @@
     "aday": false
    },
    "bitti": true,
-   "sonuc": "ADAY DEĞİL (anahtar kelime yok)"
+   "sonuc": "ADAY DEĞİL (anahtar kelime yok)",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=JfPBO%2fBuC37SyhJBqHka9JFGJdQBFS0kvnseiUYTpOTXkoYrj5rCy0f5f%2bpFssKS7WKRMLgyMEvKqTeGKbEkwf4NAlN3UOMG9ARJKDAENNzh4cClnRY3vqFZz6JyKR8b"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-efb99585426d": {
    "first_seen": "2026-10-23",
    "kaynak": "SBB Kamu İlan",
    "baslik": "MİLLİ SAVUNMA BAKANLIĞI | TÜRK SİLAHLI KUVVETLERİNE EN AZ DÖRT YIL SÜRELİ FAKÜLTE VEYA YÜKSEKOKUL MEZUNLARINDAN 2026 YILI MUVAZZAF SUBAY ADAYI TEMİNİ | 12 Ekim - 2 Kasım",
    "kurum": "",
-   "last_seen": "2026-10-24",
-   "detail_level": "Okunamadı: dosya okunamadı",
+   "last_seen": "2026-10-31",
+   "detail_level": "İlan detay sayfası",
    "detail_checked": false,
-   "sonuc": "DETAY OKUNAMADI",
-   "hata": "pdf-okunamadı; application/pdf; charset=utf-8; 202408 bayt"
+   "sonuc": "SBB: DETAY OKUNAMADI",
+   "hata": "ilgisiz başlık (iptal/düzeltme/subay vb.), okunmadı",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=KzUWpl1PiaiOkXuEmDamQWCbXbUzoxXLFhbIhnwIs4gyscIkXMZNPWp2BTh%2fkvpoTXu%2fVNCiL%2bWo7XWKc7BstU2TZysB5mZB99ETui89niaq6yYuzQtlDvQne7EY9649",
+   "bitti": true
   },
   "https://kamuilan.sbb.gov.tr/#sbb-089f4768cd61": {
    "first_seen": "2026-10-23",
    "kaynak": "SBB Kamu İlan",
    "baslik": "İSTANBUL KALKINMA AJANSI | 5 UZMAN ALACAK | 2 Kasım - 22 Kasım",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=Ho60wPdQFRc3",
@@ -99001,7 +98998,8 @@
     "_pv": 2,
     "_kanit_ok": true
    },
-   "bitti": true
+   "bitti": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=ckidSHQbR0Lcbcr3FcaS9i7t%2fvMTWYp87NqW4sd9fl0cxiy7INCNukb%2b2Xed5IIwwFxj3SF%2bHvhMqGklvIItXOfQIJdhaS69GfW7Tn3uEFtd0RDqBw6cE7D0l6e5HHme"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-7d1022cf6cc9": {
    "first_seen": "2026-10-23",
@@ -99045,7 +99043,7 @@
    "kaynak": "SBB Kamu İlan",
    "baslik": "BANKACILIK DÜZENLEME VE DENETLEME KURUMU BAŞKANLIĞI | 15 SÖZLEŞMELİ BİLİŞİM PERSONELİ ALACAK | 19 Ekim - 2 Kasım",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=p7hrMQ3f3qJ0",
@@ -99075,7 +99073,8 @@
     "_pv": 2,
     "_kanit_ok": true
    },
-   "bitti": true
+   "bitti": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=WQJW0cmr%2bY6sPT8ouUIEn31dE%2fO2BtmCPhl7In7nIqpL4rTQKho6f5cEaG6bYknOzpXOSMAzFhv9n56eKIEBaj1qChPlMT%2faYccqxk%2f5nRRvPVS4Qwjo79b5VVdlJYQH"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-0d803a6e3640": {
    "first_seen": "2026-10-23",
@@ -99215,7 +99214,7 @@
    "kaynak": "SBB Kamu İlan",
    "baslik": "İSTANBUL ELEKTRİK TRAMVAY VE TÜNEL İŞLETMELERİ GENEL MÜDÜRLÜĞÜ (İETT) | 44 MEMUR ALACAK | 26 Ekim - 2 Kasım",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=CRgWw8lAoXrR",
@@ -99245,7 +99244,8 @@
     "_pv": 2,
     "_kanit_ok": true
    },
-   "bitti": true
+   "bitti": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=GE3b8P5qb70h5XWfo3O6q%2fZ0wX48UN2zZBI82vmhm5Cy%2bYzUcvTn6Cqw51MdrvXu0iwTKepYrA7FfxP7VbOwLRZTG0yyu191GYv4A7rnIFsMI1Dy2Y9doNoJq2zcpMg4"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-a53822c71387": {
    "first_seen": "2026-10-23",
@@ -99326,7 +99326,7 @@
    "kaynak": "SBB Kamu İlan",
    "baslik": "ORMAN GENEL MÜDÜRLÜĞÜ |  | 12 MÜFETTİŞ YARDIMCISI ALACAK ( 26 Ekim - 9 Kasım)",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=V6c%2fBtvI0z",
@@ -99337,14 +99337,15 @@
     "aday": false
    },
    "bitti": true,
-   "sonuc": "ADAY DEĞİL (anahtar kelime yok)"
+   "sonuc": "ADAY DEĞİL (anahtar kelime yok)",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=2d%2fWsDXulZSeRHWXcITNnGplal4NTaEiqW5CdrDhLne%2bV2ZNl3Fmwe9b1NDUnTTlhH%2fB5Qhzw%2bhgAcEOUkOoEkIuT42LZaxqozdIazO9xIWEDJrfed3nsJfnRpZCM8d1"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-d051788d44da": {
    "first_seen": "2026-10-23",
    "kaynak": "SBB Kamu İlan",
    "baslik": "İZMİR BÜYÜKŞEHİR BELEDİYE BAŞKANLIĞI |  | 90 ZABITA MEMURU ALACAK ( 30 Kasım - 4 Aralık)",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=4PW49AhCGz45",
@@ -99396,14 +99397,15 @@
     "_pv": 2,
     "_kanit_ok": false
    },
-   "bitti": true
+   "bitti": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=FqNeRb008XorxNlMvZZXeMalcwG1olXxqXVZ9%2fwoNFg16OyoEowMon286j%2fHRxD4gReRP6q0ld0MlCT0B7zfFcXDEb8%2fgdo0L%2fwdG0hDhM9yETL0XYZhXVhVTMrKB6pM"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-dfb5251b1e4b": {
    "first_seen": "2026-10-23",
    "kaynak": "SBB Kamu İlan",
    "baslik": "KÜLTÜR VE TURİZM BAKANLIĞI |  | 162 SÖZLEŞMELİ KÜTÜPHANECİ ALACAK ( 2 Kasım - 16 Kasım)",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=oM5LLxoISGFy",
@@ -99414,14 +99416,15 @@
     "aday": false
    },
    "bitti": true,
-   "sonuc": "ADAY DEĞİL (anahtar kelime yok)"
+   "sonuc": "ADAY DEĞİL (anahtar kelime yok)",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=dOeqBdnDDU3dCmXXGSmfeFEu5an4W2uytMQJUF3XNgwcZmKgkMJxpJh%2fXgKrOm4wXu%2bMPL0sXt4Az2dkkyzFyYLQLK4XhiKbKOL7Nsfm3%2flGPay5gA23qPmju0%2fx%2fm1F"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-9cf926668274": {
    "first_seen": "2026-10-23",
    "kaynak": "SBB Kamu İlan",
    "baslik": "MARMARA ÜNİVERSİTESİ |  | 63 SÖZLEŞMELİ PERSONEL ALACAK ( 23 Ekim - 6 Kasım)",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=CzscH4WB2DQ%",
@@ -99432,14 +99435,15 @@
     "aday": false
    },
    "bitti": true,
-   "sonuc": "ADAY DEĞİL (anahtar kelime yok)"
+   "sonuc": "ADAY DEĞİL (anahtar kelime yok)",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=CDna7LPzr6aH19rGyNNS3Z3eoADxEbmHVZ8hBUvT6u%2fFBUH%2bPSgBIliqRTA7N7jjz7%2fN9XsXhw0gX5teif2T3YX1c8msMChArp3QIukgrytZzcHHBhoeexQuo9gyRqF0"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-d5c8d438c2aa": {
    "first_seen": "2026-10-23",
    "kaynak": "SBB Kamu İlan",
    "baslik": "İSTANBUL ÜNİVERSİTESİ |  | 22 ÖĞRETİM ÜYESİ ALACAK ( 23 Ekim - 6 Kasım)",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=KITOLcadx528",
@@ -99450,14 +99454,15 @@
     "aday": false
    },
    "bitti": true,
-   "sonuc": "ILGISIZ (akademik kadro)"
+   "sonuc": "ILGISIZ (akademik kadro)",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=NnLhFkvOwjK4oUswZhUYEyNQwbinubu9ospVaqUuJ9Pwc8q%2bam%2fs303kNC03YcoHP1buOaFMT%2bV9EJ7mT8ndqm9jFKDp3SagbDaUyB0YzcCi5ilx8xEB%2bdQNefeb62BP"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-be4de461c737": {
    "first_seen": "2026-10-23",
    "kaynak": "SBB Kamu İlan",
    "baslik": "ADIYAMAN ÜNİVERSİTESİ |  | 10 ÖĞRETİM ÜYESİ ALACAK ( 23 Ekim - 6 Kasım)",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=usPMq3Eys5s9",
@@ -99468,14 +99473,15 @@
     "aday": false
    },
    "bitti": true,
-   "sonuc": "ILGISIZ (akademik kadro)"
+   "sonuc": "ILGISIZ (akademik kadro)",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=eatDQa%2fj6Pgm%2bfW%2fTrAXCtuHMTbU1tLfca4OLBbBX74z7E1C24vZnDALbY6M6ylLN0qJkXbSZ803cKfSF%2ftmmkYhC3JJWvN8du7F0E3qwtrCYZhSqUjJF6SS17B4yL1o"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-22cb59e4fbcd": {
    "first_seen": "2026-10-23",
    "kaynak": "SBB Kamu İlan",
    "baslik": "MANİSA CELAL BAYAR ÜNİVERSİTESİ |  | 31 ÖĞRETİM ÜYESİ ALACAK ( 23 Ekim - 6 Kasım)",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=NK1L5M%2bwKB",
@@ -99486,14 +99492,15 @@
     "aday": false
    },
    "bitti": true,
-   "sonuc": "ILGISIZ (akademik kadro)"
+   "sonuc": "ILGISIZ (akademik kadro)",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=Z7Q1BTrSdtlRtPETZeXsEegsh0pLe6EXACwnAmpIwd3giHs0ByQ5DEOWg1fDhnMW5QgQEGP64neJBEfWYpoaxNKuJ8ApKoyhZ5AHhON3LI429z00Utn0QX4O9bYWgiqk"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-36944a514a78": {
    "first_seen": "2026-10-23",
    "kaynak": "SBB Kamu İlan",
    "baslik": "ÇANKIRI KARATEKİN ÜNİVERSİTESİ |  | 40 ÖĞRETİM ÜYESİ ALACAK ( 23 Ekim - 8 Kasım)",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=PCAJEKosbCMU",
@@ -99504,14 +99511,15 @@
     "aday": false
    },
    "bitti": true,
-   "sonuc": "ILGISIZ (akademik kadro)"
+   "sonuc": "ILGISIZ (akademik kadro)",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=RSZdvR1lTV6cUEMFNodcxUR5FztllU4n8LDkVOKFK8lff8%2boDOH8ZUJayQbYylqpayhjkQzwjKOICDdBljLDtoAO8h2OTsslfASzrTv7pDGwqJEs9zOAiZ4pQG2etO5F"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-69438a338b8d": {
    "first_seen": "2026-10-23",
    "kaynak": "SBB Kamu İlan",
    "baslik": "KAHRAMANMARAŞ SÜTÇÜ İMAM ÜNİVERSİTESİ |  | 4 ÖĞRETİM ELEMANI ALACAK ( 23 Ekim - 6 Kasım)",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=xwnhjAO9Rw7y",
@@ -99522,14 +99530,15 @@
     "aday": false
    },
    "bitti": true,
-   "sonuc": "ILGISIZ (akademik kadro)"
+   "sonuc": "ILGISIZ (akademik kadro)",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=A1BIYfmQ%2fic7L8ptVw22tzNHlcyJixOlKDpcMKmIT81uxVsDK%2fQc1HmKFmyhqxzZuvPXz7hndwLMwgrbuarsuaHwp7adW87l4rhNbpRXs8Nk9%2bHt4zGYXDsWAgrc72V%2b"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-8d6358d55af4": {
    "first_seen": "2026-10-23",
    "kaynak": "SBB Kamu İlan",
    "baslik": "TÜRKİYE ULUSLARARASI İSLAM, BİLİM VE TEKNOLOJİ ÜNİVERSİTESİ |  | 3 ALACAK ( 23 Ekim - 6 Kasım)",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=%2fS3vDtqvkZ",
@@ -99581,14 +99590,15 @@
     "_pv": 2,
     "_kanit_ok": true
    },
-   "bitti": true
+   "bitti": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=qoN9IPOS0WPV06rClVppU9VGfgyLq%2ffVTe7DYAKI08yuTc%2fvQwA%2feXcfyob8r3NLCwYDy2Rtwpiw9UZXqAKvXf1X2jxZKKqP%2f4sZ8MtrhXRqcoIWGXHOhtpV%2f9t%2fMNxx"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-18acf43c27eb": {
    "first_seen": "2026-10-23",
    "kaynak": "SBB Kamu İlan",
    "baslik": "EGE ÜNİVERSİTESİ |  | 14 ÖĞRETİM ELEMANI ALACAK ( 22 Ekim - 6 Kasım)",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=Pu7ucOa5ZYLu",
@@ -99599,14 +99609,15 @@
     "aday": false
    },
    "bitti": true,
-   "sonuc": "ILGISIZ (akademik kadro)"
+   "sonuc": "ILGISIZ (akademik kadro)",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=tsUljiv9bnybprD%2bCDV2YZTQvZJIYu8EByrrIEGmJF6aEf2%2beLsijeXLUKrVauBiw5%2f9i5YlH5treeC4Ch%2b%2b4Zo5oY1nRusqwHi0TpUWUXm5Tzi%2bd2OsuomTBWeaS2Zu"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-724c86974acb": {
    "first_seen": "2026-10-23",
    "kaynak": "SBB Kamu İlan",
    "baslik": "BOĞAZİÇİ ÜNİVERSİTESİ |  | 20 ARAŞTIRMA GÖREVLİSİ ALACAK ( 22 Ekim - 5 Kasım)",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=A8VKHaxMDmQT",
@@ -99617,14 +99628,15 @@
     "aday": false
    },
    "bitti": true,
-   "sonuc": "ILGISIZ (akademik kadro)"
+   "sonuc": "ILGISIZ (akademik kadro)",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=wae7OH6MJoN%2bPkcOVlfDYN9mY45XaSrN6CgAlTY7x5VsOKjug6ZVRHzJlQnlmsrDNaslKjh3zuP%2f6zEgjat4yUuhyr%2bCAXBTszRyqR3wNl4g1M86K811%2fi1de4avRSaX"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-a9b62971f679": {
    "first_seen": "2026-10-23",
    "kaynak": "SBB Kamu İlan",
    "baslik": "GALATASARAY ÜNİVERSİTESİ |  | 1 SÖZLEŞMELİ BİLİŞİM PERSONELİ ALACAK ( 22 Ekim - 6 Kasım)",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=%2fuZhZGAobC",
@@ -99654,14 +99666,15 @@
     "_pv": 2,
     "_kanit_ok": false
    },
-   "bitti": true
+   "bitti": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=gwOtZmqs%2f8dOj52v8kcPLAYwBDmTU8h06aR5jmJJkKrTiPH76xaCMhuPPnJDh7XiciLyABaqxO4b%2fd7HV1hqKmZzRBiP5QMGEbY2rNP6%2fcp%2brrxHj%2fooypJfuYJcAmND"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-f146e06da773": {
    "first_seen": "2026-10-23",
    "kaynak": "SBB Kamu İlan",
    "baslik": "TARIM VE ORMAN BAKANLIĞI |  | 13 SÖZLEŞMELİ BİLİŞİM PERSONELİ ALACAK ( 22 Ekim - 6 Kasım)",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=0jnajQdJ6T5U",
@@ -99691,14 +99704,15 @@
     "_pv": 2,
     "_kanit_ok": true
    },
-   "bitti": true
+   "bitti": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=H8dfNNWlO5qfRL2EzFrVX5S7YnW8UbRCGPSficcniNBICAWOpC2svGcBISFC9qcHv5AnWT4olZMht3a13735QJbe4TUz8zSyH9wN%2bWrKA3XkbWL5s%2bVy32Onz9IU8NhF"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-cac51d98edfe": {
    "first_seen": "2026-10-23",
    "kaynak": "SBB Kamu İlan",
    "baslik": "STRATEJİ VE BÜTÇE BAŞKANLIĞI |  | 7 SÖZLEŞMELİ BİLİŞİM PERSONELİ ALACAK ( 22 Ekim - 5 Kasım)",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=yKaXLHNp2Keg",
@@ -99728,14 +99742,15 @@
     "_pv": 2,
     "_kanit_ok": true
    },
-   "bitti": true
+   "bitti": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=Onix%2fnCtss9xrB8PzhCdtFbIyBn3O8wiuuCysZULMQ90bSE%2b%2f0fCcUznusYw332PxsLdqlPDdiDNFBq9ktTsqO89jZY25GKikcboVOuiCW764F%2by%2fm5DBHORX6gbZj7N"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-f59fa190654c": {
    "first_seen": "2026-10-23",
    "kaynak": "SBB Kamu İlan",
    "baslik": "BOLU ABANT İZZET BAYSAL ÜNİVERSİTESİ |  | 18 ÖĞRETİM ÜYESİ ALACAK ( 22 Ekim - 6 Kasım)",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=9l9DKTCRCVAJ",
@@ -99746,14 +99761,15 @@
     "aday": false
    },
    "bitti": true,
-   "sonuc": "ILGISIZ (akademik kadro)"
+   "sonuc": "ILGISIZ (akademik kadro)",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=AZ8EE%2bWxSQaWjJhoQlgm5FI8u9wjlYKGN%2fqj4ZVIHEFIFiotvgnsOgUfO3I%2bwnVp7jZHQGTpF41I2A0BKP7JSZRNS8W3SyqKcLlmzRRJJE7jQjFlxBTpx%2f5jVvhCmfcy"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-0a2237064dd6": {
    "first_seen": "2026-10-23",
    "kaynak": "SBB Kamu İlan",
    "baslik": "KARABAĞLAR BELEDİYE BAŞKANLIĞI |  | 2 SÖZLEŞMELİ PERSONEL ALACAK ( 30 Kasım - 4 Aralık)",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=MyHntr2uNfNv",
@@ -99764,14 +99780,15 @@
     "aday": false
    },
    "bitti": true,
-   "sonuc": "ADAY DEĞİL (anahtar kelime yok)"
+   "sonuc": "ADAY DEĞİL (anahtar kelime yok)",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=HBGfh3ohHuasbF%2bfWJ9cAKB5swbwtROWI5gYeThS4jDLmXhDWXhzmBAaqZU6H8nbryoG7nTshRe6ef3PY34v%2fLb86Lv65ck2lHVE%2f2VPmhENc%2f3UcioHNc1E9Co5brXq"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-ce05813a8a5b": {
    "first_seen": "2026-10-23",
    "kaynak": "SBB Kamu İlan",
    "baslik": "SARIİDRİS BELEDİYE BAŞKANLIĞI |  | DÜLETME İLANI ( 18 Kasım - 20 Kasım)",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=vZ6PHHQ7Iw3A",
@@ -99782,7 +99799,8 @@
     "aday": false
    },
    "bitti": true,
-   "sonuc": "ADAY DEĞİL (anahtar kelime yok)"
+   "sonuc": "ADAY DEĞİL (anahtar kelime yok)",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=WwQVK%2bdGjmlRTS8Ue3GRRFwRVfOScOmJ90SILWols8dXinTobuMl4%2bd4BNx3hIAodhZI%2fXXyMjEwtqgyPZlh%2bzUXgd9O2iB28Cpla2VuaIwGbXZjj6pM3FnOSKQdsOix"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-67486cbe1034": {
    "first_seen": "2026-10-23",
@@ -99807,7 +99825,7 @@
    "kaynak": "SBB Kamu İlan",
    "baslik": "BOZTEPE BELEDİYE BAŞKANLIĞI |  | 1 MEMUR ALACAK (MADEN MÜHENDİSİ ) ( 30 Kasım - 2 Aralık)",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=d7CgvhqE9sAI",
@@ -99837,14 +99855,15 @@
     "_pv": 2,
     "_kanit_ok": true
    },
-   "bitti": true
+   "bitti": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=teyQFn2KS6jRCJmtDFGcG1tOU0IrA65149wz00AhDV6zjVkaSOLHiruwoBLGXv712PvMOPOS17KqQNBhdbcdfltHNPKuRb37L5dPcqnyW3rKaJYliHzPKeo9BUvhMotY"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-53442f985549": {
    "first_seen": "2026-10-23",
    "kaynak": "SBB Kamu İlan",
    "baslik": "AKHİSAR BELEDİYE BAŞKANLIĞI |  | 1 MEMUR ALACAK ( 30 Kasım - 11 Aralık)",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=B2%2fkf6Qx11",
@@ -99874,15 +99893,16 @@
     "_pv": 2,
     "_kanit_ok": true
    },
-   "bitti": true
+   "bitti": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=Mnex%2fCyjobVmzDeccGhyHLMiPY%2fXLwb7CeWwbQ0iIsqH3UT2Etk87PDauYdywUZanC7QhHRQvAKHtbI6%2f0Oi9qyvh4LCgaAKCpXn%2bs4wZRrby1KQX5zJF8jFk4dIl%2fT4"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-f2089d46d41d": {
    "first_seen": "2026-10-23",
    "kaynak": "SBB Kamu İlan",
    "baslik": "ELMAKAYA BELEDİYE BAŞKANLIĞI |  | MUŞ İLİ ELMAKAYA BELEDİYESİNİN MEMUR ALIMI İPTAL İLANI ( 21 Ekim - 1 Kasım)",
    "kurum": "",
-   "last_seen": "2026-10-24",
-   "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
+   "last_seen": "2026-10-31",
+   "detail_level": "İlan detay sayfası",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=cPY6VsSoLY3V",
    "metin_len": 176,
@@ -99892,15 +99912,16 @@
     "aday": false
    },
    "bitti": true,
-   "sonuc": "ADAY DEĞİL (anahtar kelime yok)"
+   "sonuc": "ADAY DEĞİL (anahtar kelime yok)",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=jtnsGFNgQAOX%2bnevqBbPNUoLiIxqN%2b3oPn%2bwj7QMqNArV0uy0FbCnDEutvS88hCDAxidONLIHKOT41MK5FtxKUh%2fI3p%2fTq2bxZnJdgqSMc7DbHAZGKzTXUFmCgdYRy9A"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-e8f5fb98e7e1": {
    "first_seen": "2026-10-23",
    "kaynak": "SBB Kamu İlan",
    "baslik": "İZMİR KALKINMA AJANSI |  | İPTAL İLANI ( 21 Ekim - 1 Kasım)",
    "kurum": "",
-   "last_seen": "2026-10-24",
-   "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
+   "last_seen": "2026-10-31",
+   "detail_level": "İlan detay sayfası",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=ogQ9chrFOuVs",
    "metin_len": 200,
@@ -99910,14 +99931,15 @@
     "aday": false
    },
    "bitti": true,
-   "sonuc": "ADAY DEĞİL (anahtar kelime yok)"
+   "sonuc": "ADAY DEĞİL (anahtar kelime yok)",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=HCarE5M98iBygJjfsgvWbHX9S9eC%2bBwLfMuhsUIXkCcp2Id83o3qNWYUhwpYgOrC4TOjlmwlJdQwJi5vg0QTV8Z2dRuNU1H06qVLKm%2fOGMp7SoWaCWiXToCynzJkqhDG"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-7db29202e74a": {
    "first_seen": "2026-10-23",
    "kaynak": "SBB Kamu İlan",
    "baslik": "PAMUKKALE ÜNİVERSİTESİ |  | 40 ÖĞRETİM ÜYESİ ALACAK ( 21 Ekim - 4 Kasım)",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=GNFCM9DrIjJl",
@@ -99928,14 +99950,15 @@
     "aday": false
    },
    "bitti": true,
-   "sonuc": "ILGISIZ (akademik kadro)"
+   "sonuc": "ILGISIZ (akademik kadro)",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=1fiCxuI504qD5B%2bF3c2LtmQ9x6GqPVPvvxiyB1wnvFFlFwdMB9YCh2G7HY4SX3JlQ3douGOwapv4GsoL60xiEavEWk5r5rHXru4SI1vA513JZTZxsi3isUFAMt936F%2fo"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-6716b8d40bde": {
    "first_seen": "2026-10-23",
    "kaynak": "SBB Kamu İlan",
    "baslik": "EGE ÜNİVERSİTESİ |  | 76 ÖĞRETİM ÜYESİ ALACAK ( 21 Ekim - 9 Kasım)",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=oASihO9jNP9z",
@@ -99946,14 +99969,15 @@
     "aday": false
    },
    "bitti": true,
-   "sonuc": "ILGISIZ (akademik kadro)"
+   "sonuc": "ILGISIZ (akademik kadro)",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=FrkEcwXZbqE%2fqPF3RotdddFc%2bWpDYBnR9ypRF6cqj4oyKDD1rEHqhFDcO5qB6cHgRgauRRcZzJJnfRzbdOWxqHIcMtYjzzMjZoD2oqE6Ck0zW64MN%2fszRquCmFrmMa%2fT"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-2401acfc3474": {
    "first_seen": "2026-10-23",
    "kaynak": "SBB Kamu İlan",
    "baslik": "AĞRI İBRAHİM ÇEÇEN ÜNİVERSİTESİ |  | 30 ÖĞRETİM ÜYESİ ALACAK ( 20 Ekim - 4 Kasım)",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=qAkE23Yc3RVI",
@@ -99964,14 +99988,15 @@
     "aday": false
    },
    "bitti": true,
-   "sonuc": "ILGISIZ (akademik kadro)"
+   "sonuc": "ILGISIZ (akademik kadro)",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=QIqzxUpueimPag0hStOMIcyjBTHOA2liKuWKqEKFvqUFvBpmtjNKZAu0Z122feM3mQErldBAvqUmEUFviuZVTYiBKmM7kndwtjv0qCg8%2bwNPNgUJWLdm%2bXPuNQAb0WqG"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-30671abeeec9": {
    "first_seen": "2026-10-23",
    "kaynak": "SBB Kamu İlan",
    "baslik": "AĞRI İBRAHİM ÇEÇEN ÜNİVERSİTESİ |  | 8 ÖĞRETİM ELEMANI ALACAK ( 20 Ekim - 4 Kasım)",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=zsJ%2fu04d5L",
@@ -99982,14 +100007,15 @@
     "aday": false
    },
    "bitti": true,
-   "sonuc": "ILGISIZ (akademik kadro)"
+   "sonuc": "ILGISIZ (akademik kadro)",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=NMJR1DK7FYOUpGsyu41p398ujcGL3Fa6Nk%2f5jDRAth2eMU7Q3njd%2bVJjXyl%2b6VqWTDeK%2b7yA4Se9VNrGWaYc3Ga3laVx3phSaSHhgDfH3%2fe%2fy37UZ4ilE%2blPGfyuaOmo"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-0aa38de79697": {
    "first_seen": "2026-10-23",
    "kaynak": "SBB Kamu İlan",
    "baslik": "AKDENİZ ÜNİVERSİTESİ |  | 29 ÖĞRETİM ELEMANI ALACAK ( 20 Ekim - 5 Kasım)",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=uxctCDgPwcAU",
@@ -100000,7 +100026,8 @@
     "aday": false
    },
    "bitti": true,
-   "sonuc": "ILGISIZ (akademik kadro)"
+   "sonuc": "ILGISIZ (akademik kadro)",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=4%2f8KhJlBB0ZjX3AgxrtxXq7Gv5r8N0xAnjzS1U5OT603lb8QV4jdyT%2bzCe6Jh2UFY90Rb3INc0S0KzBaSi2kSmljIM88T%2f2Z6etN0K%2b2W8fu7IPM4C%2bdb%2fz9%2berrheUM"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-bcb8a72f496c": {
    "first_seen": "2026-10-23",
@@ -100025,7 +100052,7 @@
    "kaynak": "SBB Kamu İlan",
    "baslik": "YURTDIŞI TÜRKLER VE AKRABA TOPLULUKLAR BAŞKANLIĞI |  | 15 YURTDIŞI TÜRKLER VE AKRABA TOPLULUKLAR UZMAN YARDIMCISI ALACAK ( 20 Ekim - 16 Kasım)",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=HGVlWiKUU5iB",
@@ -100055,14 +100082,15 @@
     "_pv": 2,
     "_kanit_ok": true
    },
-   "bitti": true
+   "bitti": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=laXxjDVqRjU7VVzBolNtEdvJ0jTlUAtRctiqtirHBhy9nYsTyr8bzC6aV0SBi2ZFND%2fNbbbGbd8L9UPhyk72kxquuEiwYaEdLTZY5ZtdzjnIq%2biCHul4x89yQmuMl%2bd9"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-a20012de4310": {
    "first_seen": "2026-10-23",
    "kaynak": "SBB Kamu İlan",
    "baslik": "TARSUS ÜNİVERSİTESİ |  | 1 ÖĞRETİM ELEMANI ALACAK ( 20 Ekim - 4 Kasım)",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=728THkMrvZsZ",
@@ -100073,7 +100101,8 @@
     "aday": false
    },
    "bitti": true,
-   "sonuc": "ILGISIZ (akademik kadro)"
+   "sonuc": "ILGISIZ (akademik kadro)",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=0vpW2lHxtKSq2AXIbMWBltiMqXWkVicPfiweA5sE51g1AcEAQ7gK7JTsX5yV04S5%2fUcP6eHYh%2bp%2bd3irgvNB1xbtQXo7lFMMPTauyMgSnp1PlflKvoiXLc54zA9MKh1F"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-363818d830e0": {
    "first_seen": "2026-10-23",
@@ -100098,7 +100127,7 @@
    "kaynak": "SBB Kamu İlan",
    "baslik": "BİTLİS EREN ÜNİVERSİTESİ |  | 2 ÖĞRETİM ELEMANI ALACAK ( 20 Ekim - 3 Kasım)",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=rSNhrrkJUeM8",
@@ -100109,14 +100138,15 @@
     "aday": false
    },
    "bitti": true,
-   "sonuc": "ILGISIZ (akademik kadro)"
+   "sonuc": "ILGISIZ (akademik kadro)",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=aMWg3Cpy0RxE8mcXbrq1fnedwH3VQwe32S12RKowJUp5piF16IgGRd4pVJgnMykyGsFhriMV6MZjO0h9SzIoprRhy2H136pxZW9EdzW6Bx7D3%2bZSJZAyVWUfNKNRz3A0"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-aa1b4de869f0": {
    "first_seen": "2026-10-23",
    "kaynak": "SBB Kamu İlan",
    "baslik": "İZMİR BAKIRÇAY ÜNİVERSİTESİ |  | 28 AKADEMİK PERSONEL ALACAK ( 19 Ekim - 2 Kasım)",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=i7M6TicMHd1C",
@@ -100168,14 +100198,15 @@
     "_pv": 2,
     "_kanit_ok": true
    },
-   "bitti": true
+   "bitti": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=yzUWPL%2bX283oJEglvH5SpS6xZ7yFfB884M%2ffkHoyrADAqC0Ds6R8KV232zLknVUV75m3Cx5njq%2f3J4xylanqQ%2biSRQwwkJNRfk2hQlmJZTO8Zj4GxLzj9exNFKtJcthi"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-8e22b31a2e5d": {
    "first_seen": "2026-10-23",
    "kaynak": "SBB Kamu İlan",
    "baslik": "DİCLE ÜNİVERSİTESİ |  | 9 ÖĞRETİM ELEMANI ALACAK ( 19 Ekim - 2 Kasım)",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=kWTjI6OY990Q",
@@ -100186,14 +100217,15 @@
     "aday": false
    },
    "bitti": true,
-   "sonuc": "ILGISIZ (akademik kadro)"
+   "sonuc": "ILGISIZ (akademik kadro)",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=RJK%2bi09KynJi%2bm%2bvLYueaiXC%2bWzWehjD%2bvJ59JWbDSxBROihlv1iHtW0nZkdQpk%2fZV8OKoWlEpMDO3iwNK6BgOnJrDZSzxGf8ARODYDIDf9N5kvCYIhjR8djGT0YgBy7"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-2360babf582f": {
    "first_seen": "2026-10-23",
    "kaynak": "SBB Kamu İlan",
    "baslik": "KAMU GÖZETİMİ, MUHASEBE VE DENETİM STANDARTLARI KURUMU |  | 13 UZMAN YARDIMCISI ALACAK ( 19 Ekim - 2 Kasım)",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=rHBILfTUFg%2",
@@ -100223,14 +100255,15 @@
     "_pv": 2,
     "_kanit_ok": true
    },
-   "bitti": true
+   "bitti": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=kOhsxQtZISSqTLzuYeZ3Tui4rGft7XTp6UU6mWHowwbOBz1sGj2tj0GaGR7teyknxQ4YNoE0cPWY1I8i98EW024pwSVoqbE1MLU3O1XAZnmtXrMXCxHbkul%2fXyw9AvS%2b"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-69be6ef0a29e": {
    "first_seen": "2026-10-23",
    "kaynak": "SBB Kamu İlan",
    "baslik": "ORTA ANADOLU KALKINMA AJANSI |  | 6 UZMAN, 1 DESTEK PERSONELİ ALACAK ( 9 Kasım - 3 Aralık)",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=VWUHPbovLPYJ",
@@ -100260,7 +100293,8 @@
     "_pv": 2,
     "_kanit_ok": false
    },
-   "bitti": true
+   "bitti": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=x0oVu4ZAJ8%2bez6rZK7vdLawM7ng%2bTxHtMIoGZjUvewB8GVQNm2u9syILuV3Caa%2bgDR06qUrFzvO4T4yuniyWdLj0ZNo4gHffn7OlcA8GxFCN%2bqKq41BZVkhfaoUVj%2fkT"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-21f01e30bd7b": {
    "first_seen": "2026-10-23",
@@ -100385,7 +100419,7 @@
    "kaynak": "SBB Kamu İlan",
    "baslik": "DOĞANYOL BELEDİYE BAŞKANLIĞI |  | 2 SÖZLEŞMELİ PERSONEL ALACAK ( 2 Aralık - 4 Aralık)",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=ff35OuqGm4Li",
@@ -100415,7 +100449,8 @@
     "_pv": 2,
     "_kanit_ok": true
    },
-   "bitti": true
+   "bitti": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=3bwHZKR6ZiNyIufUoINzd%2bYIKq6ihUbRPFMezifrqTLDmLulTZRhK8uUsjlFzbPVl4BwhqarYlpDKqzKdfDSuOI%2fbEnzHCFDBSNIGNVzJu4Khwwv6gjGS8gHn7t64aBU"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-389b5c503550": {
    "first_seen": "2026-10-23",
@@ -100440,7 +100475,7 @@
    "kaynak": "SBB Kamu İlan",
    "baslik": "KIRIKKALE ÜNİVERSİTESİ |  | 19 ÖĞRETİM ÜYESİ ALACAK ( 19 Ekim - 2 Kasım)",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=UFempBetB10d",
@@ -100451,14 +100486,15 @@
     "aday": false
    },
    "bitti": true,
-   "sonuc": "ILGISIZ (akademik kadro)"
+   "sonuc": "ILGISIZ (akademik kadro)",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=fSuTWk%2bXFWlzl1sLxMpTQZCfNRHH7rc1sCl3sMwCdUSZZYXmyyZtqgKSB7Iw4TMQZF0qW%2flWl4q0THpkyRAnz8NmrhBIQuZhycaNb8TvHTmNHbw3ccgdhjRGC%2byvVNsG"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-df941c203d98": {
    "first_seen": "2026-10-23",
    "kaynak": "SBB Kamu İlan",
    "baslik": "ADANA ALPARSLAN TÜRKEŞ BİLİM VE TEKNOLOJİ ÜNİVERSİTESİ |  | ADANA ALPARSLAN TÜRKEŞ BİLİM VE TEKNOLOJİ ÜNİVERSİTESİ 6 ÖĞRETİM ÜYESİ ALACAK ( 18 Ekim - 1 Kasım)",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=YHzPtXzmRPwm",
@@ -100469,14 +100505,15 @@
     "aday": false
    },
    "bitti": true,
-   "sonuc": "ILGISIZ (akademik kadro)"
+   "sonuc": "ILGISIZ (akademik kadro)",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=CbXZ60JF5oxs2wipds35Yicy41B3omls6dwh46ZP8Zp7hizPUWTgcObOb0xIaqWbfnqQv9UpSp0B3d127El6m%2fJUEDJsxA8KAk1aE74EnkJsaMkgAkBuT3cqlNlcgTYF"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-4e3aaa33cc5c": {
    "first_seen": "2026-10-23",
    "kaynak": "SBB Kamu İlan",
    "baslik": "TÜRKİYE İŞ KURUMU GENEL MÜDÜRLÜĞÜ |  | 11 ALACAK ( 26 Ekim - 8 Kasım)",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=AsjaWdUBJKHG",
@@ -100506,7 +100543,8 @@
     "_pv": 2,
     "_kanit_ok": true
    },
-   "bitti": true
+   "bitti": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=9YCTpYsm6vAghDE8ApIQ5DXK67nnxzWLKXBf5PDw6Ymf6JKVT61bDbflAMFDuQ3ezHzaeBYWq4o9k9by1jH%2fQxRoIiF3%2b37c3Al2LjfHya40X43i0ZYfg%2fwm5%2f6USuZu"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-649227e6d368": {
    "first_seen": "2026-10-23",
@@ -100644,7 +100682,7 @@
    "kaynak": "SBB Kamu İlan",
    "baslik": "KEŞAN BELEDİYE BAŞKANLIĞI |  | 2 MEMUR ALACAK ( 16 Kasım - 19 Kasım)",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=W3HO8N09pKu6",
@@ -100674,14 +100712,15 @@
     "_pv": 2,
     "_kanit_ok": true
    },
-   "bitti": true
+   "bitti": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=R2oOUH%2f8steutbXafs9z%2fLb3qiR%2fvy9TOj5i7p3YmHOkjFAEXR7%2bcQQKv5tVoL3gZzIWZQzO%2fIb1AA3sploLw6fK3sPdEEGy%2f6blbVTNVoqNaqIJso9COYCHOD58mXKs"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-8651317c87cb": {
    "first_seen": "2026-10-23",
    "kaynak": "SBB Kamu İlan",
    "baslik": "TÜRK AKREDİTASYON KURUMU |  | 7 AKREDİTASYON UZMANI YARDIMCISI ALACAK ( 16 Ekim - 2 Kasım)",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=tZYlSfoWtL5j",
@@ -100733,7 +100772,8 @@
     "_pv": 2,
     "_kanit_ok": true
    },
-   "bitti": true
+   "bitti": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=IxDwJ821XplIoPkbcAowgVvjzSGAMpVpGju3GThmUTdEbKUW3hHLbsmDRg6XFTBbJPdGuuR8YwGmM5PRRLzW3V4KU4CgDqqJz5F%2bMBYL9sLMxokwFYEJI2VzwzbGgopi"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-ca4460e23cfb": {
    "first_seen": "2026-10-23",
@@ -100795,7 +100835,7 @@
    "kaynak": "SBB Kamu İlan",
    "baslik": "TÜRK AKREDİTASYON KURUMU |  | 2 ALACAK ( 16 Ekim - 31 Ekim)",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=aP6EYweTh%2b",
@@ -100825,7 +100865,8 @@
     "_pv": 2,
     "_kanit_ok": true
    },
-   "bitti": true
+   "bitti": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=gvBcG0LfW0bLPE61PTyaniJT4Q%2bMx1sNIJPFox4whtVUAYHpPq6pU3FF%2b68MGOvw3viAv4hj%2fZDAcqT2qAeUiTHhRJPBvugoGZIz%2fLFGx2%2fhrbo8K3x0P2%2b%2fe4Qo816x"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-c80a8921d735": {
    "first_seen": "2026-10-23",
@@ -100887,7 +100928,7 @@
    "kaynak": "SBB Kamu İlan",
    "baslik": "ANKARA BÜYÜKŞEHİR BELEDİYE BAŞKANLIĞI |  | 5 MÜFETTİŞ YARDIMCISI ALACAK ( 23 Kasım - 4 Aralık)",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=w76c90EAEi0p",
@@ -100917,7 +100958,8 @@
     "_pv": 2,
     "_kanit_ok": true
    },
-   "bitti": true
+   "bitti": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=VajrhjyZDah4mV6TYu0UCrukpV1HP2kBLb3uAOh8C%2fdoxxyewJvOWE1VloEikIuXg%2bO5CXUmMglyqfFhBBpWwNLB7XYZ9M6ib9GNdxw8PVYn7aLC4xKrtqRX8BmzXiH0"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-e5b60ae67e9f": {
    "first_seen": "2026-10-23",
@@ -101129,7 +101171,7 @@
    "kaynak": "SBB Kamu İlan",
    "baslik": "ORTA KARADENİZ KALKINMA AJANSI |  | 5 ALACAK ( 2 Kasım - 22 Kasım)",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=79LXFkVEZRXw",
@@ -101159,14 +101201,15 @@
     "_pv": 2,
     "_kanit_ok": true
    },
-   "bitti": true
+   "bitti": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=n6t3KCb79XcrOBykVVpzzOYMHNQIVJjESPhVodC6hvcjF4wnn6%2bQLgzu94yJ7i0qqgeNf8fkX39ub9btVZDdRXyYoLT%2bDcIWjBCeSNAW%2blA7zqTdzKZEJazUibrzMenR"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-c8efcd1ab812": {
    "first_seen": "2026-10-23",
    "kaynak": "SBB Kamu İlan",
    "baslik": "MEVLANA KALKINMA AJANSI |  | 1 UZMAN PERSONEL ALACAK ( 2 Kasım - 13 Kasım)",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=KGJxXjX%2bbo",
@@ -101196,7 +101239,8 @@
     "_pv": 2,
     "_kanit_ok": true
    },
-   "bitti": true
+   "bitti": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=cVVACgsV8rWXMGO0OMcb4%2fPkM1xQwzIeQ0V56v9eO%2fUMfCqq2tFgu10y%2bp%2bEp%2bMpojueO0g223kqo021WpeC8EMiCJUM6HF0V8nBweJONL4KfSWeYN5JCUgHq09enZ1T"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-652ffdee45e1": {
    "first_seen": "2026-10-23",
@@ -101349,7 +101393,7 @@
    "kaynak": "SBB Kamu İlan",
    "baslik": "İSTANBUL KALKINMA AJANSI |  | 5 UZMAN ALACAK ( 2 Kasım - 22 Kasım)",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=PjtRfe%2bDnE",
@@ -101379,15 +101423,16 @@
     "_pv": 2,
     "_kanit_ok": false
    },
-   "bitti": true
+   "bitti": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=VB6IaEWw1yR5UfMrBuPVua4VnyZc0txepH5vd%2bs%2ffYAuFFhoJYBIeraLTl8wP%2bElgERblLrEuHZV9QfEMBKhil3GETR77SEtxucKFmdE0nylXB1CLXjrtf86OdzwFjUr"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-6660155b1a72": {
    "first_seen": "2026-10-23",
    "kaynak": "SBB Kamu İlan",
    "baslik": "SARIİDRİS BELEDİYE BAŞKANLIĞI |  | 1 MEMUR ALACAK ( 18 Kasım - 20 Kasım)",
    "kurum": "",
-   "last_seen": "2026-10-24",
-   "detail_level": "SBB ilan dosyası (pdf-ocr) (tam metin)",
+   "last_seen": "2026-10-31",
+   "detail_level": "Okunamadı: dosya okunamadı",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=qk41QVt3Qi%2",
    "metin_len": 9866,
@@ -101416,7 +101461,8 @@
     "_pv": 2,
     "_kanit_ok": false
    },
-   "bitti": true
+   "bitti": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=Scsj1uJLHezkNHo6RGbYJgcKbAAWHfj6Fxo2fxgupy87yUjUOYO0ej0%2bb%2bmuvvaa6m0ZsBiBAgZqlygOsgQFCsqJm1t5DrFacRcmwLyfITEYx2kBw2kUK2nOTGb4d2%2bq"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-64621f7fbc36": {
    "first_seen": "2026-10-23",
@@ -101482,8 +101528,8 @@
    "kaynak": "SBB Kamu İlan",
    "baslik": "MİLLİ SAVUNMA BAKANLIĞI |  | DENİZ KUVVETLERİ KOMUTANLIĞINA 2026 YILI DENİZ SINIFI MUVAZZAF SUBAY ADAYI TEMİNİ ( 12 Ekim - 2 Kasım)",
    "kurum": "",
-   "last_seen": "2026-10-24",
-   "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
+   "last_seen": "2026-10-31",
+   "detail_level": "İlan detay sayfası",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=cKucyqj6rlXF",
    "metin_len": 40000,
@@ -101493,18 +101539,21 @@
     "aday": false
    },
    "bitti": true,
-   "sonuc": "ADAY DEĞİL (anahtar kelime yok)"
+   "sonuc": "ADAY DEĞİL (anahtar kelime yok)",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=Wd0PkXiPWOK64aD1nCVLuSck0hy4RVTsXqg4DduL4DZ2sv9fNtrn6tRUAOqX%2f6laWTj%2ftN7vN6Q1pilw6aOwE6N4VE30mdNybGT7CTeayB7ZGFm4IFTuBcA1f0Ie7y4G"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-f5b33bb16eb9": {
    "first_seen": "2026-10-23",
    "kaynak": "SBB Kamu İlan",
    "baslik": "MİLLİ SAVUNMA BAKANLIĞI |  | TÜRK SİLAHLI KUVVETLERİNE EN AZ DÖRT YIL SÜRELİ FAKÜLTE VEYA YÜKSEKOKUL MEZUNLARINDAN 2026 YILI MUVAZZAF SUBAY ADAYI TEMİNİ ( 12 Ekim - 2 Kasım)",
    "kurum": "",
-   "last_seen": "2026-10-24",
-   "detail_level": "Okunamadı: dosya okunamadı",
+   "last_seen": "2026-10-31",
+   "detail_level": "İlan detay sayfası",
    "detail_checked": false,
-   "sonuc": "DETAY OKUNAMADI",
-   "hata": "pdf-okunamadı; application/pdf; charset=utf-8; 202406 bayt"
+   "sonuc": "SBB: DETAY OKUNAMADI",
+   "hata": "ilgisiz başlık (iptal/düzeltme/subay vb.), okunmadı",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=5pAAZdYKc1BpirjKn%2fn0%2bu1tOOW5C1jhsda6SUWF1xMffPPNUXTSzr7DxUwFxvyMVtrmL7eNwsUooUB8u25uWhOQMNPO37t6gpnspQYvhJk7G90zvsouS7UHO14v%2b7FJ",
+   "bitti": true
   },
   "https://kamuilan.sbb.gov.tr/#sbb-018b7ebe87f8": {
    "first_seen": "2026-10-23",
@@ -101656,7 +101705,7 @@
    "kaynak": "SBB Kamu İlan",
    "baslik": "BANKACILIK DÜZENLEME VE DENETLEME KURUMU BAŞKANLIĞI |  | 15 SÖZLEŞMELİ BİLİŞİM PERSONELİ ALACAK ( 19 Ekim - 2 Kasım)",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=jiOdiSDgt3%2",
@@ -101686,7 +101735,8 @@
     "_pv": 2,
     "_kanit_ok": true
    },
-   "bitti": true
+   "bitti": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=kp2gkVRFYGxw6q%2brB0DhRKdpQ1sT2%2bx%2fopSSQJzDgBXL7hD1Y0azWUAs%2f1d%2fAlrd%2b1G7sQYJmug1cf4WXZ%2fgG4%2fFZSQc3%2bcpkmGwO3n2skFBZc5FzTpG7vqqNHgwUGBu"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-5a82ac735bdd": {
    "first_seen": "2026-10-23",
@@ -101730,8 +101780,8 @@
    "kaynak": "SBB Kamu İlan",
    "baslik": "MALAZGİRT BELEDİYE BAŞKANLIĞI |  | DÜZELTME İLANI ( 2 Kasım - 4 Kasım)",
    "kurum": "",
-   "last_seen": "2026-10-24",
-   "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
+   "last_seen": "2026-10-31",
+   "detail_level": "İlan detay sayfası",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=81azdqTBPTZp",
    "metin_len": 510,
@@ -101741,7 +101791,8 @@
     "aday": false
    },
    "bitti": true,
-   "sonuc": "ADAY DEĞİL (anahtar kelime yok)"
+   "sonuc": "ADAY DEĞİL (anahtar kelime yok)",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=9QOe5XbHn92KvMBBSog3c%2fqn0gRU5fdv2xJIeijjH7Rauxlu69yMj7nqryxY4E1Vpr%2bT%2bPFgk7DUBfmhT63BA2GGxtjp4G6h982ll%2bRZ0l6UwnLpBgil06X%2faaMC4uHo"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-773acfb7a0bc": {
    "first_seen": "2026-10-23",
@@ -101807,7 +101858,7 @@
    "kaynak": "SBB Kamu İlan",
    "baslik": "POSOF BELEDİYE BAŞKANLIĞI |  | 1 MEMUR ALACAK ( 2 Kasım - 4 Kasım)",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=Pqz%2b3ef9JU",
@@ -101859,14 +101910,15 @@
     "_pv": 2,
     "_kanit_ok": true
    },
-   "bitti": true
+   "bitti": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=WPwStY9UXlpUtul27j96WGuUFVvGXGPQXpb4%2fXNm0dDrg2gjnNqAG9GRCajIVX%2bjUH%2bAZtmC12qJFPiaFNA5C4thjI5XQQfwjkqS4dyoVdVPM4kOfZGtwoFK4vF%2bUCS7"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-32c63199e90f": {
    "first_seen": "2026-10-23",
    "kaynak": "SBB Kamu İlan",
    "baslik": "ŞİLE BELEDİYE BAŞKANLIĞI |  | 8 MEMUR ALACAK ( 2 Kasım - 6 Kasım)",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=Z64cTWleNyad",
@@ -101896,14 +101948,15 @@
     "_pv": 2,
     "_kanit_ok": true
    },
-   "bitti": true
+   "bitti": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=3hx5DWjYNKNKMRyNu9gAZnSlr30K5wYDD9602oDNqFZnuVL3rR06zoSqkMBmWWlkX5tbtRg4CrWBJMzxqMGAoPX7Nh0ZYq%2fK%2b%2fflsVI3Ry0YLArDzbQDq8UszbxUeFkY"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-46c9902812b9": {
    "first_seen": "2026-10-23",
    "kaynak": "SBB Kamu İlan",
    "baslik": "ŞİLE BELEDİYE BAŞKANLIĞI |  | 6 MEMUR ALACAK ( 9 Kasım - 13 Kasım)",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=lVRa0yJGt0%2",
@@ -101955,14 +102008,15 @@
     "_pv": 2,
     "_kanit_ok": true
    },
-   "bitti": true
+   "bitti": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=%2bL6BJIAwGEbymWJO3lUpsWWb9pMD1QUnnbK%2fDvu%2fcXJQF2a09qbBqZfuZcnFoHyIepH7%2bESJy7MvMVYSmvEcSCXvhb%2bcgD%2f0aG2yDa5gGBS6wIJMz2ms2e72SS07v4tu"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-7077fa08b375": {
    "first_seen": "2026-10-23",
    "kaynak": "SBB Kamu İlan",
    "baslik": "ÇELTİK BELEDİYE BAŞKANLIĞI |  | 2 MEMUR ALACAK ( 2 Kasım - 6 Kasım)",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=jsm6wO4WUyg%",
@@ -101992,14 +102046,15 @@
     "_pv": 2,
     "_kanit_ok": false
    },
-   "bitti": true
+   "bitti": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=OOl%2fcQYfwvA0WB%2fGaGrnrhBiqNB%2fbBrdHhGbXIPHGuMhjQhRtT3mSxvuZ2m%2fwVjJFDvHjmGrzT9CmyFcJL45UaIlTcNi88Y8XrY9B3WUrICWENa3LmWz4bGEJUnd9ihs"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-6dc172717cde": {
    "first_seen": "2026-10-23",
    "kaynak": "SBB Kamu İlan",
    "baslik": "ESKİŞEHİR TEKNİK ÜNİVERSİTESİ |  | 3 ADET ÖĞRETİM ÜYESİ ALIMI ( 25 Eylül - 8 Aralık)",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=PIctX9BuIlnb",
@@ -102010,7 +102065,8 @@
     "aday": false
    },
    "bitti": true,
-   "sonuc": "ILGISIZ (akademik kadro)"
+   "sonuc": "ILGISIZ (akademik kadro)",
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=6v0DdQi83cDZa%2fxbrbpxOE5uM0pszuH75DFD1afcBQ2cKuvQCVE%2bJ0vb57wLWe7N%2fiAkSwtrlglFNAhmlsQnljSjg90DZR9rOQXvXVTDEUs5ZlaOPpv9QTvJOvYER%2bP1"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-89970a8962c9": {
    "first_seen": "2026-10-23",
@@ -102076,7 +102132,7 @@
    "kaynak": "SBB Kamu İlan",
    "baslik": "ELEŞKİRT BELEDİYE BAŞKANLIĞI |  | 1 ÇÖZÜMLEYİCİ ALACAK ( 2 Kasım - 4 Kasım)",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=JEP%2fl%2b7P",
@@ -102106,14 +102162,15 @@
     "_pv": 2,
     "_kanit_ok": true
    },
-   "bitti": true
+   "bitti": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=ZsRvXyxJVTVjhqNRqvijKV6I1dwXTkJ%2bvMN7o83CwYBm%2bAHK5YXuH%2bb%2fRhzug25BvWOg4fnOHtzpkmlnUTcbZ34w9KLSG5ARlxyJn4DcHGTbbLHa%2fLi6ikF%2fDoRLZd7Y"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-05cd8523e152": {
    "first_seen": "2026-10-23",
    "kaynak": "SBB Kamu İlan",
    "baslik": "MALAZGİRT BELEDİYE BAŞKANLIĞI |  | 4 MEMUR ALACAK ( 2 Kasım - 4 Kasım)",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=8cEsQzdwIEd3",
@@ -102143,7 +102200,8 @@
     "_pv": 2,
     "_kanit_ok": true
    },
-   "bitti": true
+   "bitti": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=hQtyANNqMHDL0glLsRr%2bggTc32JeHrPzmGzuYBbtzqXsgqIrS9aFIPFe%2b7MHeizh3vng2jLIxN29zhm4HCex5itPpqD6XFfx74k8DLjxGxad2szOsDtoAKisCc62KXVg"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-023bf2c0ce03": {
    "first_seen": "2026-10-23",
@@ -102187,7 +102245,7 @@
    "kaynak": "SBB Kamu İlan",
    "baslik": "İSTANBUL ELEKTRİK TRAMVAY VE TÜNEL İŞLETMELERİ GENEL MÜDÜRLÜĞÜ (İETT) |  | 44 MEMUR ALACAK ( 26 Ekim - 2 Kasım)",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=nw12NgxkV1ll",
@@ -102217,7 +102275,8 @@
     "_pv": 2,
     "_kanit_ok": true
    },
-   "bitti": true
+   "bitti": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=Q2W%2bcQzHNe7mj1AzCVC%2b9clAHEG%2bP0YayqmXaoJJ5PTCoSmF01Ye2D3WlxB9WX5MwVQC%2bQPW8Wly60dmH2v6SiUvqLFFnDLlRjXFmmHIXMkTmonSFe%2bgbXihGZXPNpF6"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-218403653138": {
    "first_seen": "2026-10-23",
@@ -102357,7 +102416,7 @@
    "kaynak": "SBB Kamu İlan",
    "baslik": "BATI AKDENİZ KALKINMA AJANSI |  | 3 UZMAN ALACAK ( 12 Ekim - 31 Ekim)",
    "kurum": "",
-   "last_seen": "2026-10-24",
+   "last_seen": "2026-10-31",
    "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
    "detail_checked": true,
    "hata": "Page.goto: net::ERR_ABORTED at https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=slmMfX32zqn1",
@@ -102387,7 +102446,8 @@
     "_pv": 2,
     "_kanit_ok": false
    },
-   "bitti": true
+   "bitti": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=xjdpygc11ot0W61DBLO%2bhd%2bRLQgp1ADgpBxwQdxJKrQLV5RdjdxgASu2t6QgO%2b9wkffF0%2fm3xoM0jpavQU5luLimD%2b6zkzJJbbufhkiIuIZDuP7krdloXaM7RJGB5Ee3"
   },
   "https://kamuilan.sbb.gov.tr/#sbb-114f0e473705": {
    "first_seen": "2026-10-23",
@@ -102965,7 +103025,7 @@
    "detail_level": "İlan detay sayfası",
    "detail_checked": true,
    "metin_len": 10912,
-   "metin_hash": "5ce75bc71eb7c34b0b5949be9efc38749ba5ea2d7cc1235c1b2fdc66ed19497e",
+   "metin_hash": "a8765e3540f820b98d0a06b77ba57c3fdcaf425727339de907325e508ac71ce7",
    "p2": {
     "v": 2,
     "aday": false
@@ -102981,15 +103041,15 @@
    "last_seen": "2026-10-31",
    "detail_level": "İlan detay sayfası",
    "detail_checked": true,
-   "metin_len": 11290,
-   "metin_hash": "c138d99ad79fadba233c369cd63098fa860358eef49d90ef962bf353c17723dd",
+   "metin_len": 11292,
+   "metin_hash": "55874b733e6c9d24d2188e36c019df507766fad9de107839afad4226b266d1a6",
    "p2": {
     "v": 2,
     "aday": false
    },
    "analiz": {
     "kategori": "BOLUM",
-    "kanit": "Fakültelerin dört yıllık bilgisayar mühendisliği, sistem mühendisliği, ... bölümlerinden ... mezun olmak",
+    "kanit": "Fakültelerin dört yıllık bilgisayar mühendisliği, ... bölümlerinden ya da bunlara denkliği ... mezun olmak",
     "kurum": "Galatasaray Üniversitesi",
     "pozisyon": "Yazılım Geliştirme Uzmanı",
     "kadroSayisi": 1,
@@ -103001,8 +103061,8 @@
     "ekSinav": false,
     "ekSinavDetay": "Yok",
     "ikametSarti": "Yok",
-    "ekSartlar": "657 sayılı Devlet Memurları Kanunu genel şartları, en az 3/5 yıl mesleki tecrübe, iki programlama dili bilgisi, .NET ve SQL Server deneyimi, web servisleri geliştirme deneyimi",
-    "kisaOzet": "Galatasaray Üniversitesi Bilgi İşlem Dairesi, Yazılım Geliştirme Uzmanı pozisyonu için bir sözleşmeli bilişim personeli alıyor. Başvuru için bilgisayar mühendisliği gibi mühendislik bölümlerinden mezun olmak ve ilgili teknik deneyime sahip olmak şart.",
+    "ekSartlar": "En az 3 yıl (veya 5 yıl) mesleki tecrübe, .NET, C#, ASP.NET, REST/SOAP, Microsoft SQL Server, ağ yönetimi ve güvenliği bilgisi, iki programlama dili bilgisi",
+    "kisaOzet": "Galatasaray Üniversitesi Bilgi İşlem Dairesi, sözleşmeli Bilişim Personeli olarak Yazılım Geliştirme Uzmanı aramaktadır. Bilgisayar mühendisliği mezunu adaylar, teknik ve deneyim şartlarını sağladıkları takdirde başvurabilir.",
     "_model": "openai/gpt-oss-120b",
     "_pv": 2,
     "_kanit_ok": true
@@ -103017,15 +103077,15 @@
    "last_seen": "2026-10-31",
    "detail_level": "İlan detay sayfası",
    "detail_checked": true,
-   "metin_len": 35918,
-   "metin_hash": "8675b8d3f60e039d38760954a0349e5b6788c05151806f45f7826094bafd30e5",
+   "metin_len": 35917,
+   "metin_hash": "b028f0161d5bfceaf77898f3b03aacf7eef815fea575e6cef898b385a9455288",
    "p2": {
     "v": 2,
     "aday": false
    },
    "analiz": {
     "kategori": "BOLUM",
-    "kanit": "Fakültelerin dört yıllık bilgisayar mühendisliği, yazılım mühendisliği, elektrik mühendisliği, elektronik mühendisliği, elektrik ve elektronik mühendisliği ve endüstri mühendisliği bölümlerinden ... mezun olması",
+    "kanit": "Fakültelerin dört yıllık bilgisayar mühendisliği, yazılım mühendisliği, ... bölümlerinden ya da bunlara denkliği ...",
     "kurum": "Tarım ve Orman Bakanlığı Bilgi Teknolojileri Genel Müdürlüğü",
     "pozisyon": "Sözleşmeli Bilişim Personeli",
     "kadroSayisi": 13,
@@ -103033,12 +103093,12 @@
     "basvuruBitis": null,
     "degerlendirmeSekli": "Sözlü ve uygulamalı sınav",
     "kpssDurumu": "Belirtilmemiş",
-    "kpssTuru": "belirtilmemiş",
+    "kpssTuru": "Belirtilmemiş",
     "ekSinav": true,
-    "ekSinavDetay": "Sözlü ve uygulamalı sınav",
+    "ekSinavDetay": "Sözlü ve uygulamalı sınav; puan şartı belirtilmemiş",
     "ikametSarti": "Yok",
-    "ekSartlar": "En az 3 yıl (yazılım) ya da 5 yıl (diğer) mesleki tecrübe, en az iki programlama dili bilgisi, askerlik durumu (erkek adaylar), akıl hastalığı bulunmama, 657 sayılı Kanun genel şartları",
-    "kisaOzet": "Tarım ve Orman Bakanlığı Bilgi Teknolojileri Genel Müdürlüğü, 13 sözleşmeli bilişim personeli alımı yapmaktadır. Başvuru için bilgisayar mühendisliği gibi ilgili mühendislik bölümlerinden mezun olmak ve mesleki deneyim şartlarını sağlamak gerekmektedir.",
+    "ekSartlar": "3-5 yıl mesleki tecrübe, en az iki programlama dili, akıl hastalığı yok, askerlik durumu",
+    "kisaOzet": "Tarım ve Orman Bakanlığı Bilgi Teknolojileri Genel Müdürlüğü, 13 sözleşmeli bilişim personeli alacak. Başvuru için bilgisayar mühendisliği gibi ilgili bölümlerden mezun olmak ve mesleki deneyim şartı aranıyor.",
     "_model": "openai/gpt-oss-120b",
     "_pv": 2,
     "_kanit_ok": true
@@ -111976,7 +112036,7 @@
    "detail_level": "İlan detay sayfası",
    "detail_checked": true,
    "metin_len": 16110,
-   "metin_hash": "29d3e6d18ac030599cae02d97bc965f32ba0d033c93c6d2716548bd887ea0868",
+   "metin_hash": "aaa8987c16a7abeb41abb9e52b3f4d9fd5de576b8140c094940e5d8a1ace24ed",
    "p2": {
     "v": 2,
     "aday": false
@@ -111986,17 +112046,17 @@
     "kanit": "Fakültelerin dört yıllık bilgisayar mühendisliği, yazılım mühendisliği, ... bölümlerinden ... mezun olmak.",
     "kurum": "Burdur Mehmet Akif Ersoy Üniversitesi",
     "pozisyon": "Sözleşmeli Bilişim Personeli",
-    "kadroSayisi": 1,
+    "kadroSayisi": null,
     "basvuruBaslangic": "28.10.2026",
     "basvuruBitis": "11.11.2026",
     "degerlendirmeSekli": "belirtilmemiş",
     "kpssDurumu": "Belirtilmemiş",
-    "kpssTuru": "Belirtilmemiş",
+    "kpssTuru": "belirtilmemiş",
     "ekSinav": false,
     "ekSinavDetay": "Yok",
     "ikametSarti": "Yok",
-    "ekSartlar": "3‑5 yıl mesleki tecrübe, en az iki programlama dili, Linux/Windows Server bilgisi, güvenlik soruşturması ve arşiv araştırması olumlu sonuçlanmalı",
-    "kisaOzet": "Burdur Mehmet Akif Ersoy Üniversitesi Bilgi İşlem Dairesi Başkanlığı için 1 sözleşmeli bilişim personeli alınacaktır. Başvurular 28.10.2026‑11.11.2026 tarihleri arasında e‑Devlet üzerinden yapılacaktır.",
+    "ekSartlar": "3-5 yıl mesleki tecrübe, en az iki programlama dili, güvenlik soruşturması, görevden ihraç edilmemiş olmak",
+    "kisaOzet": "Burdur Mehmet Akif Ersoy Üniversitesi Bilgi İşlem Dairesi Başkanlığı 1 sözleşmeli bilişim personeli alacaktır. Başvurular 28.10.2026-11.11.2026 tarihleri arasında e-Devlet üzerinden yapılacaktır.",
     "_model": "openai/gpt-oss-120b",
     "_pv": 2,
     "_kanit_ok": true
@@ -116490,11 +116550,33 @@
    "last_seen": "2026-10-31",
    "detail_level": "İlan detay sayfası",
    "detail_checked": true,
-   "metin_len": 868,
-   "metin_hash": "19eba06027b6e9c66432b1336e3c3ae4a621b42dab5177244c5fc64c0cdcb699",
+   "metin_len": 786,
+   "metin_hash": "af64b5afc046c62c13767d82bbd8e53c0b6c4e69e321dc70dd576ca4e4aa6125",
    "p2": {
     "v": 2,
-    "aday": false
+    "aday": true,
+    "analiz": {
+     "kategori": "ILGISIZ",
+     "kanit": "Şanlıurfa Eyyübiye Belediyesi 9 Zabıta Memuru Alacak",
+     "kurum": "Şanlıurfa Eyyübiye Belediyesi",
+     "pozisyon": "Zabıta Memuru",
+     "kadroSayisi": null,
+     "bolumUygun": "Belirtilmemiş",
+     "engelliBilgi": "Yok",
+     "basvuruBaslangic": null,
+     "basvuruBitis": "10 Aralık 2026",
+     "degerlendirmeSekli": "belirtilmemiş",
+     "kpssDurumu": "Belirtilmemiş",
+     "kpssTuru": "belirtilmemiş",
+     "ekSinav": false,
+     "ekSinavDetay": "Yok",
+     "ikametSarti": "Belirtilmemiş",
+     "ekSartlar": "Yok",
+     "kisaOzet": "Şanlıurfa Eyyübiye Belediyesi 9 Zabıta Memuru alımı yapılacak. Başvuru son tarihi 10 Aralık 2026.",
+     "_model": "openai/gpt-oss-120b",
+     "_pv": 2,
+     "_kanit_ok": true
+    }
    },
    "bitti": true,
    "sonuc": "ADAY DEĞİL (anahtar kelime yok)"
@@ -120438,11 +120520,33 @@
    "last_seen": "2026-10-31",
    "detail_level": "İlan detay sayfası",
    "detail_checked": true,
-   "metin_len": 578,
-   "metin_hash": "83dfd2804f2efa834f6d611baedcd369c1e866eb0897d8cc8cde00e42dc0027a",
+   "metin_len": 794,
+   "metin_hash": "f2414971a47bd1d80f2975474219ca0ae04f6f6622e61f051f99265a83b71dfa",
    "p2": {
     "v": 2,
-    "aday": false
+    "aday": true,
+    "analiz": {
+     "kategori": "ILGISIZ",
+     "kanit": "Antalya Kaş Likya Turizm Geçici 76 İşçi Alacak.",
+     "kurum": "İşkur",
+     "pozisyon": "İşçi",
+     "kadroSayisi": 76,
+     "bolumUygun": "Belirtilmemiş",
+     "engelliBilgi": "Yok",
+     "basvuruBaslangic": null,
+     "basvuruBitis": null,
+     "degerlendirmeSekli": "belirtilmemiş",
+     "kpssDurumu": "Belirtilmemiş",
+     "kpssTuru": "belirtilmemiş",
+     "ekSinav": false,
+     "ekSinavDetay": "Yok",
+     "ikametSarti": "Belirtilmemiş",
+     "ekSartlar": "Yok",
+     "kisaOzet": "Antalya Kaş Likya Turizm geçici 76 işçi alımı yapılmaktadır. İlan detayları ve şartları belirtilmemiştir.",
+     "_model": "openai/gpt-oss-120b",
+     "_pv": 2,
+     "_kanit_ok": true
+    }
    },
    "bitti": true,
    "sonuc": "ADAY DEĞİL (anahtar kelime yok)"
@@ -122141,6 +122245,1066 @@
    "detail_checked": true,
    "metin_len": 2310,
    "metin_hash": "2a60358c7aa842cbbff38ed51af45f5d785e8f576c0f70abf01e35cbbdd102ee",
+   "p2": {
+    "v": 2,
+    "aday": false
+   },
+   "bitti": true,
+   "sonuc": "ILGISIZ (akademik kadro)"
+  },
+  "https://kamuilan.sbb.gov.tr/#sbb-dc571eac2450": {
+   "first_seen": "2026-10-31",
+   "kaynak": "SBB Kamu İlan",
+   "baslik": "KAMU İHALE KURUMU | 25 KAMU İHALE UZMAN YARDIMCISI ALACAK | 9 Kasım - 20 Kasım",
+   "kurum": "",
+   "last_seen": "2026-10-31",
+   "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
+   "detail_checked": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=GOEvucB%2bvTNZDUg4jgEmwzgG9cVmKAcWXq63lr%2be4FhnQWnTQ7jpGkcuw%2f2tw%2bTLhgpvuPm%2bNzkVgFq%2bsrmLlV3f3%2buBd%2b2pU%2bPDgeW3EjrWpy5jpxeGl%2bOnxccfF%2bfx",
+   "metin_len": 12574,
+   "metin_hash": "627155812140fa0dc447a82e6704ef8e45e74a264d229d246da98214f9109bbf",
+   "p2": {
+    "v": 2,
+    "aday": false
+   },
+   "bitti": true,
+   "sonuc": "ADAY DEĞİL (anahtar kelime yok)"
+  },
+  "https://kamuilan.sbb.gov.tr/#sbb-a9eb5c20e3da": {
+   "first_seen": "2026-10-31",
+   "kaynak": "SBB Kamu İlan",
+   "baslik": "SAĞLIK BAKANLIĞI | 2026 YILI 3. DÖNEM İLK DEFA VE YENİDEN ATAMA KURASI | 30 Ekim - 5 Kasım",
+   "kurum": "",
+   "last_seen": "2026-10-31",
+   "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
+   "detail_checked": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=M5HT1oqQp6aOqALl1L%2bxxh%2bbiOm9a9SDZ4uLtqPrmEMg6OZJzAqvm%2fasQ9DUUYJWRBFJTrucOIHtffdF4fe8NzL426ctd576%2fBDG%2b1v2OjfMPkKSV26ZTpkETh6r8q0H",
+   "metin": "Sayfa 1 / 5  \n2026 YILI 3. DÖNEM İLK DEFA VE YENİDEN ATAMA KURASI \nİLAN METNİ \n \nSağlık Hizmetleri Temel Kanununun ek birinci maddesi ile Kamu Kurum ve Kuruluşlarına Açıktan \nKura ile Atanacak Bazı Sağlık Personelinin Atama Usul ve Esaslarına İlişkin Yönetmelik hükümlerine göre \nSağlık Bakanlığı ve Bağlı Kuruluşları ile diğer kamu kurum ve kuruluşlarının ihtiyaçları için, tıpta uzmanlık \nmevzuatına göre uzman olanlar ile uzman tabip, tabip, uzman diş tabibi, diş tabibi, uzman eczacı ve eczacı \nkadrolarına ilk defa veya yeniden yapılacak atama-yerleştirme iş ve işlemleri ilan edilen takvim \nçerçevesinde noter tarafından bilgisayar ortamında kura ile yapılacaktır. \n \nBu kura eczacı unvanlı adaylar için 1. yerleştirme ve 2. yerleştirme olarak iki ayrı yerleştirme \nşeklinde yapılacak olup diğer unvan ve branşlar için sadece 2. yerleştirme işlemi uygulanacaktır. \n \n• 1. Yerleştirmede ‘Türkiye İlaç ve Tıbbi Cihaz Kurumu için yabancı dil yeterliliğine sahip ve \nbelirlenen yüksek lisans veya doktora programlarından mezun olmuş eczacı unvanlı per sonel \nalımı’ yapılacaktır.  \n• 2. Yerleştirmede ‘Sağlık Bakanlığı ve Bağlı Kuruluşlar ile diğer kamu kurum ve kuruluşları için \nuzman tabip, tabip, uzman diş tabibi, diş tabibi, uzman eczacı ve eczacı unvanında personel \nalımı’ yapılacaktır. \n \n \nA- BAŞVURU İŞLEMLERİ VE GENEL ESASLAR \n \n1) Kura başvuruları,  https://ekip.saglik.gov.tr adresinden erişim sağlanan Entegre Kurumsal İşlem  \nPlatformu (EKİP) üzerinden giriş yapılarak kura takviminde belirtilen süreler içinde yapılacaktır. \n2) Münhal kadrolar, kura  yeri ve saati  ile kura sonucu yerleşenler listesi Yönetim Hizmetleri Genel \nMüdürlüğünün internet sitesinden (https://yhgm.saglik.gov.tr) ilan edilecektir. \n3) Başvuru yapacak adaylar, kura takviminde belirtilen tarihler arasında EKİP üzerinden başvuru formunu \nelektronik ortamda doldurarak tercihlerini kaydedip kesinleştireceklerdir. Kesinleştirme işlemi yapıldıktan \nsonra başvuru bilgileri ve tercihlerde değişiklik yapılamayacaktır. Kesinleştirilmeyen başvurular dikkate \nalınmayacaktır. \n4) Kesinleştirilen başvuru formu fiziki evrak olarak ayrıca gönderilmeyecektir.  \n5) Başvuracak adaylar , EKİP üzerinden açılacak münhal yerleri göz önünde bulundurarak ilan edilen \ntakvim çerçevesinde en fazla on (10) tercih yapabileceklerdir. Başvuru formunda genel kura seçeneğini \nişaretleyen ve tercihlerinden birine yerleşemeyen adaylar, boş kalan münhal yerler için genel kuraya dahil \nedilecektir. \n6) Başvurusunu kesinleştiren adaylar, “B- BAŞVURUYA ESAS İSTENEN BELGELER” başlığı altında \nyer alan durumlarına uygun istenen belgeleri başvuru sistemi üzerinden kaydedeceklerdir. Hatalı bilgi veya \neksik belgeler ile yapılacak başvurular nedeniyle doğacak sonuçlardan adayın kendisi sorumlu olacaktır. \n7) “Türkiye İlaç ve Tıbbi Cihaz  Kurumu için yabancı dil yeterliliğine sahip ve belirlenen yüksek lisans \nveya doktora programlarından mezun olmuş  eczacı alımı ” için 1. yerleştirmede başvuruda bulunacak \nadayların aşağıda belirtilen şartları sağlaması ve buna ilişkin istenen belgeleri Ekip sistemine kaydetmeleri \ngerekmektedir. \n Aranılan şartlar: \n- İngilizce alanında yapılan yabancı dil sınavından (YDS veya ÖSYM tarafından eş değerliği kabul \nedilen sınavlardan herhangi birinden) en az 60 puan alındığını gösteren belgeye sahip olması. \n- Eczacılık fakültesi bölümlerinde (Farmasötik Teknoloji, Farmasötik Toksikoloji, Analitik Kimya ) \nlisansüstü eğitim derecesin i (yüksek lisans veya doktora) tamamladığını gösteren belgeye sahip \nolması.   \nSayfa 2 / 5  \nBu şartlara sahip olan eczacı unvanlı adaylar, 1. Yerleştirme ‘T ürkiye İlaç ve Tıbbi Cihaz Kurumu \niçin yabancı dil yeterliliğine sahip ve belirlenen yüksek lisans veya doktora programlarından mezun \nolmuş eczacı alımı’ için başvurabileceği gibi, istekleri halinde her iki yerleştirme (1.yerleştirme \nve/veya 2.yerleştirme)  için de tercihte bulunabileceklerdir. Bu durumda olan adaylardan \n1.yerleştirmede yerleşenler 2.yerleştirmeye dahil edilmeyecektir. 1.yerleştirmede yerleşemeyenlerin \n2.yerleştirmeye ait tercihleri var ise 2.yerleştirmeye katılacaklardır. Bu kişiler açılan münhallerden \n1.yerleştirme için en fazla bir (1) adet, 2.yerleştirme için ise en fazla on (10) adet tercihte \nbulunabilecektir. 1.yerleştirmede genel kura seçeneği bulunmayacaktır. \n8) 13/07/2023 tarihli ve 32247 sayılı Resmi Gazete’de yayımlanan “Kamu Kurum ve  Kuruluşlarına \nAçıktan Kura ile Atanacak Bazı Sağlık Personelinin Atama Usul ve Esaslarına İlişkin Yönetmelik te \nDeğişiklik Yapılmasına Dair Yönetmelik ” kapsamında; uzman diş tabibi, uzman eczacı, diş tabibi ve \neczacı kadrolarına yapılacak olan yerleştirmel erde, her bir adaya başvurusunun kabul edildiği fakat \nyerleşemediği her bir kura dönemi için bir (1) puan verilmek suretiyle hesaplanan toplam kura puanına göre \nyerleştirmenin yapılacağı puanlı kura sistemi uygulanacaktır. Bu sistemde adayların isimleri te rcihleri ile \nbirlikte, hesaplanan toplam kura puanı sayısınca tekrarlanarak kuraya dahil edilecektir.  Yönetmeliğin \nyürürlüğe girdiği tarihten önce yapılmış olan kuralar puan hesaplamasına dâhil edilmeyecektir. \n9) Kura başvurusunu iptal etmek isteyen adaylar, 06.11.2026 – 24.11.2026 (saat 18.00’e kadar) tarihleri \narasında EKİP üzerinden elektronik ortamda başvurusunu iptal edebilirler.  Kura başvurusunu iptal eden \nadaylar, bu kuraya yeniden başvuruda bulunamazlar. \n10) Başvuru değerlendirme sonuçları, tebligat yerine  geçmek üzere EKİP üzerinden açıklanacaktır. \nBaşvurusu uygun görülmeyen adaylar, ret gerekçelerine elektronik ortamda itiraz edebilecek olup; alınan \nitirazların incelenmesi neticesinde sonuçları EKİP üzerinden açıklanacaktır.  \n11) İlan edilen münhal kadronun birim adlarının devamında veya münhal kadronun açıklama alanında \nistenen diğer şartlar varsa, başvuruda bulunacak adayın bu şartları göz önünde bulundurarak tercih yapması \ngerekmektedir. Kurada yerleşen adayın atama işlemleri sürecinde istenen bu şartlara sahip olup olmadığı \nyerleştikleri kurumlarca incelenecektir. Bu şartları sağlamayan veya gerçeğe aykırı beyanda bulunan \nadayların atamaları yerleştikleri kurumlarca yapılmayacaktır. Yerleşen aday atanması yönünden bu duruma \nilişkin bir hak talep edemeyecektir. \n12) Kura son başvuru tarihine kadar, başvuru yapılmak istenen unvan ve branşa ait diploma  veya \nuzmanlık belgesi Sağlık Bakanlığı  tarafından tescil edilmemiş  olanlar veya tescili iptal edilenler  \nbaşvuruda bulunamayacaktır.  Adaylar, diploma ve uzmanlık belg elerine ilişkin tescil bilgilerini, \n“Sağlık Bakanlığı Doktor Bilgi Bankası ” sistemi üzerinden kontrol edebilirler. Söz konusu sisteme  \nhttps://www.turkiye.gov.tr/saglik-bakanligi-doktor-bilgi-bankasi adresinden erişim \nsağlanabilmektedir. \n13) Adayların 657 sayılı Devlet Memurları Kanununun  48 inci maddesinde belirtilen şartları taşımaları \ngerekmektedir.  \n14) 5335 sayılı Kanun’un 30 uncu maddesi kapsamında emekli olan tabip ve uzman tabipler, Bakanlığımız \nve Bağlı Kuruluş kadrolarını tercih ederek başvurabilirler.  Aynı kanun gereği emekli tabip ve uzman \ntabiplerin Bakanlığımız sağlık tesisleri  dışındaki kurumlara yerleş meleri halinde atamaları \ngerçekleştirilmeyecektir. \n15) 3359 sayılı Sağlık Hizmetleri Temel Kanununun Ek 17’nci maddesi kapsamında, kura tarihi \nitibarıyla 65 yaşını doldurmuş ancak 72 yaşından gün almamış olan ve daha önce Sağlık Bakanlığı \nveya bağlı kuruluşlarında görev yapmış tabip ve uzman tabipler, Bakanlığımız ve bağlı \nkuruluşlarının kadrolarını tercih ederek başvuruda bulunabilirler. \nBu kapsamda yerleşen tabip ve uzman tabiplerin atama işlemleri; 3359 sayılı Kanunun Ek 17’nci \nmaddesiyle Bakanlığa verilen uygun görme yetkisi ve Sağlık Bakanlığın 2017/19 sayılı “72 yaşına \nkadar çalışma izni” konulu Genelgesinde belirtilen hususlar çerçev esinde İl Sağlık Müdürlüğünün \ngerekçeli görüşü de dikkate alınarak değerlendirilecektir.  \nSayfa 3 / 5  \nAynı Kanun hükmü gereğince, 65 yaşından gün almış tabip ve uzman tabiplerin Bakanlığımıza bağlı \nsağlık tesisl",
+   "metin_len": 16570,
+   "metin_hash": "8ef2a4fcc6b1e55a437eb331f6bbce83edf409b700750f75036a908ae741b7d6",
+   "p2": {
+    "v": 2,
+    "aday": false
+   }
+  },
+  "https://kamuilan.sbb.gov.tr/#sbb-c7f4346e7962": {
+   "first_seen": "2026-10-31",
+   "kaynak": "SBB Kamu İlan",
+   "baslik": "NÜKLEER DÜZENLEME KURUMU | 8 SÖZLEŞMELİ BİLİŞİM PERSONELİ ALACAK | 9 Kasım - 23 Kasım",
+   "kurum": "",
+   "last_seen": "2026-10-31",
+   "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
+   "detail_checked": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=IFhz9LantTGqYWl9KUAG53BvYkbhdvNsCjXyigd9SfWv7ynIT7OVN57X8ib8s9%2f%2bdTSZdjNsCh3USG7J%2bf1yDhu28NXlLlpcaVfG7SFpxFytzEmfGoemr%2b8g9MdLHW9n",
+   "metin_len": 40000,
+   "metin_hash": "2d39a3aae3c9f5612d7c3294da5c37551f72922b2ca32c48771485823ddc3b47",
+   "p2": {
+    "v": 2,
+    "aday": false
+   },
+   "analiz": {
+    "kategori": "BOLUM",
+    "kanit": "Fakültelerin dört yıllık bilgisayar mühendisliği, yazılım mühendisliği, ... bölümlerinden ... mezun olmak.",
+    "kurum": "Nükleer Düzenleme Kurumu",
+    "pozisyon": "Sözleşmeli Bilişim Personeli",
+    "kadroSayisi": 8,
+    "basvuruBaslangic": null,
+    "basvuruBitis": null,
+    "degerlendirmeSekli": "KPSS + sözlü/uygulamalı sınav",
+    "kpssDurumu": "Zorunlu",
+    "kpssTuru": "KPSS-P3",
+    "ekSinav": true,
+    "ekSinavDetay": "sözlü/uygulamalı sınav",
+    "ikametSarti": "Belirtilmemiş",
+    "ekSartlar": "Yabancı dil (YDS/e-YDS) puanı, en az 3 yıl (bazı pozisyonlar için 5 yıl) mesleki tecrübe",
+    "kisaOzet": "Nükleer Düzenleme Kurumu, 8 sözleşmeli bilişim personeli alacak; başvuru için KPSS P3 puanı ve yabancı dil sınavı zorunlu, seçim sözlü/uygulamalı sınavla yapılacak.",
+    "_model": "openai/gpt-oss-120b",
+    "_pv": 2,
+    "_kanit_ok": true
+   },
+   "bitti": true
+  },
+  "https://kamuilan.sbb.gov.tr/#sbb-7beaf48870cc": {
+   "first_seen": "2026-10-31",
+   "kaynak": "SBB Kamu İlan",
+   "baslik": "MİLLİ SARAYLAR İDARESİ BAŞKANLIĞI | 3 MEMUR ALACAK | 28 Ekim - 8 Kasım",
+   "kurum": "",
+   "last_seen": "2026-10-31",
+   "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
+   "detail_checked": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=m8%2fJkoRmJQm4zmPSIE7D1WEa0njOBEq%2fqLGO7kuJQV3RAUkGWL5SvpPowdKfknwkWPnK9cFMSmr6wM%2bb6ay5nu%2fKpywEpmEk1ZFpIKwlr2RG0uoaeiMFillH4FfSFshB",
+   "metin_len": 25217,
+   "metin_hash": "a714aebd4b954b92c253ea1c6e28693de773d7e9cd074a6e32c2f99f825fb399",
+   "p2": {
+    "v": 2,
+    "aday": true,
+    "analiz": {
+     "kategori": "ILGISIZ",
+     "kanit": "Restoratör (Kalemkâr) kadrosu için Öğrenim Grubu: Lisans",
+     "kurum": "MİLLİ SARAYLAR İDARESİ BAŞKANLIĞI",
+     "pozisyon": "Sözleşmeli Personel (Büro Personeli, Müze Görevlisi, Mühendis (İnşaat), Restoratör (Kalemkâr))",
+     "kadroSayisi": null,
+     "bolumUygun": "Hayır (yalnız: lisans bölümleri: İşletme, Yönetim Bilimleri, İktisat, Maliye, Çalışma Ekonomisi ve Endüstri İlişkileri, Kamu Yönetimi, Siyaset Bilimi, Uluslararası İlişkiler, Müzecilik, Sanat Tarihi, Tarih, Türk Halkbilimi, Arkeoloji, Klasik Arkeoloji, İletişim Bilimleri, Halkla İlişkiler, Gazetecilik, Radyo, Televizyon ve Sinema)",
+     "engelliBilgi": "Yok",
+     "basvuruBaslangic": null,
+     "basvuruBitis": null,
+     "degerlendirmeSekli": "KPSS P3 + Sözlü Sınav",
+     "kpssDurumu": "Zorunlu",
+     "kpssTuru": "KPSS P3 puan türünde en az 60 puan",
+     "ekSinav": true,
+     "ekSinavDetay": "Uygulamalı sınav (Restoratör grubu)",
+     "ikametSarti": "Yok",
+     "ekSartlar": "Yaş sınırı: 35 yaşını doldurmamış olmak; KPSS P3 en az 60 puan",
+     "kisaOzet": "İstanbul’da çeşitli kadrolar için 158 sözleşmeli personel alımı yapılacak; tüm pozisyonlar lisans mezunu ve KPSS P3 puan türünde en az 60 puan şartı taşıyor.",
+     "_model": "openai/gpt-oss-120b",
+     "_pv": 2,
+     "_kanit_ok": false
+    }
+   },
+   "analiz": {
+    "kategori": "ILGISIZ",
+    "kanit": "İşletme, Yönetim Bilimleri, İktisat, Maliye, Çalışma Ekonomisi ve Endüstri İlişkileri, Kamu Yönetimi, Siyaset Bilimi, ... bölümlerinden birinden mezun ya da bunlara denkliği kabul edilmiş",
+    "kurum": "MİLLİ SARAYLAR İDARESİ BAŞKANLIĞI",
+    "pozisyon": "Sözleşmeli Personel",
+    "kadroSayisi": null,
+    "basvuruBaslangic": null,
+    "basvuruBitis": null,
+    "degerlendirmeSekli": "KPSS P3 + Sözlü Sınav",
+    "kpssDurumu": "Zorunlu",
+    "kpssTuru": "KPSS P3 en az 60 puan",
+    "ekSinav": true,
+    "ekSinavDetay": "Sözlü Sınav",
+    "ikametSarti": "Yok",
+    "ekSartlar": "35 yaşını doldurmamış olmak",
+    "kisaOzet": "İlan, 158 sözleşmeli personel alımı için çeşitli kadrolar sunuyor; bilgisayar mühendisliği mezunları için uygun bir kadro bulunmamaktadır.",
+    "_model": "openai/gpt-oss-120b",
+    "_pv": 2,
+    "_kanit_ok": false
+   },
+   "bitti": true
+  },
+  "https://kamuilan.sbb.gov.tr/#sbb-2efd23d57fb7": {
+   "first_seen": "2026-10-31",
+   "kaynak": "SBB Kamu İlan",
+   "baslik": "BURDUR MEHMET AKİF ERSOY ÜNİVERSİTESİ | 1 ALACAK | 28 Ekim - 11 Kasım",
+   "kurum": "",
+   "last_seen": "2026-10-31",
+   "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
+   "detail_checked": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=AtUkt27G%2f4Rs%2bZRBG6c63iiauLLycPF8CAMPxGec62BHhisIbPs5YuPjIuFTyhWXbPvlA6J4OZGaV8l%2bLdyyJFW%2bSXQBLaGKVEK43%2bAnnKTRNfoAKmUpxDFbhFS%2fvOTs",
+   "metin_len": 15676,
+   "metin_hash": "8bbfc5e89a61c35183477a5468d1c30848ec8be4cd94c616856febebcf4223aa",
+   "p2": {
+    "v": 2,
+    "aday": false
+   },
+   "analiz": {
+    "kategori": "BOLUM",
+    "kanit": "Fakültelerin dört yıllık bilgisayar mühendisliği, yazılım mühendisliği, ... bölümlerinden ya da bunlara denkliği ... mezun olmak.",
+    "kurum": "Burdur Mehmet Akif Ersoy Üniversitesi",
+    "pozisyon": "Sözleşmeli Bilişim Personeli",
+    "kadroSayisi": 1,
+    "basvuruBaslangic": "28.10.2026",
+    "basvuruBitis": "11.11.2026",
+    "degerlendirmeSekli": "belirtilmemiş",
+    "kpssDurumu": "Belirtilmemiş",
+    "kpssTuru": "Belirtilmemiş",
+    "ekSinav": false,
+    "ekSinavDetay": "Yok",
+    "ikametSarti": "Yok",
+    "ekSartlar": "3-5 yıl mesleki tecrübe, en az iki programlama dili, güvenlik soruşturması olumlu, görevden ihraç edilmemiş olmak",
+    "kisaOzet": "Burdur Mehmet Akif Ersoy Üniversitesi Bilgi İşlem Dairesi Başkanlığı için 1 sözleşmeli bilişim personeli alınacaktır. Başvurular 28.10.2026-11.11.2026 tarihleri arasında e-Devlet üzerinden yapılacak ve bilgisayar mühendisliği gibi ilgili bölümlerden mezun olanlar başvurabilir.",
+    "_model": "openai/gpt-oss-120b",
+    "_pv": 2,
+    "_kanit_ok": true
+   },
+   "bitti": true
+  },
+  "https://kamuilan.sbb.gov.tr/#sbb-a47cf304e8ba": {
+   "first_seen": "2026-10-31",
+   "kaynak": "SBB Kamu İlan",
+   "baslik": "MARMARA ÜNİVERSİTESİ | 63 SÖZLEŞMELİ PERSONEL ALACAK | 26 Ekim - 9 Kasım",
+   "kurum": "",
+   "last_seen": "2026-10-31",
+   "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
+   "detail_checked": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=cfqvNdwA4mfOvHGmFx3Y0IlXD7U5Tzr7yOCzC5AMgH81Jib8dQv0iWC1B7rQLBzeqyspf5AwJpU4jTD9dpZeD4aJtKfsNHAbYEf8uuZAJMH5L5iLJg060vm6drTlue%2fN",
+   "metin_len": 241,
+   "metin_hash": "63f7fe2b0b83112233c293e1d0c90f040fe138a37c9321f670f9e5d8533f5626",
+   "p2": {
+    "v": 2,
+    "aday": false
+   },
+   "bitti": true,
+   "sonuc": "ADAY DEĞİL (anahtar kelime yok)"
+  },
+  "https://kamuilan.sbb.gov.tr/#sbb-bee53898898a": {
+   "first_seen": "2026-10-31",
+   "kaynak": "SBB Kamu İlan",
+   "baslik": "BİTLİS EREN ÜNİVERSİTESİ |  | 7 ÖĞRETİM ÜYESİ ALACAK ( 31 Ekim - 14 Kasım)",
+   "kurum": "",
+   "last_seen": "2026-10-31",
+   "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
+   "detail_checked": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=Fmjd%2bYD7KQ4OXw%2fHL59%2b8WbDZ2PH%2fV1%2bgtuIy7VVW3y2FVXU48uOR%2fFOZFkXtBlJolg4ztttN1IsUg%2bD5edDBVjD54LIGEnSbkcbzXR9EdlUbUXAG%2blrKyYK5DdjU%2bY8",
+   "metin_len": 5298,
+   "metin_hash": "36112eeb0c4d2ff03e5b2171d6492efd695aa10a4a61e2e7f0fd20cf7cb054ba",
+   "p2": {
+    "v": 2,
+    "aday": false
+   },
+   "bitti": true,
+   "sonuc": "ILGISIZ (akademik kadro)"
+  },
+  "https://kamuilan.sbb.gov.tr/#sbb-114a8dcd7ad5": {
+   "first_seen": "2026-10-31",
+   "kaynak": "SBB Kamu İlan",
+   "baslik": "BATMAN ÜNİVERSİTESİ |  | 13 ÖĞRETİM ÜYESİ ALACAK ( 30 Ekim - 13 Kasım)",
+   "kurum": "",
+   "last_seen": "2026-10-31",
+   "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
+   "detail_checked": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=Tl85Pl2xLrDD54YTyvYCBdR2Whq%2fOZ7zO47M0KsOlMnLSdfbtnUFzL03OoCP5pDZvjMbBTVsHUeSrqu1%2fNrOulWQBRpORmJtDWFlxcCxsFirymfA%2bqdZc4RfNXH8xZeg",
+   "metin_len": 6502,
+   "metin_hash": "7a90f5dde188257d137331015629923b107a5704026da33835e8e84511576777",
+   "p2": {
+    "v": 2,
+    "aday": false
+   },
+   "bitti": true,
+   "sonuc": "ILGISIZ (akademik kadro)"
+  },
+  "https://kamuilan.sbb.gov.tr/#sbb-7ccede416248": {
+   "first_seen": "2026-10-31",
+   "kaynak": "SBB Kamu İlan",
+   "baslik": "BATMAN ÜNİVERSİTESİ |  | 5 ÖĞRETİM ELEMANI ALACAK ( 30 Ekim - 13 Kasım)",
+   "kurum": "",
+   "last_seen": "2026-10-31",
+   "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
+   "detail_checked": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=Xmgy0Kk0IDvac%2fx2XA58qISYZepdwcScAfWcCnWpy%2bG%2b9yQ1bPnthZ61KqxxymAWH7JCraoqhE9jswDOvCa1xySw0zEidNCCTAWoZX2boqUnuxnrF%2fWNDhL22updKc6I",
+   "metin_len": 7590,
+   "metin_hash": "6f437d642385721e7cc4babcc02e70d095fe8aac2bccf656437e0226fe744e9a",
+   "p2": {
+    "v": 2,
+    "aday": false
+   },
+   "bitti": true,
+   "sonuc": "ILGISIZ (akademik kadro)"
+  },
+  "https://kamuilan.sbb.gov.tr/#sbb-ffcafa26c58c": {
+   "first_seen": "2026-10-31",
+   "kaynak": "SBB Kamu İlan",
+   "baslik": "BOĞAZİÇİ ÜNİVERSİTESİ |  | ARAŞTIRMA GÖREVLİSİ ALIMI İPTAL İLANI ( 30 Ekim - 5 Kasım)",
+   "kurum": "",
+   "last_seen": "2026-10-31",
+   "detail_level": "İlan detay sayfası",
+   "detail_checked": false,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=7w%2fodqNWzvQfjs0Qq1%2fqYGWwNet4VLdATqEPJZcbGanI5VowQHOZQ5r8y9KSuo%2b0s04YvCsKuj6IA6vkQOM%2bXuDxZlaB84O9pH5SjquYvAhnFLjr%2bPLNNAXc88a4jRLf",
+   "bitti": true,
+   "sonuc": "SBB: DETAY OKUNAMADI",
+   "hata": "ilgisiz başlık (iptal/düzeltme/subay vb.), okunmadı"
+  },
+  "https://kamuilan.sbb.gov.tr/#sbb-3b2574fe0e8a": {
+   "first_seen": "2026-10-31",
+   "kaynak": "SBB Kamu İlan",
+   "baslik": "BOĞAZİÇİ ÜNİVERSİTESİ |  | 1 ÖĞRETİM GÖREVLİSİ ALACAK ( 30 Ekim - 25 Kasım)",
+   "kurum": "",
+   "last_seen": "2026-10-31",
+   "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
+   "detail_checked": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=8NLP%2bg3eCMh%2bpPoDWV9puAVYUb5IPxE65LJaquCUqaWu7oeCvhSyMKwgBI3edUcTRcVtAJg3uUHq56tY%2f52ta7vfskyGMtTS7nBWDdCJ5204SA3NEzguv38%2f70KEie1I",
+   "metin_len": 2789,
+   "metin_hash": "c3f8e7a129698b3a58df50e6058be69e0fe84378e2f949b8218c9640947f6f73",
+   "p2": {
+    "v": 2,
+    "aday": false
+   },
+   "bitti": true,
+   "sonuc": "ILGISIZ (akademik kadro)"
+  },
+  "https://kamuilan.sbb.gov.tr/#sbb-fbc7dd511be3": {
+   "first_seen": "2026-10-31",
+   "kaynak": "SBB Kamu İlan",
+   "baslik": "GAZİ ÜNİVERSİTESİ |  | 87 ÖĞRETİM ÜYESİ ALACAK ( 30 Ekim - 13 Kasım)",
+   "kurum": "",
+   "last_seen": "2026-10-31",
+   "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
+   "detail_checked": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=EE0OCWmRBeW5q%2fvl0AmqXkRJ3HqfONNb%2fWSWxk53i1q4oCDpqLdJp0lm08dZqJV6T%2b0fHf%2bgL0rX%2bcKRpxSiH0QFhWULhz%2fl%2bvnU7kCVEh2OCL%2fdUsMtrzp%2flHorn9yi",
+   "metin_len": 36662,
+   "metin_hash": "1e4a334710d6c42f27b780ba3983c5d6b513fabf60176b06edb4a50488fec9f7",
+   "p2": {
+    "v": 2,
+    "aday": false
+   },
+   "bitti": true,
+   "sonuc": "ILGISIZ (akademik kadro)"
+  },
+  "https://kamuilan.sbb.gov.tr/#sbb-bff864496d42": {
+   "first_seen": "2026-10-31",
+   "kaynak": "SBB Kamu İlan",
+   "baslik": "GAZİ ÜNİVERSİTESİ |  | 9 ÖĞRETİM ELEMANI ALACAK ( 30 Ekim - 13 Kasım)",
+   "kurum": "",
+   "last_seen": "2026-10-31",
+   "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
+   "detail_checked": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=pSYrEaUtLd9PCrAIUiWP2KdHDFe0sw35rCLdyxQY6txNuttpac%2bnOy2apYFqAJZf7LS0fJjt1OnWL8wxUmHPNkUxWlFHW77dgXp8k3N8RPi3f7adALa3G0ZQUvZQ9MGI",
+   "metin_len": 10695,
+   "metin_hash": "75ce6d02d391427e0e122b6780d3a25ace2da19693fff01f1db5a6485e05d0af",
+   "p2": {
+    "v": 2,
+    "aday": false
+   },
+   "bitti": true,
+   "sonuc": "ILGISIZ (akademik kadro)"
+  },
+  "https://kamuilan.sbb.gov.tr/#sbb-aba6b27d7c66": {
+   "first_seen": "2026-10-31",
+   "kaynak": "SBB Kamu İlan",
+   "baslik": "SAĞLIK BAKANLIĞI |  | 2026 YILI 3. DÖNEM İLK DEFA VE YENİDEN ATAMA KURASI ( 30 Ekim - 5 Kasım)",
+   "kurum": "",
+   "last_seen": "2026-10-31",
+   "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
+   "detail_checked": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=6vHgZJBEBefVUDTiNpn8RCCEI3DARmfwpOCvOy6FzJbldXFKy08M3oY1dWpte92iThYAJB%2buQqna2vc9K%2bOaoM68LMtzl1vQCYl0kkeJCx56QbAH7Uwx3IYjitoLGQB2",
+   "metin_len": 16570,
+   "metin_hash": "7f3230ebb2e3210266470202f0130787e0c6229ad9c5b472760089f2dcbf88aa",
+   "p2": {
+    "v": 2,
+    "aday": false
+   },
+   "analiz": {
+    "kategori": "ILGISIZ",
+    "kanit": "uzman tabip, tabip, uzman diş tabibi, diş tabibi, uzman eczacı ve eczacı unvanında personel alımı",
+    "kurum": "Sağlık Bakanlığı",
+    "pozisyon": "uzman tabip, tabip, uzman diş tabibi, diş tabibi, uzman eczacı, eczacı",
+    "kadroSayisi": null,
+    "basvuruBaslangic": null,
+    "basvuruBitis": null,
+    "degerlendirmeSekli": "belirtilmemiş",
+    "kpssDurumu": "Belirtilmemiş",
+    "kpssTuru": "Belirtilmemiş",
+    "ekSinav": false,
+    "ekSinavDetay": "Yok",
+    "ikametSarti": "Belirtilmemiş",
+    "ekSartlar": "Yok",
+    "kisaOzet": "Sağlık Bakanlığı, uzman tabip, tabip, diş hekimi ve eczacı kadroları için ilan vermiştir; bilgisayar mühendisliği mezunu bu ilan için başvuramaz.",
+    "_model": "openai/gpt-oss-120b",
+    "_pv": 2,
+    "_kanit_ok": true
+   },
+   "bitti": true
+  },
+  "https://kamuilan.sbb.gov.tr/#sbb-c9e3cd4477a5": {
+   "first_seen": "2026-10-31",
+   "kaynak": "SBB Kamu İlan",
+   "baslik": "KAMU İHALE KURUMU |  | 25 KAMU İHALE UZMAN YARDIMCISI ALACAK ( 9 Kasım - 20 Kasım)",
+   "kurum": "",
+   "last_seen": "2026-10-31",
+   "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
+   "detail_checked": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=YaA4sDbgfB2Ws8MBjdVi4nvAxhdW4srEdxvT6Xlhg1zEY5cY%2f3bmAHIY%2fmm5FCrVKGHllBadrVxsKo1ICkwbyFXHBulkvqUwZ3kQ1RQ9evBNU7O%2b0T96z8GXj1ywa57g",
+   "metin_len": 12574,
+   "metin_hash": "333ab840b1dfae282e28a98fa7e009be06fb28db8e96d656696f5531e3acf405",
+   "p2": {
+    "v": 2,
+    "aday": false
+   },
+   "bitti": true,
+   "sonuc": "ADAY DEĞİL (anahtar kelime yok)"
+  },
+  "https://kamuilan.sbb.gov.tr/#sbb-e6c6506d1847": {
+   "first_seen": "2026-10-31",
+   "kaynak": "SBB Kamu İlan",
+   "baslik": "NÜKLEER DÜZENLEME KURUMU |  | 8 SÖZLEŞMELİ BİLİŞİM PERSONELİ ALACAK ( 9 Kasım - 23 Kasım)",
+   "kurum": "",
+   "last_seen": "2026-10-31",
+   "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
+   "detail_checked": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=9Sq%2f%2bJu1VnXynM%2bj0YYx4PdwktpWAYq%2b0JlUpG0yk83NVzTCEdqtJTEndQr16yLPMBYHDrJdfybxps9kHJ2DfvN0v5YjkaZ0y6S0MB7dCacMj3LPY2q655BDEkvZSqEI",
+   "metin_len": 40000,
+   "metin_hash": "b8dc57bc3f5bfb056dfa1f0ffabc9ce7cbdc45d4401c46fd2754cebf58deba84",
+   "p2": {
+    "v": 2,
+    "aday": false
+   },
+   "analiz": {
+    "kategori": "BOLUM",
+    "kanit": "Fakültelerin dört yıllık bilgisayar mühendisliği, yazılım mühendisliği, ... bölümlerinden ... mezun olmak.",
+    "kurum": "Nükleer Düzenleme Kurumu",
+    "pozisyon": "Sözleşmeli Bilişim Personeli",
+    "kadroSayisi": 8,
+    "basvuruBaslangic": null,
+    "basvuruBitis": null,
+    "degerlendirmeSekli": "KPSS + sözlü/uygulamalı sınav",
+    "kpssDurumu": "Zorunlu",
+    "kpssTuru": "KPSS-P3",
+    "ekSinav": true,
+    "ekSinavDetay": "sözlü/uygulamalı sınav (7-11 Aralık 2026)",
+    "ikametSarti": "Yok",
+    "ekSartlar": "Yabancı dil YDS/e-YDS puanı, mesleki tecrübe (en az 3 yıl veya 5 yıl)",
+    "kisaOzet": "Nükleer Düzenleme Kurumu, 8 sözleşmeli bilişim personeli alacak. Başvuru için KPSS P3 puanı ve YDS/e-YDS puanı zorunlu, seçim sözlü/uygulamalı sınavla yapılacak.",
+    "_model": "openai/gpt-oss-120b",
+    "_pv": 2,
+    "_kanit_ok": true
+   },
+   "bitti": true
+  },
+  "https://kamuilan.sbb.gov.tr/#sbb-5d7cf39fdeae": {
+   "first_seen": "2026-10-31",
+   "kaynak": "SBB Kamu İlan",
+   "baslik": "KAYSERİ ÜNİVERSİTESİ |  | 1 ÖĞRETİM ELEMANI ALACAK ( 30 Ekim - 13 Kasım)",
+   "kurum": "",
+   "last_seen": "2026-10-31",
+   "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
+   "detail_checked": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=JtQi5LPqqKlX%2bkSVSJnF4H18IHYWWbPrruaNuV9Wpc5SmaDRYPo0IoOrMMTtdyKSWIJ9hTMQDgTWu%2bgZyTZX6lNfLQ5EIphZU0Q%2fH17lJdOo%2b5g521SPP%2bwl9npfseoj",
+   "metin_len": 8150,
+   "metin_hash": "fb43a0d0801ee6be37ac917ed6ffc4970168cb555f8632652991825ae4393547",
+   "p2": {
+    "v": 2,
+    "aday": false
+   },
+   "bitti": true,
+   "sonuc": "ILGISIZ (akademik kadro)"
+  },
+  "https://kamuilan.sbb.gov.tr/#sbb-5574e902f929": {
+   "first_seen": "2026-10-31",
+   "kaynak": "SBB Kamu İlan",
+   "baslik": "KAYSERİ ÜNİVERSİTESİ |  | 3 ÖĞRETİM ÜYESİ ALACAK ( 30 Ekim - 13 Kasım)",
+   "kurum": "",
+   "last_seen": "2026-10-31",
+   "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
+   "detail_checked": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=SIRY8vrjcCqDlnzmOkGRmHNhgFX6fShxloZTyLO3Yh3P%2fs2SKH9R40BA4foEJgi0GGCzseisr2Ww3kMgRHN5KRn168q2wYkbTQVvFx%2fCv%2b5FwIadt9UvtRZHC9xq52dp",
+   "metin_len": 4188,
+   "metin_hash": "e1a89d10484dcbd8005ca4d9cd181ce65920e4311a8ca2ec490d287d884f915c",
+   "p2": {
+    "v": 2,
+    "aday": false
+   },
+   "bitti": true,
+   "sonuc": "ILGISIZ (akademik kadro)"
+  },
+  "https://kamuilan.sbb.gov.tr/#sbb-216d0eb19794": {
+   "first_seen": "2026-10-31",
+   "kaynak": "SBB Kamu İlan",
+   "baslik": "MİLLİ SARAYLAR İDARESİ BAŞKANLIĞI |  | 3 MEMUR ALACAK ( 28 Ekim - 8 Kasım)",
+   "kurum": "",
+   "last_seen": "2026-10-31",
+   "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
+   "detail_checked": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=2ROQBfApFnSde5ElgCJ8mTicZTqIwH5X7K777NXC3%2fyzqBBUMfTmtVSyeja1JLsncn%2bdkSRToMPaNejOC7Ibxm232NVXROuVj6bSWVrocsNfr0aQumMQxaE8vkMWupzf",
+   "metin_len": 25217,
+   "metin_hash": "4f59562f6dfd6fc59a466e67bca4f960b1cce725da6c09a21cc03969e754b48f",
+   "p2": {
+    "v": 2,
+    "aday": true,
+    "analiz": {
+     "kategori": "ILGISIZ",
+     "kanit": "Öğrenim Grubu: Lisans",
+     "kurum": "MİLLİ SARAYLAR İDARESİ BAŞKANLIĞI",
+     "pozisyon": "Büro Personeli, Müze Görevlisi, Mühendis (İnşaat), Restoratör (Kalemkâr)",
+     "kadroSayisi": 16,
+     "bolumUygun": "Hayır (yalnız: İşletme, Yönetim Bilimleri, İktisat, Maliye, Çalışma Ekonomisi ve Endüstri İlişkileri, Kamu Yönetimi, Siyaset Bilimi, Siyaset Bilimi ve Kamu Yönetimi, Siyaset Bilimi ve Uluslararası İlişkiler, Müzecilik, Sanat Tarihi, Tarih, Türk Halkbilimi, Arkeoloji, Klasik Arkeoloji, Arkeoloji ve Sanat Tarihi, Türk İslam Arkeolojisi, İletişim Bilimleri, Halkla İlişkiler ve Tanıtım, Halkla İlişkiler ve Reklamcılık, Gazetecilik, Radyo, Televizyon ve Sinema, İnşaat Mühendisliği, Kültür Varlıklarını Koruma ve Onarım, Restorasyon ve Konservasyon, Rölöve-Restorasyon, Taşınabilir Kültür Varlıklarını Koruma ve Onarım, Sanat Eserleri Konservasyonu ve Restorasyonu, Mimarlık, Mühendislik, Fen-Edebiyat, Güzel Sanatlar, Dil ve Tarih-Coğrafya)",
+     "engelliBilgi": "Yok",
+     "basvuruBaslangic": null,
+     "basvuruBitis": null,
+     "degerlendirmeSekli": "KPSS P3 + Sözlü Sınav",
+     "kpssDurumu": "Zorunlu",
+     "kpssTuru": "KPSS P3 puan türünde en az 60 puan",
+     "ekSinav": false,
+     "ekSinavDetay": "Yok",
+     "ikametSarti": "Var: İstanbul",
+     "ekSartlar": "Yaş sınırı 35, denklik şartı (yurtdışı yükseköğretim denklikleri)",
+     "kisaOzet": "İstanbul’da 16 sözleşmeli personel için çeşitli lisans bölümlerinden başvuru şartı var; KPSS P3 en az 60 puan ve 35 yaş sınırı bulunuyor.",
+     "_model": "openai/gpt-oss-120b",
+     "_pv": 2,
+     "_kanit_ok": true
+    }
+   },
+   "analiz": {
+    "kategori": "ILGISIZ",
+    "kanit": "İşletme, Yönetim Bilimleri, İktisat, Maliye, Çalışma Ekonomisi ve Endüstri İlişkileri, Kamu Yönetimi, Siyaset Bilimi, Siyaset Bilimi ve Uluslararası İlişkiler bölümlerinden birinden mezun...",
+    "kurum": "MİLLİ SARAYLAR İDARESİ BAŞKANLIĞI",
+    "pozisyon": "Sözleşmeli Personel",
+    "kadroSayisi": 16,
+    "basvuruBaslangic": null,
+    "basvuruBitis": null,
+    "degerlendirmeSekli": "KPSS P3 + Sözlü Sınav",
+    "kpssDurumu": "Zorunlu",
+    "kpssTuru": "KPSS P3 puan türünde en az 60 puan",
+    "ekSinav": true,
+    "ekSinavDetay": "Sözlü Sınav; Restoratör grubu ayrıca Uygulamalı sınav",
+    "ikametSarti": "Var: İstanbul",
+    "ekSartlar": "35 yaşını doldurmamış olmak",
+    "kisaOzet": "İstanbul merkezli 16 sözleşmeli personel için KPSS P3 en az 60 puan ve 35 yaş sınırıyla sözlü sınav uygulanıyor. Bilgisayar mühendisliği mezunları için uygun kadro bulunmamaktadır.",
+    "_model": "openai/gpt-oss-120b",
+    "_pv": 2,
+    "_kanit_ok": false
+   },
+   "bitti": true
+  },
+  "https://kamuilan.sbb.gov.tr/#sbb-613cd0bc2f0f": {
+   "first_seen": "2026-10-31",
+   "kaynak": "SBB Kamu İlan",
+   "baslik": "EYYÜBİYE BELEDİYE BAŞKANLIĞI |  | 9 MEMUR ALACAK ( 7 Aralık - 10 Aralık)",
+   "kurum": "",
+   "last_seen": "2026-10-31",
+   "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
+   "detail_checked": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=RRcXT%2bFqMPGTcxA4lod1R6w6p7fi9rLNJg7NQsAvhcZj88wBER4HML2V%2bYh4cp%2f4VAcSDORZnqpa0TfC47MdiHcITiZSxhaVUNoiPx7T9t05EyZFYsvONoQwUlf5XEiR",
+   "metin_len": 9863,
+   "metin_hash": "fccdc7554d7bc68a3f47f55d43065b76ec12f5d7cee0fc3320e18c7911f6472d",
+   "p2": {
+    "v": 2,
+    "aday": false
+   },
+   "analiz": {
+    "kategori": "TUM_LISANS",
+    "kanit": "Herhangi bir lisans programından mezun olmak.",
+    "kurum": "Eyyübiye Belediye Başkanlığı",
+    "pozisyon": "Zabıta Memuru",
+    "kadroSayisi": 9,
+    "basvuruBaslangic": "07/12/2026",
+    "basvuruBitis": "10/12/2026",
+    "degerlendirmeSekli": "KPSS + sözlü ve uygulamalı sınav",
+    "kpssDurumu": "Zorunlu",
+    "kpssTuru": "KPSS-P3 en az 60 puan",
+    "ekSinav": true,
+    "ekSinavDetay": "Sözlü ve uygulamalı sınav; KPSS puanına göre en yüksekten başlayarak kadro sayısının 5 katı oranında aday çağrılır",
+    "ikametSarti": "Belirtilmemiş",
+    "ekSartlar": "B sınıfı sürücü belgesi, erkeklerde en az 1.67 m, kadınlarda en az 1.60 m boy, cinsiyet (Kadın/Erkek)",
+    "kisaOzet": "Eyyübiye Belediye Başkanlığı 9 adet zabıta memuru alımı yapıyor. Başvurular 07/12‑10/12/2026 arasında kabul edilecek, KPSS-P3 en az 60 puan ve ek sözlü‑uygulamalı sınav şart.",
+    "_model": "openai/gpt-oss-120b",
+    "_pv": 2,
+    "_kanit_ok": true
+   },
+   "bitti": true
+  },
+  "https://kamuilan.sbb.gov.tr/#sbb-856b97044873": {
+   "first_seen": "2026-10-31",
+   "kaynak": "SBB Kamu İlan",
+   "baslik": "GAZİOSMANPAŞA BELEDİYE BAŞKANLIĞI |  | 36 ZABITA MEMURU ALACAK ( 7 Aralık - 11 Aralık)",
+   "kurum": "",
+   "last_seen": "2026-10-31",
+   "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
+   "detail_checked": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=lxskUrYXzQ2%2b5hJqwqieSBmp%2b%2fAOnmwdFxjdAL%2bbUqsRNSGyLdXunNFWkre%2fSUSYRppmTFRtX3uP0ZhKE6t2T6vuG4u6%2fzwQ8pZfXgKEYH4o9sMVay3f586Xz8VzJX2s",
+   "metin_len": 10436,
+   "metin_hash": "a4a6539204c01c5e17202b76ce08a1520e459f4a283e0eb93534b8b9b6c4c2e7",
+   "p2": {
+    "v": 2,
+    "aday": true,
+    "analiz": {
+     "kategori": "ILGISIZ",
+     "kanit": "- Mahalli idareler, mahalli idareler (zabıta), yerel yönetimler, halkla ilişkiler, adalet, acil durum ve afet yönetimi, ilk ve acil yardım önlisans programlarının birinden mezun olmak.",
+     "kurum": "Gaziosmanpaşa Belediye Başkanlığı",
+     "pozisyon": "Zabıta Memuru",
+     "kadroSayisi": 13,
+     "bolumUygun": "Hayır (yalnız: Mahalli idareler, mahalli idareler (zabıta), yerel yönetimler, halkla ilişkiler, adalet, acil durum ve afet yönetimi, ilk ve acil yardım önlisans programları)",
+     "engelliBilgi": "Yok",
+     "basvuruBaslangic": "7 Aralık",
+     "basvuruBitis": "11 Aralık",
+     "degerlendirmeSekli": "KPSS puanına göre sıralama",
+     "kpssDurumu": "Zorunlu",
+     "kpssTuru": "KPSS (B) grubu en az 65 puan",
+     "ekSinav": false,
+     "ekSinavDetay": "Yok",
+     "ikametSarti": "Yok",
+     "ekSartlar": "En az (B) sınıfı sürücü belgesi, erkeklerde ≥1.67 m kadınlarda ≥1.60 m boy koşulu",
+     "kisaOzet": "Gaziosmanpaşa Belediyesi 7‑11 Aralık tarihleri arasında 13 adet önlisans mezunu zabıta memuru kadrosu için başvuru alıyor. Anestezi önlisans mezunu ve işitme engelli adayın programı kabul edilmiyor.",
+     "_model": "openai/gpt-oss-120b",
+     "_pv": 2,
+     "_kanit_ok": true
+    }
+   },
+   "analiz": {
+    "kategori": "ILGISIZ",
+    "kanit": "- Lisans düzeyinde eğitim veren kurumların kamu yönetimi, yerel yönetimler, işletme, siyaset bilimi ... programlarının birinden mezun olmak.",
+    "kurum": "Gaziosmanpaşa Belediye Başkanlığı",
+    "pozisyon": "Zabıta Memuru",
+    "kadroSayisi": null,
+    "basvuruBaslangic": "7 Aralık",
+    "basvuruBitis": "11 Aralık",
+    "degerlendirmeSekli": "KPSS + sözlü ve uygulamalı sınav",
+    "kpssDurumu": "Zorunlu",
+    "kpssTuru": "KPSS (B) grubu, P3, en az 65 puan",
+    "ekSinav": true,
+    "ekSinavDetay": "Sözlü ve uygulamalı sınav",
+    "ikametSarti": "Yok",
+    "ekSartlar": "En az B sınıfı sürücü belgesi; erkeklerde en az 1.67 m, kadınlarda en az 1.60 m boy şartı",
+    "kisaOzet": "Gaziosmanpaşa Belediyesi Zabıta Memuru alımı sadece belirli mühendislik ve önlisans programlarından mezunları kabul ediyor; Bilgisayar mühendisliği mezunu bu ilana başvuramaz.",
+    "_model": "openai/gpt-oss-120b",
+    "_pv": 2,
+    "_kanit_ok": true
+   },
+   "bitti": true
+  },
+  "https://kamuilan.sbb.gov.tr/#sbb-6795665905a4": {
+   "first_seen": "2026-10-31",
+   "kaynak": "SBB Kamu İlan",
+   "baslik": "ELAZIĞ İL ÖZEL İDARESİ |  | 3 SÖZLEŞMELİ PERSONEL ALACAK ( 30 Kasım - 9 Aralık)",
+   "kurum": "",
+   "last_seen": "2026-10-31",
+   "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
+   "detail_checked": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=aVCNc6UnKaA9oPY0QMTYgV79Uzxn%2bsI3w42bDSqy7LwKfVQEdsei238EajkmyAt93aMzRRI2EeHei%2b%2frWJQQwpD0l2X6nburFTV6pVhQVeni8Cmf%2f%2bSC96BoH56JyL9S",
+   "metin_len": 9084,
+   "metin_hash": "9939e5d3f62df3a83af72b61df2cfc6a062411e50ca3b9ae793946d769dc3da5",
+   "p2": {
+    "v": 2,
+    "aday": false
+   },
+   "analiz": {
+    "kategori": "ILGISIZ",
+    "kanit": "Psikolog ve Sosyal Çalışmacı kadroları için alım yapılacağı belirtilmiştir.",
+    "kurum": "Elazığ İl Özel İdaresi",
+    "pozisyon": "Psikolog, Sosyal Çalışmacı",
+    "kadroSayisi": 3,
+    "basvuruBaslangic": "30 Kasım 2026",
+    "basvuruBitis": "9 Aralık 2026",
+    "degerlendirmeSekli": "KPSS + sözlü sınav",
+    "kpssDurumu": "Zorunlu",
+    "kpssTuru": "P3, asgari 60 puan",
+    "ekSinav": true,
+    "ekSinavDetay": "Sözlü sınav; aynı puana sahip adaylar da çağrılır",
+    "ikametSarti": "Yok",
+    "ekSartlar": "Disiplin/ahlaki sebep olmama; askerlik durumu belgesi; sağlık beyanı; fotoğraf ve kimlik gibi belgeler",
+    "kisaOzet": "Elazığ İl Özel İdaresi, Psikolog ve Sosyal Çalışmacı kadroları için sözleşmeli personel alımı yapıyor; başvuru 30 Kasım‑9 Aralık 2026, KPSS P3 60 puan zorunlu, sözlü sınav uygulanacak.",
+    "_model": "openai/gpt-oss-120b",
+    "_pv": 2,
+    "_kanit_ok": false
+   },
+   "bitti": true
+  },
+  "https://kamuilan.sbb.gov.tr/#sbb-7bbd93d1a41a": {
+   "first_seen": "2026-10-31",
+   "kaynak": "SBB Kamu İlan",
+   "baslik": "ALANYA ALAADDİN KEYKUBAT ÜNİVERSİTESİ |  | ÖĞRETİM ÜYESİ ALIMI İPTAL İLANI ( 28 Ekim - 6 Kasım)",
+   "kurum": "",
+   "last_seen": "2026-10-31",
+   "detail_level": "İlan detay sayfası",
+   "detail_checked": false,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=djBxC1b6xYD0m7IGSQI0b4ybau%2fKtpVKrPq%2bmfFtFnq74nKGKn3Mqq5myqFbG34cpuR8aS3MBybOtHO0WyEjy%2bfecTRo5rrjiF2Y5kDvuYToY1sgE%2bTdqydq5Pea683w",
+   "bitti": true,
+   "sonuc": "SBB: DETAY OKUNAMADI",
+   "hata": "ilgisiz başlık (iptal/düzeltme/subay vb.), okunmadı"
+  },
+  "https://kamuilan.sbb.gov.tr/#sbb-b2fe0fe670df": {
+   "first_seen": "2026-10-31",
+   "kaynak": "SBB Kamu İlan",
+   "baslik": "BURDUR MEHMET AKİF ERSOY ÜNİVERSİTESİ |  | 1 ALACAK ( 28 Ekim - 11 Kasım)",
+   "kurum": "",
+   "last_seen": "2026-10-31",
+   "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
+   "detail_checked": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=6TV8WOJnoVahJYArbkPYD1e4qpY%2bA%2fEr8gTu5rB65dBQ3wT437zRXwfAESZPgZLX8W1cNuieMQQWI%2b8bq3iuxiX%2fbkSrkFMSuE4Lis8geaR57S4L7xdtBCeymcisZWZd",
+   "metin_len": 15676,
+   "metin_hash": "72c31308433703985127e5e47576e422939e90a95d990bc7fcaa2dd261d07f48",
+   "p2": {
+    "v": 2,
+    "aday": false
+   },
+   "analiz": {
+    "kategori": "BOLUM",
+    "kanit": "Fakültelerin dört yıllık bilgisayar mühendisliği, yazılım mühendisliği, ... bölümlerinden ... mezun olmak.",
+    "kurum": "Burdur Mehmet Akif Ersoy Üniversitesi",
+    "pozisyon": "Sözleşmeli Bilişim Personeli",
+    "kadroSayisi": 1,
+    "basvuruBaslangic": "28.10.2026",
+    "basvuruBitis": "11.11.2026",
+    "degerlendirmeSekli": "belirtilmemiş",
+    "kpssDurumu": "Belirtilmemiş",
+    "kpssTuru": "belirtilmemiş",
+    "ekSinav": false,
+    "ekSinavDetay": "Yok",
+    "ikametSarti": "Yok",
+    "ekSartlar": "3-5 yıl mesleki tecrübe, en az iki programlama dili, ağ yönetimi bilgisi, Linux/Windows Server bilgisi, güvenlik soruşturması, görevden ihraç olmama",
+    "kisaOzet": "Burdur Mehmet Akif Ersoy Üniversitesi Bilgi İşlem Dairesi Başkanlığı, 28.10.2026-11.11.2026 tarihleri arasında 1 sözleşmeli bilişim personeli alacaktır. Başvuru için bilgisayar mühendisliği gibi ilgili mühendislik bölümlerinden mezun olmak ve mesleki tecrübe şartlarını sağlamak gerekmektedir.",
+    "_model": "openai/gpt-oss-120b",
+    "_pv": 2,
+    "_kanit_ok": true
+   },
+   "bitti": true
+  },
+  "https://kamuilan.sbb.gov.tr/#sbb-7ddcfe10b380": {
+   "first_seen": "2026-10-31",
+   "kaynak": "SBB Kamu İlan",
+   "baslik": "MUŞ ALPARSLAN ÜNİVERSİTESİ |  | 49 ÖĞRETİM ELEMANI ALACAK ( 27 Ekim - 10 Kasım)",
+   "kurum": "",
+   "last_seen": "2026-10-31",
+   "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
+   "detail_checked": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=vNWk3nRNSElZQ0P0OTgJ1XSnhyu1KJtZFEczGP1zdQwcaJYwdxkmcgNhewVBWOeNseBRFju1FvA5I5DyQKYcPJQqOtVG7FvTxRpFl%2f40udgC50z4p41jp1wN13QWnSo1",
+   "metin_len": 23913,
+   "metin_hash": "7a3ca3204579bf5ae4027a2f9f4391233c12a3a0406ec42dd288a5579a015dfb",
+   "p2": {
+    "v": 2,
+    "aday": false
+   },
+   "bitti": true,
+   "sonuc": "ILGISIZ (akademik kadro)"
+  },
+  "https://kamuilan.sbb.gov.tr/#sbb-696489533188": {
+   "first_seen": "2026-10-31",
+   "kaynak": "SBB Kamu İlan",
+   "baslik": "GİRESUN ÜNİVERSİTESİ |  | 23 ÖĞRETİM ÜYESİ ALACAK ( 27 Ekim - 13 Kasım)",
+   "kurum": "",
+   "last_seen": "2026-10-31",
+   "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
+   "detail_checked": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=Fl7JpmixZPGz9gIHk%2fNTMQ6nwS1HPC6BQuowdNrxcVGMwgxfvJP33p9hMy6wgAHQRGYgFOeI5mh%2bSqumuXuuczVeZyXdtLRNtGKX9r0ydtTh1fdqnTyiJ1YXLFqUfLqp",
+   "metin_len": 11207,
+   "metin_hash": "59c386fef9f280349fc895db63ca34babd76b65275a2a22ad1ef268803a6de53",
+   "p2": {
+    "v": 2,
+    "aday": false
+   },
+   "bitti": true,
+   "sonuc": "ILGISIZ (akademik kadro)"
+  },
+  "https://kamuilan.sbb.gov.tr/#sbb-5449949c467b": {
+   "first_seen": "2026-10-31",
+   "kaynak": "SBB Kamu İlan",
+   "baslik": "HARRAN ÜNİVERSİTESİ |  | 52 ÖĞRETİM ÜYESİ ALACAK ( 27 Ekim - 10 Kasım)",
+   "kurum": "",
+   "last_seen": "2026-10-31",
+   "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
+   "detail_checked": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=lvsSAJj4f0e%2fB07h2fHOSHXjUeamaSPCqHSFiJLNHPq79StCO3HKZT6BGwVhzI1MYeG4S9IIpzihdgjhOcXaNb1toBQmm3gkZkbT0igIKMmGG39KvVAx60y%2bZMQ1691A",
+   "metin_len": 13736,
+   "metin_hash": "bf91b4045bc3ec4f468759be5c5822661842d96bc04816692fc1d67b6d8e06cb",
+   "p2": {
+    "v": 2,
+    "aday": false
+   },
+   "bitti": true,
+   "sonuc": "ILGISIZ (akademik kadro)"
+  },
+  "https://kamuilan.sbb.gov.tr/#sbb-a4ee1f723556": {
+   "first_seen": "2026-10-31",
+   "kaynak": "SBB Kamu İlan",
+   "baslik": "ASARCIK BELEDİYE BAŞKANLIĞI |  | 1 MEMUR ALACAK ( 1 Aralık - 3 Aralık)",
+   "kurum": "",
+   "last_seen": "2026-10-31",
+   "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
+   "detail_checked": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=5bcHJHT1JqDFOZ0akus7vhOPVK%2fK218XbzPPAy52v%2fLrDtf5Bygdsvl%2fnki0qL8irw1mLcXqL%2fWUKdWq5PVI0fJhk1ByQko8q6TuriIm331Z%2fXVJiHhGmp8dKuRs5Yz7",
+   "metin_len": 9316,
+   "metin_hash": "004df930aa17707cb9874af263b6fb2a8e7dac468bee9350f1b58f88b9c7e37f",
+   "p2": {
+    "v": 2,
+    "aday": false
+   },
+   "analiz": {
+    "kategori": "ILGISIZ",
+    "kanit": "Kadro Unvanı: Mimar",
+    "kurum": "Asarcık Belediye Başkanlığı",
+    "pozisyon": "Mimar",
+    "kadroSayisi": 1,
+    "basvuruBaslangic": "1 Aralık",
+    "basvuruBitis": "3 Aralık",
+    "degerlendirmeSekli": "KPSS + sözlü sınav",
+    "kpssDurumu": "Zorunlu",
+    "kpssTuru": "KPSS-P3 en az 70 puan",
+    "ekSinav": true,
+    "ekSinavDetay": "Sözlü sınav; KPSS puanına göre beş katı oranında aday çağrılır",
+    "ikametSarti": "Yok",
+    "ekSartlar": "En az B sınıfı sürücü belgesi",
+    "kisaOzet": "Asarcık Belediye Başkanlığı 1 memur (Mimar) alıyor; başvuru 1‑3 Aralık, KPSS‑P3 en az 70 puan ve sözlü sınav zorunlu, B sınıfı sürücü belgesi şart.",
+    "_model": "openai/gpt-oss-120b",
+    "_pv": 2,
+    "_kanit_ok": false
+   },
+   "bitti": true
+  },
+  "https://kamuilan.sbb.gov.tr/#sbb-162c34206b87": {
+   "first_seen": "2026-10-31",
+   "kaynak": "SBB Kamu İlan",
+   "baslik": "KARATAY BELEDİYE BAŞKANLIĞI |  | 9 MEMUR ALACAK ( 14 Aralık - 18 Aralık)",
+   "kurum": "",
+   "last_seen": "2026-10-31",
+   "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
+   "detail_checked": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=RvLAWtNPwulMMIbpNi321SiO7%2flwGl282b6U9sMMk97M42bOXQc7ewWARwvOcCWvdDEbXcRqaiHC83tKyLOMkvMrpB7PdYEL5SR2sfpv5JZxekUNZPcYyxucjAmNt6mc",
+   "metin_len": 9536,
+   "metin_hash": "4f22b6a2aaf570a06579cda57e77b9fff295135e97870615ca540fe41e5ea1e9",
+   "p2": {
+    "v": 2,
+    "aday": true,
+    "analiz": {
+     "kategori": "ILGISIZ",
+     "kanit": "Piyasa Araştırmaları ve Pazarlama önlisans programlarının birinden mezun olmak.",
+     "kurum": "Karatay Belediye Başkanlığı",
+     "pozisyon": "Zabıta Memuru",
+     "kadroSayisi": 9,
+     "bolumUygun": "Hayır (yalnız: Piyasa Araştırmaları ve Pazarlama önlisans programları)",
+     "engelliBilgi": "Yok",
+     "basvuruBaslangic": "14/12/2026",
+     "basvuruBitis": "18/12/2026",
+     "degerlendirmeSekli": "KPSS + sözlü ve uygulamalı sınav",
+     "kpssDurumu": "Zorunlu",
+     "kpssTuru": "KPSS (B) grubu en az 60 puan",
+     "ekSinav": true,
+     "ekSinavDetay": "Sözlü ve uygulamalı sınav; adaylar KPSS puanlarına göre beş katı oranında çağrılır",
+     "ikametSarti": "Belirtilmemiş",
+     "ekSartlar": "B sınıfı sürücü belgesi, erkeklerde en az 1.67 m, kadınlarda en az 1.60 m boy",
+     "kisaOzet": "Karatay Belediyesi 9 zabıta memuru alımı yapıyor; başvuru 14‑18 Aralık 2026 arasında, önlisans (pazarlama) mezunları ve KPSS (B) en az 60 puan şartı ile.",
+     "_model": "openai/gpt-oss-120b",
+     "_pv": 2,
+     "_kanit_ok": true
+    }
+   },
+   "analiz": {
+    "kategori": "ILGISIZ",
+    "kanit": "Pazarlama, Pazarlama ve Satış, Piyasa Araştırmaları ve Pazarlama önlisans programlarının birinden mezun olmak.",
+    "kurum": "Karatay Belediye Başkanlığı",
+    "pozisyon": "Zabıta Memuru",
+    "kadroSayisi": 9,
+    "basvuruBaslangic": "14/12/2026",
+    "basvuruBitis": "18/12/2026",
+    "degerlendirmeSekli": "KPSS + sözlü ve uygulamalı sınav",
+    "kpssDurumu": "Zorunlu",
+    "kpssTuru": "KPSS (B) grubu, en az 60 puan",
+    "ekSinav": true,
+    "ekSinavDetay": "Sözlü ve uygulamalı sınav; adayların KPSS puanına göre beş katı oranında çağrılır",
+    "ikametSarti": "Belirtilmemiş",
+    "ekSartlar": "Erkeklerde en az 1.67 m, kadınlarda en az 1.60 m boy, en az B sınıfı sürücü belgesi",
+    "kisaOzet": "Karatay Belediye Başkanlığı 9 adet zabıta memuru alımı yapacak. Başvuru 14‑18 Aralık 2026 arasında, KPSS (B) en az 60 puan ve sözlü‑uygulamalı sınav şartı var.",
+    "_model": "openai/gpt-oss-120b",
+    "_pv": 2,
+    "_kanit_ok": true
+   },
+   "bitti": true
+  },
+  "https://kamuilan.sbb.gov.tr/#sbb-23e9ade498cf": {
+   "first_seen": "2026-10-31",
+   "kaynak": "SBB Kamu İlan",
+   "baslik": "KARŞIYAKA (İZMİR) BELEDİYE BAŞKANLIĞI |  | 6 MEMUR ALACAK ( 30 Kasım - 2 Aralık)",
+   "kurum": "",
+   "last_seen": "2026-10-31",
+   "detail_level": "Okunamadı: dosya okunamadı",
+   "detail_checked": false,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=FYv9SWBCIzY2dPZTCITzJ13puoVZRjWK1K6lqf9Vk0uXAAlsPxsiSdY3f2f%2fR2d%2bvglXtjJICJS8zK7bR3TBGyJm75J51umjJRjBT2NU8i%2btfJfQ73wOxd094XLAkImR",
+   "bitti": true,
+   "sonuc": "SBB: DETAY OKUNAMADI",
+   "hata": "pdf-okunamadı; application/pdf; charset=utf-8; 273054 bayt"
+  },
+  "https://kamuilan.sbb.gov.tr/#sbb-89b042cc8eb0": {
+   "first_seen": "2026-10-31",
+   "kaynak": "SBB Kamu İlan",
+   "baslik": "İMAMOĞLU BELEDİYE BAŞKANLIĞI |  | 2 SüREKLİ İŞÇİ ALACAK ( 28 Ekim - 2 Kasım)",
+   "kurum": "",
+   "last_seen": "2026-10-31",
+   "detail_level": "Okunamadı: dosya okunamadı",
+   "detail_checked": false,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=fGktYG8faxVB%2bc%2b5zbVxquEP8XAqD9ZnBkLzqu9kMDg6j8VVkjeMbD3l9hXZR95GYRMJ6hF3tOTs%2fmrsnEx6xQqV4GukOsUsTzhUY3SQLKf0k9rp%2byYcXEisAjDdOUFk",
+   "bitti": true,
+   "sonuc": "SBB: DETAY OKUNAMADI",
+   "hata": "pdf-okunamadı; application/pdf; charset=utf-8; 1288119 bayt"
+  },
+  "https://kamuilan.sbb.gov.tr/#sbb-47872bc43d73": {
+   "first_seen": "2026-10-31",
+   "kaynak": "SBB Kamu İlan",
+   "baslik": "MARMARA ÜNİVERSİTESİ |  | 63 SÖZLEŞMELİ PERSONEL ALACAK ( 26 Ekim - 9 Kasım)",
+   "kurum": "",
+   "last_seen": "2026-10-31",
+   "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
+   "detail_checked": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=zkoYPy2XrDcR0MW1NoZibKeoQmyfTjRKa8G%2bruog5PZQhnEwYWYx8r0zNouWZennCo8GzWP8AHTPKHExX79uemlaQxepa0WtzoowVXFC1C67qW9XyZWG1Q%2bi6sMD9SQY",
+   "metin_len": 241,
+   "metin_hash": "5301dbac2491d5a162728c3d12462be38fa81beda21e03812d7815ab5f8182f1",
+   "p2": {
+    "v": 2,
+    "aday": false
+   },
+   "bitti": true,
+   "sonuc": "ADAY DEĞİL (anahtar kelime yok)"
+  },
+  "https://kamuilan.sbb.gov.tr/#sbb-6e1a044ed5a8": {
+   "first_seen": "2026-10-31",
+   "kaynak": "SBB Kamu İlan",
+   "baslik": "BERGAMA BELEDİYE BAŞKANLIĞI |  | 4 MEMUR ALACAK ( 9 Aralık - 11 Aralık)",
+   "kurum": "",
+   "last_seen": "2026-10-31",
+   "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
+   "detail_checked": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=WgYL8Li61INqFjWRi6qVJ%2bMly0HTNMKps3hJXvMcR3oHgoTn2G2ZTDIoIHrGBwEyIGfXlDggEZFbVYB21PyV3Vhn0neLFgjEYZEvzjRriMOgWDG1VGd%2fpOwYrjuf5%2f5Y",
+   "metin_len": 9038,
+   "metin_hash": "e615edfaf7a64d38e10fa19fd00e0ca488a12ae7d1d22935a2e8b4763a20fff4",
+   "p2": {
+    "v": 2,
+    "aday": false
+   },
+   "analiz": {
+    "kategori": "ILGISIZ",
+    "kanit": "Lisans düzeyinde eğitim veren kurumların ekonomi, iktisat, maliye bölümlerinin birinden mezun olmak",
+    "kurum": "Bergama Belediye Başkanlığı",
+    "pozisyon": "Memur",
+    "kadroSayisi": 4,
+    "basvuruBaslangic": "9 Aralık 2026",
+    "basvuruBitis": "11 Aralık 2026",
+    "degerlendirmeSekli": "KPSS + sözlü sınav",
+    "kpssDurumu": "Zorunlu",
+    "kpssTuru": "KPSS-P3 en az 80 puan",
+    "ekSinav": true,
+    "ekSinavDetay": "Sözlü sınav; kadro sayısının beş katı oranında aday sözlü sınava çağrılır",
+    "ikametSarti": "Yok",
+    "ekSartlar": "Ek bölüm şartı: ekonomi, iktisat, maliye, uluslararası ilişkiler, halkla ilişkiler ve tanıtım bölümlerinden mezun olmak",
+    "kisaOzet": "Bergama Belediye Başkanlığı 4 memur alımı yapıyor; başvuru 9‑11 Aralık 2026, KPSS‑P3 en az 80 puan ve sözlü sınavla değerlendirilecek.",
+    "_model": "openai/gpt-oss-120b",
+    "_pv": 2,
+    "_kanit_ok": true
+   },
+   "bitti": true
+  },
+  "https://kamuilan.sbb.gov.tr/#sbb-ee826676ee19": {
+   "first_seen": "2026-10-31",
+   "kaynak": "SBB Kamu İlan",
+   "baslik": "DOĞANYOL BELEDİYE BAŞKANLIĞI |  | İPTAL İLANI ( 2 Aralık - 4 Aralık)",
+   "kurum": "",
+   "last_seen": "2026-10-31",
+   "detail_level": "İlan detay sayfası",
+   "detail_checked": false,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=MU22MZyM2C69FQdYSie%2bdg8TuGJ0%2bZv3BlqgE%2bPQFmYjcaevz5cCSgQetAxSnBOZUVRVca0QAsM7kedg4HBX8rn51gCJJEQAPZCBHmrRq8lQUKcIIm0LbG3nHlXm54it",
+   "bitti": true,
+   "sonuc": "SBB: DETAY OKUNAMADI",
+   "hata": "ilgisiz başlık (iptal/düzeltme/subay vb.), okunmadı"
+  },
+  "https://kamuilan.sbb.gov.tr/#sbb-6cb262417259": {
+   "first_seen": "2026-10-31",
+   "kaynak": "SBB Kamu İlan",
+   "baslik": "TÜRKİYE ULUSLARARASI İSLAM, BİLİM VE TEKNOLOJİ ÜNİVERSİTESİ |  | 7 ÖĞRETİM ÜYESİ ALACAK ( 26 Ekim - 9 Kasım)",
+   "kurum": "",
+   "last_seen": "2026-10-31",
+   "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
+   "detail_checked": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=ar0DctGqod%2bQi1Nz3weJMUVMDvF9n%2fYpexNTZgFv2jp%2fm4h3%2brfaoJe5JiupADMmtMXzu5aElgCpAoGZ9jJbWK6K1Cr7z3KQ1Fcgd2nboG0fLHtqiduN9gg841WukHm6",
+   "metin_len": 5338,
+   "metin_hash": "b4a520c0c48940ec79be4dadde589cc384d80289e7cd2588272f6a2e9603656f",
+   "p2": {
+    "v": 2,
+    "aday": false
+   },
+   "bitti": true,
+   "sonuc": "ILGISIZ (akademik kadro)"
+  },
+  "https://kamuilan.sbb.gov.tr/#sbb-8b4a5e053aef": {
+   "first_seen": "2026-10-31",
+   "kaynak": "SBB Kamu İlan",
+   "baslik": "FIRAT ÜNİVERSİTESİ |  | 65 ÖĞRETİM ÜYESİ ALACAK ( 26 Ekim - 9 Kasım)",
+   "kurum": "",
+   "last_seen": "2026-10-31",
+   "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
+   "detail_checked": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=YGMR82vphIKTSHiMJl4hzKREGMkQyBkQ6E3iNsuc%2b9ieCf4M4h%2fwoRnZPMiCvr%2bu6lQWS%2bL%2f1QVgV6uGHEmCXluXQbQEx6s6FRuY4DvFNaQb8%2bN%2fdRmcedk%2fQSHjy%2f9n",
+   "metin_len": 25552,
+   "metin_hash": "31e736cc95b93ec22541ae1a028ed52df32f27c772895bfb242f0174ae053bb9",
+   "p2": {
+    "v": 2,
+    "aday": false
+   },
+   "bitti": true,
+   "sonuc": "ILGISIZ (akademik kadro)"
+  },
+  "https://kamuilan.sbb.gov.tr/#sbb-721df7c85643": {
+   "first_seen": "2026-10-31",
+   "kaynak": "SBB Kamu İlan",
+   "baslik": "FIRAT ÜNİVERSİTESİ |  | 15 ARAŞTIRMA GÖREVLİSİ ALACAK ( 26 Ekim - 10 Kasım)",
+   "kurum": "",
+   "last_seen": "2026-10-31",
+   "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
+   "detail_checked": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=TNQqguE0HQuvmvTebvIoeG0VRMl9HQHzpsm5j13s2iWTeRbWR6piSdHK1%2fBx69sEb%2badJwetaaGwvOJ1Nnm8WnAs%2bhSFxwfhHI2EzTWmEh9h62kKsIeebBmOr%2bFEkyCc",
+   "metin_len": 25552,
+   "metin_hash": "780faabd95ed632036499b6cfb4baba6e5261c9a0a16233fd2efd193d5082637",
+   "p2": {
+    "v": 2,
+    "aday": false
+   },
+   "bitti": true,
+   "sonuc": "ILGISIZ (akademik kadro)"
+  },
+  "https://kamuilan.sbb.gov.tr/#sbb-b7dc3ba6f613": {
+   "first_seen": "2026-10-31",
+   "kaynak": "SBB Kamu İlan",
+   "baslik": "FIRAT ÜNİVERSİTESİ |  | DÜZELTME İLANI ( 26 Ekim - 9 Kasım)",
+   "kurum": "",
+   "last_seen": "2026-10-31",
+   "detail_level": "İlan detay sayfası",
+   "detail_checked": false,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=HH0fLoKhqquqrrt1BFbc1zizTQ1liCH2SHoDKLLgmtqGc2ftohqgs2VTB35itSD%2bc%2fX80pBbbAC0tvrgB8VNIO2IJeTqDSwg4KqgHju7D6cZQ3FzdKrxMEyTyKSTPG98",
+   "bitti": true,
+   "sonuc": "SBB: DETAY OKUNAMADI",
+   "hata": "ilgisiz başlık (iptal/düzeltme/subay vb.), okunmadı"
+  },
+  "https://kamuilan.sbb.gov.tr/#sbb-c7c8b797b659": {
+   "first_seen": "2026-10-31",
+   "kaynak": "SBB Kamu İlan",
+   "baslik": "NEVŞEHİR HACI BEKTAŞ VELİ ÜNİVERSİTESİ |  | 21 ÖĞRETİM ÜYESİ ALACAK ( 26 Ekim - 9 Kasım)",
+   "kurum": "",
+   "last_seen": "2026-10-31",
+   "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
+   "detail_checked": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=0%2fOUAOiUu1w8gEI%2fOumVChn%2b2x8Yeq35m5ufymLITtaKd95Jh9O4k%2fRXlkRBc7CYtcM6Ac0c%2bQ1RqA7an%2fotw%2bz%2bQU%2f7bansxVpHz%2bOCX%2fq5id8b2DmV1iMeqLqrqaSB",
+   "metin_len": 16224,
+   "metin_hash": "3bc04d88b0c8c276f23b119b6114d97a5a8474fe26acf309d7784dc32cc32540",
+   "p2": {
+    "v": 2,
+    "aday": false
+   },
+   "bitti": true,
+   "sonuc": "ILGISIZ (akademik kadro)"
+  },
+  "https://kamuilan.sbb.gov.tr/#sbb-fa584db19910": {
+   "first_seen": "2026-10-31",
+   "kaynak": "SBB Kamu İlan",
+   "baslik": "DOKUZ EYLÜL ÜNİVERSİTESİ |  | 11 ÖĞRETİM ÜYESİ ALACAK ( 26 Ekim - 10 Kasım)",
+   "kurum": "",
+   "last_seen": "2026-10-31",
+   "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
+   "detail_checked": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=GZ%2fh5uyC7JEpBkV3mYyuYFWt5rmoEbdd7VYUgU%2b4JHRQW1H2D7HfzTIzC1FPb%2f7ACg%2fIarb%2fyw7CXd0JMmUT3K8AE9B9E0p9af4PYZkL1PTiEkpxTjmtx1BqiHtSniDA",
+   "metin_len": 5313,
+   "metin_hash": "deb60d50467b3f4409c7b3388f487143596bdcca241ba7d61c82e0ea8d7be409",
+   "p2": {
+    "v": 2,
+    "aday": false
+   },
+   "bitti": true,
+   "sonuc": "ILGISIZ (akademik kadro)"
+  },
+  "https://kamuilan.sbb.gov.tr/#sbb-75cf1fa1a945": {
+   "first_seen": "2026-10-31",
+   "kaynak": "SBB Kamu İlan",
+   "baslik": "DOKUZ EYLÜL ÜNİVERSİTESİ |  | 9 ÖĞRETİM ELEMANI ALACAK ( 26 Ekim - 10 Kasım)",
+   "kurum": "",
+   "last_seen": "2026-10-31",
+   "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
+   "detail_checked": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=C44ecnGEYM0o3rIXOaO2mmdjQzivZ0JuA96JHi8xDcZ1Mj0HDcqvPMqhYjRl2cAd5Na8L3qcesW2JrV91DowQq8pirloIo7yZek2wzRkx%2f3pH%2faLGGeUmD6vJfk5QKjt",
+   "metin_len": 5535,
+   "metin_hash": "7580b8029f1de6efefab98a2202d7cede04bedf3f32030707ee1fe48ab5a1b3e",
+   "p2": {
+    "v": 2,
+    "aday": false
+   },
+   "bitti": true,
+   "sonuc": "ILGISIZ (akademik kadro)"
+  },
+  "https://kamuilan.sbb.gov.tr/#sbb-4af1d9c9404a": {
+   "first_seen": "2026-10-31",
+   "kaynak": "SBB Kamu İlan",
+   "baslik": "ANKARA HACI BAYRAM VELİ ÜNİVERSİTESİ |  | 7 ÖĞRETİM ELEMANI ALACAK ( 26 Ekim - 9 Kasım)",
+   "kurum": "",
+   "last_seen": "2026-10-31",
+   "detail_level": "SBB ilan dosyası (pdf) (tam metin)",
+   "detail_checked": true,
+   "url_gercek": "https://kamuilan.sbb.gov.tr/ilanDetay.aspx?kod=%2fO4Q%2fTQMJrCOK9VNBaxgDo8xeOG6VDXFQgznQI%2b9MfNcWZQK7jkjDzE1qV%2bEtafYZE2SVbNsMlYdjjyrVayaZHk%2fMVbKA4bu6ThOZWxQjgvY0O58q50BOy%2bgIQcwHGVX",
+   "metin_len": 7878,
+   "metin_hash": "3e048622ab312101245dedb905621542105b141c4d731a5807f1c1a30d418eae",
    "p2": {
     "v": 2,
     "aday": false

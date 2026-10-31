@@ -508,3 +508,10 @@ navigating to ""https://www.resmigaz — önceki günlerden 9 ilan taşındı (k
 2026-10-31,10:05:44,ÇŞB Yerel Yönetimler,35,35,0,OK,"sitede toplam: 35, okunan: 35 (yalnız ilan/alım başlıklı duyurular; 3 sayfa gezildi)"
 2026-10-31,10:05:58,İŞKUR (e-şube),1,1,0,OK,"sitede toplam: 1, okunan: 1 (Kamu seçilerek arandı; 1 sayfa gezildi, sonraki sayfa yok)"
 2026-10-31,10:06:07,Memurlar.net İlan,58,58,17,KISMİ (tamlık doğrulanmadı),8/8 kategori sayfası gezildi (tam ilan metni); sitede toplam sayısı bilinmiyor (yapı doğrulanmadı)
+2026-10-31,16:43:30,İlan.gov.tr,123,123,13,OK,"sitede toplam: 123, okunan: 123, sayfalama: currentPage"
+2026-10-31,16:44:08,Resmî Gazete,25,5,0,ŞÜPHELİ (eksik okundu),"sitede toplam: 25, okunan: 23, personel ilanı: 5, PDF bulma: dizin linkleri — okunamayan PDF: 2 (taranmış görüntü olabilir; elle kontrol listesinde)"
+2026-10-31,16:44:36,Kariyer Kapısı,20,20,8,OK,"IlanDetay linkleri doğrudan bulundu; sitede toplam: 20, okunan: 20, harici siteye giden (İlana Git): 1"
+2026-10-31,16:44:45,SBB Kamu İlan,122,107,27,KISMİ (bazı ilanların içeriği okunamadı),"sitede toplam: 95, okunan: 122 (ham bağlantı: 122, tekrarlar elendi) — detay metni okunan: 107/110 (+12 ilgisiz başlık atlandı) — okunamayanlar: pdf-okunamadı; application/pdf; charset=utf-8; 273 ×1; pdf-okunamadı; application/pdf; charset=utf-8; 128 ×1; pdf-okunamadı; application/pdf; charset=utf-8; 109 ×1"
+2026-10-31,16:46:39,ÇŞB Yerel Yönetimler,35,35,0,OK,"sitede toplam: 35, okunan: 35 (yalnız ilan/alım başlıklı duyurular; 3 sayfa gezildi)"
+2026-10-31,16:46:53,İŞKUR (e-şube),1,1,0,OK,"sitede toplam: 1, okunan: 1 (Kamu seçilerek arandı; 1 sayfa gezildi, sonraki sayfa yok)"
+2026-10-31,16:47:03,Memurlar.net İlan,58,58,17,KISMİ (tamlık doğrulanmadı),8/8 kategori sayfası gezildi (tam ilan metni); sitede toplam sayısı bilinmiyor (yapı doğrulanmadı)
