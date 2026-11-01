@@ -1,0 +1,19 @@
+{
+  "ben": {
+    "name": "Ben",
+    "education": "Bilgisayar/Yazılım Mühendisliği",
+    "kpss": 71,
+    "kpss_turu": "P3",
+    "yas": 26,
+    "boy": 173,
+    "kilo": 105,
+    "tecrube_gun": 150
+  },
+  "sevgilim": {
+    "name": "Sevgilim",
+    "education": "Önlisans / Anestezi / Engelli kadro",
+    "kpss_onlisans": 66,
+    "kpss_turu": "P93",
+    "ekpss": 62
+  }
+}

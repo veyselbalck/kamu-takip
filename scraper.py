@@ -3,7 +3,8 @@ KAMU İLAN TAKİP SİSTEMİ v3 — Playwright + Groq
 ============================================================
 AKIŞ
   1) Her kaynağın ilan listesi (sayfalama dahil) çekilir.
-  2) Görülmemiş her ilanın detay sayfası açılıp tam metni okunur.
+  2) Veritabanında metni/sonucu olmayan ilanların detayları okunur; bilinen
+     ilanlar kayıtlı metin ve analizleriyle tekrar açılmadan işlenir.
   3) Kademeli analiz (Groq ücretsiz kotasını korumak için):
        a) ön eleme  : küçük/hızlı model -> BOLUM / TUM_LISANS / ILGISIZ
        b) ayrıntı   : büyük model -> tarihler, KPSS, ikamet, ek şartlar...
@@ -21,18 +22,21 @@ DAYANIKLILIK
   - Süre sınırı MAX_RUNTIME_MIN; yetişmeyenler ertesi gün devam eder.
   - Groq kotası biterse kalanlar "beklemede" kalır, ertesi gün işlenir.
   - Bir kaynak çökerse diğerleri devam eder.
+  - İlanlar, profil analizleri ve kaynak çalışma özetleri SQLite'ta saklanır.
 """
 import os
 import re
 import base64
 import csv
 import json
+import sqlite3
 import time
 import io
 import zipfile
 import hashlib
 import html as htmllib
 import datetime
+from contextlib import closing
 from zoneinfo import ZoneInfo
 from urllib.parse import urljoin, urlparse
 
@@ -76,11 +80,23 @@ GROQ_ADAY_MODELLER = ["meta-llama/llama-4-maverick-17b-128e-instruct", "meta-lla
                       "moonshotai/kimi-k2-instruct"]
 GROQ_MODEL_KONTROL = {"yapildi": False}
 
-# Kişisel profil (uygunluk filtresi için). Değişirse buradan güncelle.
-# İkinci profil (önlisans / engelli): KPSS önlisans (P93) ve EKPSS puanları. İlanda istenen en düşük puan bunlardan
-# yüksekse ilan "uygun görünmediği için gizlenen" listesine düşer.
-PROFIL2 = {"kpss_onlisans": 66, "kpss_turu": "P93", "ekpss": 62}
-PROFIL = {"kpss": 71, "kpss_turu": "P3", "yas": 26, "boy": 173, "kilo": 105, "tecrube_gun": 150}   # tecrübe: yalnız ~150 gün staj
+def load_profiles():
+    with open(PROFILE_PATH, encoding="utf-8") as f:
+        profiles = json.load(f)
+    required = {
+        "ben": ("name", "education", "kpss", "kpss_turu", "yas", "boy", "kilo", "tecrube_gun"),
+        "sevgilim": ("name", "education", "kpss_onlisans", "kpss_turu", "ekpss"),
+    }
+    for profile_id, keys in required.items():
+        profile = profiles.get(profile_id)
+        if not isinstance(profile, dict) or any(key not in profile for key in keys):
+            raise ValueError(f"{PROFILE_PATH} içinde '{profile_id}' profili eksik veya geçersiz.")
+    return profiles
+
+
+PROFILES = load_profiles()
+PROFIL = PROFILES["ben"]
+PROFIL2 = PROFILES["sevgilim"]
 DIAGNOSE = os.environ.get("DIAGNOSE", "1") == "1"
 
 MAX_RUNTIME_MIN = 300
@@ -88,6 +104,8 @@ MAX_LINKS_PER_SOURCE = 400
 GROQ_SLEEP_SEC = 2.5
 STATE_VERSION = 2
 STATE_PATH = "data/state.json"
+DATABASE_PATH = "data/ilanlar.sqlite3"
+PROFILE_PATH = "data/profiles.json"
 LOG_PATH = "logs/log.csv"
 
 TR_NOW = datetime.datetime.now(ZoneInfo("Europe/Istanbul"))
@@ -146,22 +164,176 @@ def request_with_retry(method, url, retries=3, timeout=60, **kwargs):
 
 
 # ---------------- STATE ----------------
+def connect_database():
+    conn = sqlite3.connect(DATABASE_PATH, timeout=30)
+    conn.execute(
+        """CREATE TABLE IF NOT EXISTS ads (
+            url TEXT PRIMARY KEY,
+            source TEXT,
+            title TEXT,
+            institution TEXT,
+            first_seen TEXT,
+            last_seen TEXT,
+            content TEXT,
+            secondary_content TEXT,
+            content_hash TEXT,
+            detail_checked INTEGER NOT NULL DEFAULT 0,
+            result TEXT,
+            record_json TEXT NOT NULL
+        )"""
+    )
+    conn.execute("CREATE INDEX IF NOT EXISTS idx_ads_source ON ads(source)")
+    conn.execute("CREATE INDEX IF NOT EXISTS idx_ads_last_seen ON ads(last_seen)")
+    conn.execute(
+        """CREATE TABLE IF NOT EXISTS scrape_runs (
+            run_id TEXT PRIMARY KEY,
+            started_at TEXT NOT NULL,
+            total_ads INTEGER NOT NULL,
+            new_ads INTEGER NOT NULL,
+            details_read INTEGER NOT NULL,
+            details_reused INTEGER NOT NULL,
+            detail_errors INTEGER NOT NULL,
+            analysis_errors INTEGER NOT NULL
+        )"""
+    )
+    conn.execute(
+        """CREATE TABLE IF NOT EXISTS source_runs (
+            run_id TEXT NOT NULL,
+            source TEXT NOT NULL,
+            raw_count INTEGER NOT NULL,
+            listed_count INTEGER NOT NULL,
+            details_read INTEGER NOT NULL,
+            details_reused INTEGER NOT NULL,
+            relevant_count INTEGER NOT NULL,
+            status TEXT NOT NULL,
+            note TEXT NOT NULL,
+            PRIMARY KEY (run_id, source),
+            FOREIGN KEY (run_id) REFERENCES scrape_runs(run_id)
+        )"""
+    )
+    return conn
+
+
 def load_state():
+    state = {"version": STATE_VERSION, "first_run": TODAY, "ads": {}}
+    state_error = None
     if os.path.isfile(STATE_PATH):
         try:
             with open(STATE_PATH, encoding="utf-8") as f:
                 st = json.load(f)
             if st.get("version") == STATE_VERSION:
-                return st
-            print("State şeması eski, sıfırlanıyor.")
-        except Exception as e:
-            print("State okunamadı, sıfırlanıyor:", e)
-    return {"version": STATE_VERSION, "first_run": TODAY, "ads": {}}
+                state = st
+            else:
+                print("State şeması eski; SQLite kayıtlarından devam edilecek.")
+        except (OSError, json.JSONDecodeError) as e:
+            state_error = e
+            print("State okunamadı; SQLite kayıtlarından kurtarılmaya çalışılıyor:", e)
+
+    with closing(connect_database()) as conn:
+        rows = conn.execute("SELECT url, record_json, content, secondary_content FROM ads").fetchall()
+    if state_error and not rows:
+        raise RuntimeError("State dosyası okunamadı ve kurtarılabilecek SQLite kaydı yok.") from state_error
+    for url, record_json, content, secondary_content in rows:
+        record = json.loads(record_json)
+        if content is not None:
+            record["metin"] = content
+        if secondary_content is not None:
+            record["p2metin"] = secondary_content
+        current = state["ads"].get(url)
+        if current:
+            record.update(current)
+            if content is not None and not current.get("metin"):
+                record["metin"] = content
+            if secondary_content is not None and not current.get("p2metin"):
+                record["p2metin"] = secondary_content
+        state["ads"][url] = record
+    return state
 
 
 def save_state(state):
-    with open(STATE_PATH, "w", encoding="utf-8") as f:
-        json.dump(state, f, ensure_ascii=False, indent=1)
+    with closing(connect_database()) as conn, conn:
+        conn.executemany(
+            """INSERT INTO ads
+               (url, source, title, institution, first_seen, last_seen, content, secondary_content,
+                content_hash, detail_checked, result, record_json)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+               ON CONFLICT(url) DO UPDATE SET
+                 source=excluded.source, title=excluded.title, institution=excluded.institution,
+                 first_seen=excluded.first_seen, last_seen=excluded.last_seen, content=excluded.content,
+                 secondary_content=excluded.secondary_content, content_hash=excluded.content_hash,
+                 detail_checked=excluded.detail_checked, result=excluded.result, record_json=excluded.record_json""",
+            (
+                (
+                    url,
+                    ad.get("kaynak"),
+                    ad.get("baslik"),
+                    ad.get("kurum"),
+                    ad.get("first_seen"),
+                    ad.get("last_seen"),
+                    ad.get("metin"),
+                    ad.get("p2metin"),
+                    ad.get("metin_hash"),
+                    int(bool(ad.get("detail_checked"))),
+                    ad.get("sonuc"),
+                    json.dumps({k: v for k, v in ad.items() if k not in ("metin", "p2metin")},
+                               ensure_ascii=False),
+                )
+                for url, ad in state["ads"].items()
+            ),
+        )
+
+    state_without_text = dict(state)
+    state_without_text["ads"] = {
+        url: {key: value for key, value in ad.items() if key not in ("metin", "p2metin")}
+        for url, ad in state["ads"].items()
+    }
+    temporary_path = STATE_PATH + ".tmp"
+    with open(temporary_path, "w", encoding="utf-8") as f:
+        json.dump(state_without_text, f, ensure_ascii=False, indent=1)
+    os.replace(temporary_path, STATE_PATH)
+
+
+def save_run_history(source_batches, log_rows, metrics):
+    run_id = TR_NOW.isoformat()
+    log_by_name = {row[1]: row for row in log_rows}
+    with closing(connect_database()) as conn, conn:
+        conn.execute(
+            """INSERT INTO scrape_runs
+               (run_id, started_at, total_ads, new_ads, details_read, details_reused, detail_errors, analysis_errors)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
+            (run_id, TR_NOW.isoformat(), metrics["total_ads"], metrics["new_ads"],
+             metrics["details_read"], metrics["details_reused"], metrics["detail_errors"],
+             metrics["analysis_errors"]),
+        )
+        conn.executemany(
+            """INSERT INTO source_runs
+               (run_id, source, raw_count, listed_count, details_read, details_reused,
+                relevant_count, status, note)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+            (
+                (
+                    run_id,
+                    batch["name"],
+                    batch["ham"],
+                    len(batch["entries"]),
+                    batch.get("details_read", 0),
+                    batch.get("details_reused", 0),
+                    log_by_name[batch["name"]][4],
+                    log_by_name[batch["name"]][5],
+                    batch["note"],
+                )
+                for batch in source_batches
+            ),
+        )
+
+
+def kayitli_analiz_var(ad):
+    if ad.get("analiz") or (ad.get("p2") or {}).get("analiz"):
+        return True
+    sonuc = str(ad.get("sonuc") or "")
+    return bool(ad.get("bitti") and sonuc and not sonuc.startswith(
+        ("METİN KISA — OKUNAMADI", "DETAY OKUNAMADI", "DETAY LİNKİ", "SBB:")
+    ))
 
 
 # ---------------- SAYFA YARDIMCILARI ----------------
@@ -358,7 +530,8 @@ def _rg_pdf_metni(url):
 RG_OKUNAMAYAN = []
 
 
-def fetch_resmi_gazete(page):
+def fetch_resmi_gazete(page, known_ads=None):
+    known_ads = known_ads or {}
     RG_OKUNAMAYAN.clear()
     RG_OCR.clear()
     d = TR_NOW.date()
@@ -393,8 +566,19 @@ def fetch_resmi_gazete(page):
             if bos >= 3:
                 break
 
-    entries, okunan = [], 0
+    entries, okunan, cached_count = [], 0, 0
     for u in sorted(pdfs, key=lambda x: int(re.search(r"-4-(\d+)\.pdf", x).group(1))):
+        cached = known_ads.get(u)
+        if cached and (cached.get("metin") or cached.get("p2metin") or kayitli_analiz_var(cached)):
+            entries.append({
+                "title": cached.get("baslik") or u.rsplit("/", 1)[-1],
+                "link": u,
+                "kurum": cached.get("kurum", ""),
+                "detail_level": cached.get("detail_level", "Resmî Gazete ilan PDF'si (tam metin)"),
+            })
+            okunan += 1
+            cached_count += 1
+            continue
         txt = None
         for deneme in range(3):
             try:
@@ -420,6 +604,8 @@ def fetch_resmi_gazete(page):
         note += f" — taranmış PDF Gemini ile okundu: {len(RG_OCR)}"
     if RG_OKUNAMAYAN:
         note += f" — okunamayan PDF: {len(RG_OKUNAMAYAN)} (taranmış görüntü olabilir; elle kontrol listesinde)"
+    if cached_count:
+        note += f" — veritabanından tekrar kullanılan: {cached_count}"
     return entries, len(pdfs), note
 
 
@@ -702,7 +888,8 @@ def sbb_detay_oku(ctx, url, sira):
             pass
 
 
-def fetch_sbb_kamu_ilan(page):
+def fetch_sbb_kamu_ilan(page, known_ads=None):
+    known_ads = known_ads or {}
     url = "https://kamuilan.sbb.gov.tr/"
     goto_safe(page, url, settle=4)
     body = (page.inner_text("body") or "").lower()
@@ -728,7 +915,7 @@ def fetch_sbb_kamu_ilan(page):
     # Her ilan, liste oturumu açıkken okunur: bağlantı çoğu zaman sayfa değil ilan DOSYASI (PDF/Word/görsel) olarak iner.
     # Kayıt anahtarı başlıktan türetilir (aynı ilan her gün aynı kayıt); gerçek bağlantı kartta kullanılır.
     SBB_DEBUG_SAYAC["n"] = 0
-    baslangic, ok, atlanan, hatalar, engel = time.time(), 0, 0, {}, False
+    baslangic, ok, cached_count, atlanan, hatalar, engel = time.time(), 0, 0, 0, {}, False
     for e in tekil[:MAX_LINKS_PER_SOURCE]:
         gercek = e["link"]
         e["link"] = sbb_kalici_anahtar(e["title"])
@@ -737,6 +924,11 @@ def fetch_sbb_kamu_ilan(page):
         if SBB_ATLA.search(ilan or ""):
             e["hata"] = "ilgisiz başlık (iptal/düzeltme/subay vb.), okunmadı"
             atlanan += 1
+            continue
+        cached = known_ads.get(e["link"])
+        if cached and (cached.get("metin") or cached.get("p2metin") or cached.get("metin_hash")):
+            e["detail_level"] = cached.get("detail_level", "SBB detay sayfası (tam metin)")
+            cached_count += 1
             continue
         if engel:
             e["hata"] = "SBB coğrafi engeli"
@@ -764,6 +956,8 @@ def fetch_sbb_kamu_ilan(page):
                 engel = True
         time.sleep(0.6)
     note += f" — detay metni okunan: {ok}/{len(tekil[:MAX_LINKS_PER_SOURCE]) - atlanan}"
+    if cached_count:
+        note += f" — veritabanından tekrar kullanılan: {cached_count}"
     if atlanan:
         note += f" (+{atlanan} ilgisiz başlık atlandı)"
     if hatalar:
@@ -1119,8 +1313,9 @@ def tecrube_yili(a):
     return 3 if re.search(r"kıdemli", metin, re.I) else 0
 
 
-def uygunluk(a):
+def uygunluk(a, profile=None):
     """Kişisel profile göre kesin elenen ilan için neden (yoksa None). Emin olunmayan durumda None döner."""
+    profile = profile or PROFIL
     kt = str(a.get("kpssTuru") or "")
     ek = " ".join(str(a.get(x) or "") for x in ("ekSartlar", "kisaOzet", "kpssTuru"))
     if re.search(r"\(\s*[BC]\s*\)\s*grubu|\b[BC]\s*grubu", kt, re.I):
@@ -1128,20 +1323,20 @@ def uygunluk(a):
     m = re.search(r"(?:en az|asgari|minimum)\s*(\d{2,3})(?:[.,]\d+)?|(\d{2,3})(?:[.,]\d+)?\s*(?:puan|ve üzeri|ve üstü|ve yukarı)", kt, re.I)
     if m:
         puan = int(m.group(1) or m.group(2))
-        if 40 <= puan <= 100 and puan > PROFIL["kpss"]:
-            return f"KPSS puanın ({PROFIL['kpss']}) yetmez — en az {puan} isteniyor"
+        if 40 <= puan <= 100 and puan > profile["kpss"]:
+            return f"KPSS puanın ({profile['kpss']}) yetmez — en az {puan} isteniyor"
     turler = set(re.findall(r"P\s*-?\s*(\d{1,2})\b", kt))
-    if turler and PROFIL["kpss_turu"].lstrip("P") not in turler:
-        return (f"puan türün (KPSS-{PROFIL['kpss_turu']}) istenen türler arasında yok "
+    if turler and profile["kpss_turu"].lstrip("P") not in turler:
+        return (f"puan türün (KPSS-{profile['kpss_turu']}) istenen türler arasında yok "
                 f"({', '.join('P' + t for t in sorted(turler, key=int))})")
     bk = re.search(r"boy[\s\-‑–]*kilo[^.;]{0,40}?[±+]\s*/?-?\s*(\d{1,2})\s*kg", ek, re.I)
-    if bk and abs(PROFIL["kilo"] - (PROFIL["boy"] - 100)) > int(bk.group(1)):
-        return f"boy-kilo şartı (±{bk.group(1)} kg) — {PROFIL['boy']} cm için ideal ~{PROFIL['boy']-100} kg"
+    if bk and abs(profile["kilo"] - (profile["boy"] - 100)) > int(bk.group(1)):
+        return f"boy-kilo şartı (±{bk.group(1)} kg) — {profile['boy']} cm için ideal ~{profile['boy']-100} kg"
     ty = tecrube_yili(a)
     if ty >= 1:
-        return f"{ty}+ yıl mesleki tecrübe şartı (sende ~{PROFIL['tecrube_gun']} gün staj var)"
+        return f"{ty}+ yıl mesleki tecrübe şartı (sende ~{profile['tecrube_gun']} gün staj var)"
     y = re.search(r"(\d{2})\s*yaş\w*\s+(?:\w+\s+){0,2}?(?:doldurmamış|aşmamış)", ek, re.I)
-    if y and PROFIL["yas"] >= int(y.group(1)):
+    if y and profile["yas"] >= int(y.group(1)):
         return f"yaş sınırı ({y.group(1)}) aşılmış"
     return None
 
@@ -1648,10 +1843,11 @@ def _puan_esikleri(metin):
     return out
 
 
-def profil2_kontrol(a):
+def profil2_kontrol(a, profile=None):
     """İkinci profil puan kontrolü -> (gizleme_nedeni | None, puan_notu, uyari).
     Yalnız ilanda açıkça yazan en düşük puan eşiğine bakılır; eşik yoksa elenmez."""
-    kp, ek = PROFIL2["kpss_onlisans"], PROFIL2["ekpss"]
+    profile = profile or PROFIL2
+    kp, ek = profile["kpss_onlisans"], profile["ekpss"]
     metin = " ; ".join(str(a.get(x) or "") for x in ("kpssTuru", "degerlendirmeSekli", "engelliBilgi"))
     esikler = _puan_esikleri(metin)
     kp_l = [v for v, e in esikler if not e]
@@ -1850,7 +2046,7 @@ pre{white-space:pre-wrap;background:#fff;padding:8px;border:1px solid #ddd;font-
 
 
 def build_report(bolum, tum, log_rows, yeni_sayisi, okunanlar, groq_notu, dolmus=(), elle=(), yetmeyen=(),
-                 butunluk=(), denetim=None):
+                 butunluk=(), denetim=None, run_metrics=None):
     def section(items):
         if not items:
             return "<p>Şu an bu kategoride aktif ilan bulunamadı.</p>"
@@ -1931,14 +2127,25 @@ def build_report(bolum, tum, log_rows, yeni_sayisi, okunanlar, groq_notu, dolmus
             f' — {E(a.get("kurum"))} (son gün: {a["_bitis"].strftime("%d.%m.%Y")})</li>' for a in dolmus)
         dolmus_html = (f'<div class="box"><details><summary><b>⌛ Süresi dolmuş, gizlenen ilanlar '
                        f'({len(dolmus)})</b></summary><ul>{satirlar}</ul></details></div>')
+    metrics_html = ""
+    if run_metrics:
+        metrics_html = (
+            '<div class="box"><b>Bu çalıştırma:</b> '
+            f'{run_metrics["total_ads"]} ilan veritabanında · {run_metrics["new_ads"]} yeni kayıt · '
+            f'{run_metrics["details_read"]} ayrıntı yeni okundu · '
+            f'{run_metrics["details_reused"]} kayıt/metin önbellekten kullanıldı · '
+            f'{run_metrics["detail_errors"]} ayrıntı okuma hatası · '
+            f'{run_metrics["analysis_errors"]} analiz hatası</div>'
+        )
     return f"""<!DOCTYPE html><html lang="tr"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Günlük Kamu İlan Raporu</title><style>{STYLE}</style></head><body>
 <h1>📋 Günlük Kamu İlan Raporu — {TR_NOW.strftime('%d.%m.%Y %H:%M')}</h1>
 <p>Bugün yeni eklenen ilgili ilan: <b>{yeni_sayisi}</b> {E(groq_notu)}</p>
-<h2>🎯 Bölümüme Özel (Bilgisayar/Yazılım Mühendisliği) — {len(bolum)} ilan</h2>
+{metrics_html}
+<h2>🎯 {E(PROFIL["name"])} — {E(PROFIL["education"])} — {len(bolum)} ilan</h2>
 {section(bolum)}
-<h2>🎓 Tüm Lisans Mezunlarına Açık — {len(tum_n)} ilan</h2>
+<h2>🎓 {E(PROFIL["name"])} için tüm lisans mezunlarına açık — {len(tum_n)} ilan</h2>
 {section(tum_n)}
 {fiz_html}
 {elle_html}
@@ -2013,7 +2220,7 @@ def p2_rapor(ads, bugun, state):
         a.update({"link": k.get("url_gercek") or key, "_kaynak": k.get("kaynak"), "_baslik": k.get("baslik"), "_p2": True,
                   "_bitis": bitis, "_ilk": k.get("first_seen")})
         neden = dogrula2(an, k.get("baslik", ""))
-        p_neden, a["_puan_notu"], a["_puan_uyari"] = profil2_kontrol(an)
+        p_neden, a["_puan_notu"], a["_puan_uyari"] = profil2_kontrol(an, PROFIL2)
         neden = neden or p_neden
         if neden:
             a["_uygunsuz"] = neden
@@ -2045,7 +2252,7 @@ def p2_rapor(ads, bugun, state):
     return gruplar, dolmus, elle[:40], bekleyen
 
 
-def build_report2(gruplar, dolmus, elle, bekleyen, groq_notu):
+def build_report2(gruplar, dolmus, elle, bekleyen, groq_notu, run_metrics=None):
     def section(items):
         if not items:
             return "<p>Şu an bu kategoride aktif ilan bulunamadı.</p>"
@@ -2077,12 +2284,23 @@ def build_report2(gruplar, dolmus, elle, bekleyen, groq_notu):
         dolmus_html = (f'<div class="box"><details><summary><b>⌛ Süresi dolmuş, gizlenen ilanlar ({len(dolmus)})'
                        f'</b></summary><ul>{satir}</ul></details></div>')
     bekle = f" — ⏳ {bekleyen} ilan analiz kuyruğunda (sonraki çalıştırmalarda işlenecek)" if bekleyen else ""
+    metrics_html = ""
+    if run_metrics:
+        metrics_html = (
+            '<div class="box"><b>Bu çalıştırma:</b> '
+            f'{run_metrics["total_ads"]} ilan veritabanında · {run_metrics["new_ads"]} yeni kayıt · '
+            f'{run_metrics["details_read"]} ayrıntı yeni okundu · '
+            f'{run_metrics["details_reused"]} kayıt/metin önbellekten kullanıldı · '
+            f'{run_metrics["detail_errors"]} ayrıntı okuma hatası · '
+            f'{run_metrics["analysis_errors"]} analiz hatası</div>'
+        )
     return f"""<!DOCTYPE html><html lang="tr"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Önlisans ve Engelli Kadro İlanları</title><style>{STYLE}</style></head><body>
-<h1>♿ Önlisans &amp; Engelli Kadro İlanları — {TR_NOW.strftime('%d.%m.%Y %H:%M')}</h1>
+<h1>♿ {E(PROFIL2["name"])} — {E(PROFIL2["education"])} İlanları — {TR_NOW.strftime('%d.%m.%Y %H:%M')}</h1>
 <p><a href="index.html">← Ana rapora dön</a> · Bugün yeni eklenen ilgili ilan: <b>{yeni}</b>{E(bekle)}</p>
-<p style="font-size:12px;color:#555">Profil: KPSS önlisans <b>{PROFIL2["kpss_onlisans"]}</b> puan, EKPSS <b>{PROFIL2["ekpss"]}</b> puan.
+{metrics_html}
+<p style="font-size:12px;color:#555">Profil: KPSS önlisans <b>{PROFIL2["kpss_onlisans"]}</b> puan ({E(PROFIL2["kpss_turu"])}), EKPSS <b>{PROFIL2["ekpss"]}</b> puan.
 İlanda açıkça yazan en düşük puan bunlardan yüksekse ilan gizlenir (nedeniyle birlikte alttaki listede durur); puan şartı yazmayan ilanlar elenmez.
 Sıralama: son başvuru tarihi.
 Aynı ilanlar ana kaynaklardan (İlan.gov.tr, Resmî Gazete, Kariyer Kapısı, ÇŞB, İŞKUR, Memurlar.net) taranır.</p>
@@ -2193,6 +2411,15 @@ def main():
     state = load_state()
     ads = state["ads"]
     log_rows, bugun = [], set()
+    fresh_content_keys = set()
+    run_metrics = {
+        "total_ads": 0,
+        "new_ads": 0,
+        "details_read": 0,
+        "details_reused": 0,
+        "detail_errors": 0,
+        "analysis_errors": 0,
+    }
 
     def on_resp(resp):
         if not CAPTURE["on"]:
@@ -2231,7 +2458,10 @@ def main():
             entries, ham, note, son_hata = [], 0, "", None
             for deneme in range(1, 4):          # geçici ağ hatalarına karşı 3 deneme
                 try:
-                    entries, ham, note = fn(list_page)
+                    if fn in (fetch_resmi_gazete, fetch_sbb_kamu_ilan):
+                        entries, ham, note = fn(list_page, ads)
+                    else:
+                        entries, ham, note = fn(list_page)
                     son_hata = None
                     if deneme > 1:
                         note += f" (deneme {deneme}'de başarılı)"
@@ -2247,21 +2477,27 @@ def main():
             CAPTURE["on"] = False
             snapshot(list_page, idx, name, note)
             source_batches.append({"idx": idx, "name": name, "entries": entries,
-                                  "ham": ham, "note": note, "saat": saat})
+                                  "ham": ham, "note": note, "saat": saat,
+                                  "details_read": 0, "details_reused": 0})
             for e in entries:
                 key = e["link"]
                 bugun.add(key)
-                k = ads.get(key) or {"first_seen": TODAY, "kaynak": name,
-                                     "baslik": e.get("title", ""), "kurum": e.get("kurum", "")}
+                k = ads.get(key)
+                if k is None:
+                    k = {"first_seen": TODAY, "kaynak": name,
+                         "baslik": e.get("title", ""), "kurum": e.get("kurum", "")}
+                    run_metrics["new_ads"] += 1
                 k.update(last_seen=TODAY, kaynak=name, baslik=e.get("title", k.get("baslik", "")))
                 k["detail_level"] = e.get("detail_level", "İlan detay sayfası")
-                k["detail_checked"] = False
                 if e.get("kurum"):
                     k["kurum"] = e["kurum"]
                 if e.get("url_gercek"):
                     k["url_gercek"] = e["url_gercek"]
-                if e.get("content") and not (k.get("bitti") or k.get("analiz")):
+                if e.get("content") and not k.get("metin"):
                     k["metin"] = e["content"][:8000]
+                    fresh_content_keys.add(key)
+                k["detail_checked"] = bool(k.get("metin") or k.get("p2metin") or kayitli_analiz_var(k)) or (
+                    name == SBB_ADI and bool(k.get("metin_hash")))
                 ads[key] = k
             save_state(state)
 
@@ -2269,35 +2505,54 @@ def main():
         for batch in source_batches:
             idx, name, entries = batch["idx"], batch["name"], batch["entries"]
             okunan = ilgili = 0
+            detail_reads = detail_reused = 0
             for e in entries:
                 key = e["link"]
                 k = ads.get(key)
                 baslik = e.get("title", "")
                 if zaman_doldu():
                     continue
-                if e.get("detail_level", "").startswith("Satır düzeyi"):
+                if (e.get("detail_level", "").startswith("Satır düzeyi")
+                        and not (k.get("metin") or k.get("p2metin") or kayitli_analiz_var(k))):
                     k = ads[key]
                     k.update(detail_checked=False, sonuc="DETAY LİNKİ BULUNAMADI")
+                    run_metrics["detail_errors"] += 1
                     continue
-                if name == SBB_ADI and not e.get("content"):
+                if name == SBB_ADI and not e.get("content") and not (k.get("metin") or k.get("p2metin")):
                     k = k or {"first_seen": TODAY, "kaynak": name, "baslik": baslik}
                     if k.get("metin_hash"):                        # önceki günlerde okunmuş: sonuç korunur
                         k.update(last_seen=TODAY, detail_checked=True)
+                        detail_reused += 1
                     else:
                         k.update(last_seen=TODAY, detail_checked=False, bitti=True,
                                  sonuc="SBB: DETAY OKUNAMADI" if e.get("hata") else "SBB: yalnız liste (detay okunmuyor)",
                                  hata=e.get("hata") or "")
-                    k.pop("metin", None)
+                    if e.get("hata"):
+                        run_metrics["detail_errors"] += 1
                     ads[key] = k
                     continue
 
-                metin = e.get("content") or (read_memurlar(detail_page, key) if name == MEMURLAR_ADI
-                                             else read_detail(detail_page, key))
+                if not (k.get("metin") or k.get("p2metin")) and kayitli_analiz_var(k):
+                    detail_reused += 1
+                    continue
+                if k.get("metin") or k.get("p2metin"):
+                    metin = k.get("metin") or k["p2metin"]
+                    if key in fresh_content_keys:
+                        detail_reads += 1
+                        fresh_content_keys.discard(key)
+                    else:
+                        detail_reused += 1
+                else:
+                    metin = e.get("content") or (read_memurlar(detail_page, key) if name == MEMURLAR_ADI
+                                                 else read_detail(detail_page, key))
+                    if metin:
+                        detail_reads += 1
                 if not metin:
                     k = k or {"first_seen": TODAY, "kaynak": name, "baslik": baslik}
                     k.update(last_seen=TODAY, detail_checked=False, sonuc="DETAY OKUNAMADI",
                              hata=DETAY_HATA.get(key, "bilinmeyen neden"))
                     ads[key] = k
+                    run_metrics["detail_errors"] += 1
                     continue
                 okunan += 1
                 k = k or {"first_seen": TODAY, "kaynak": name, "baslik": baslik,
@@ -2305,8 +2560,9 @@ def main():
                 metin_hash = ilan_hash(baslik, metin)
                 degisti = k.get("metin_hash") != metin_hash
                 k.update({"last_seen": TODAY, "metin_len": len(metin), "metin_hash": metin_hash,
-                          "detail_checked": True})
+                          "detail_checked": True, "metin": metin[:8000]})
                 k.pop("detail_error", None)
+                k.pop("hata", None)
                 # İkinci profil (önlisans/engelli): metin burada elde olduğu için anahtar kelime süzgeci uygulanır
                 p2 = k.get("p2") or {}
                 if degisti or p2.get("v") != P2_VERSION:
@@ -2326,7 +2582,6 @@ def main():
 
                 if AKADEMIK_BASLIK.search(baslik):
                     k.update(bitti=True, sonuc="ILGISIZ (akademik kadro)")
-                    k.pop("metin", None)
                     continue
                 if not ADAY_ANAHTAR.search(metin + " " + e.get("title", "")):
                     if len(metin) < 300 and not e.get("content"):
@@ -2337,13 +2592,15 @@ def main():
                         if len(metin) >= 300 and not (k.get("p2") or {}).get("aday"):
                             havuz_eleme.append({"kaynak": name, "baslik": baslik, "link": key, "metin": metin[:6000],
                                                 "karar": "anahtar kelime süzgeci"})
-                    k.pop("metin", None)
                     continue
 
-                k["metin"] = metin[:8000]          # analiz edilene kadar saklanır
                 analiz_kuyrugu.append((oncelik(baslik, metin) + (5 if name == MEMURLAR_ADI else 0),
                                        key, baslik, metin, name))
 
+            batch["details_read"] = detail_reads
+            batch["details_reused"] = detail_reused
+            run_metrics["details_read"] += detail_reads
+            run_metrics["details_reused"] += detail_reused
             durum = kaynak_durumu(batch["ham"], batch["note"])
             log_rows.append([batch["saat"], name, batch["ham"], okunan, ilgili, durum, batch["note"]])
             log_by_name[name] = log_rows[-1]
@@ -2360,11 +2617,11 @@ def main():
                 if not GROQ_DEAD:
                     time.sleep(GROQ_SLEEP_SEC)
                 if not sonuc:
+                    run_metrics["analysis_errors"] += 1
                     continue
                 k = ads[key]
                 k["analiz"] = sonuc
                 k["bitti"] = True
-                k.pop("metin", None)
                 if sonuc.get("kategori") == "ILGISIZ":
                     havuz_ilgisiz.append({"kaynak": name, "baslik": baslik, "link": key, "metin": metin[:6000],
                                           "karar": "ILGISIZ (" + str(sonuc.get("kanit") or "")[:80] + ")"})
@@ -2387,6 +2644,7 @@ def main():
                 if not GROQ_DEAD:
                     time.sleep(GROQ_SLEEP_SEC)
                 if not sonuc:
+                    run_metrics["analysis_errors"] += 1
                     continue
                 ads[key]["p2"]["analiz"] = sonuc
                 ads[key].pop("p2metin", None)
@@ -2449,7 +2707,7 @@ def main():
     for c in bolum + tum:      # "yeni": kartın en eski kaynağı bugün görülmüşse; sayı da kartlar üzerinden
         c["_yeni"] = c.get("_ilk") == TODAY and TODAY != state.get("first_run")
         c["_tecrube"] = tecrube_yili(c)
-        c["_uygunsuz"] = uygunluk(c)
+        c["_uygunsuz"] = uygunluk(c, PROFIL)
     yetmeyen = [c for c in bolum + tum if c["_uygunsuz"]]
     bolum = [c for c in bolum if not c["_uygunsuz"]]
     tum = [c for c in tum if not c["_uygunsuz"]]
@@ -2486,16 +2744,23 @@ def main():
         if c.get("_kanit_ok") is False:
             kanit_sorunlu[c.get("_kaynak")] = kanit_sorunlu.get(c.get("_kaynak"), 0) + 1
     butunluk = butunluk_satirlari(okunanlar, ads, kanit_sorunlu)
+    run_metrics["total_ads"] = len(ads)
     with open("docs/index.html", "w", encoding="utf-8") as f:
         f.write(build_report(bolum, tum, log_rows, yeni_sayisi, okunanlar, groq_notu, dolmus, elle, yetmeyen,
-                           butunluk, denetim))
+                           butunluk, denetim, run_metrics))
     if DIAGNOSE:
         with open("docs/debug.html", "w", encoding="utf-8") as f:
             f.write(build_debug())
     p2_bolumler, p2_dolmus, p2_elle, p2_bekleyen = p2_rapor(ads, bugun, state)
     with open("docs/onlisans.html", "w", encoding="utf-8") as f:
-        f.write(build_report2(p2_bolumler, p2_dolmus, p2_elle, p2_bekleyen, groq_notu))
+        f.write(build_report2(p2_bolumler, p2_dolmus, p2_elle, p2_bekleyen, groq_notu, run_metrics))
     save_state(state)
+    save_run_history(source_batches, log_rows, run_metrics)
+    print(
+        f"Veritabanı: {run_metrics['total_ads']} ilan · {run_metrics['new_ads']} yeni · "
+        f"{run_metrics['details_read']} yeni okunan · {run_metrics['details_reused']} önbellekten · "
+        f"{run_metrics['detail_errors']} okuma hatası · {run_metrics['analysis_errors']} analiz hatası"
+    )
     print(f"İkinci rapor: engelli {len(p2_bolumler['ENGELLI_KADRO'])}, sağlık {len(p2_bolumler['ANESTEZI_SAGLIK'])}, "
           f"önlisans {len(p2_bolumler['ONLISANS'])}, beklemede {p2_bekleyen}")
     print(f"Bitti. Bölüm: {len(bolum)}, Tüm lisans: {len(tum)}, Süresi dolmuş: {len(dolmus)}, Yeni: {yeni_sayisi}, Elle kontrol: {len(elle)}, Beklemede: {bekleyen}")

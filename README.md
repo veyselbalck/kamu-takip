@@ -1,1 +1,24 @@
 
+# Kamu İlan Takip
+
+Scraper her çalıştırmada kaynaklardaki ilanları toplar; ilan ayrıntılarını ve
+analiz sonuçlarını `data/ilanlar.sqlite3` içinde saklar. Daha önce ayrıntı
+metni veritabanına kaydedilmiş bir ilan için sayfa tekrar açılmaz. Metni
+okunamayan veya henüz analiz edilemeyen ilanlar sonraki çalıştırmalarda
+yeniden denenir.
+
+`data/profiles.json` mevcut iki rapor profilinin puan ve kişisel uygunluk
+ayarlarını tutar. Yeni bir puan veya yaş şartı geldiğinde ilan metni yeniden
+okunmadan rapor uygunluğu tekrar hesaplanır. `data/state.json` eski
+çalıştırmalarla uyumluluk ve kurtarma için korunur; ilan metinlerinin asıl
+kalıcı deposu SQLite veritabanıdır.
+
+İlk çalıştırmada eski `state.json` kayıtları SQLite'a aktarılır. Eski scraper
+analizden sonra bazı ilan metinlerini sildiği için, bu eski metinler geriye
+dönük kurtarılamaz; kaydı/analizi tamamlanmış ilanlar yine de yeniden okunmaz.
+Yeni okunan metinler artık kalıcı olarak saklanır.
+
+Günlük çıktı `docs/index.html` ve `docs/onlisans.html` dosyalarına yazılır.
+Kaynak bazında okuma hataları, analiz kuyruğu ve uygun bulunmayan ilanlar
+raporlarda ayrı gösterilir. Çalıştırma ve kaynak özetleri de SQLite'ta
+`scrape_runs` ve `source_runs` tablolarında tutulur.

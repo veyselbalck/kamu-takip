@@ -1,0 +1,104 @@
+📋 Günlük Kamu İlan Raporu — 31.10.2026 22:26
+Bugün yeni eklenen ilgili ilan: 1 — ⚠ Groq: gemini: günlük kota doldu; openai/gpt-oss-120b#1: günlük kota doldu — Groq'ta mevcut modeller: allam-2-7b, canopylabs/orpheus-arabic-saudi, canopylabs/orpheus-v1-english, meta-llama/llama-prompt-guard-2-22m, meta-llama/llama-prompt-guard-2-86m, openai/gpt-oss-120b, openai/gpt-oss-20b, openai/gpt-oss-safeguard-20b, qwen/qwen3.8-27b, whisper-large-v3, whisper-large-v3-turbo
+
+🎯 Bölümüme Özel (Bilgisayar/Yazılım Mühendisliği) — 3 ilan
+Bilişim Uzman Yardımcısı
+Türkiye Cumhuriyet Merkez Bankası — 9 kadro
+Memurlar.net İlan
+📅 15 Ekim 2026 → 16 Kasım 2026
+🧾 Genel yetenek testi + yazılı meslek sınavı + kişilik envanteri + mülakat
+KPSS Belirtilmemiş: belirtilmemiş
+Ek sınav: Genel yetenek testi, ardından yazılı meslek sınavı, kişilik envanteri ve mülakat
+📍 İkamet: Yok
+⏰ 16 gün kaldı
+⚠ Ek şart: 1 Ocak 1991 ve sonrasında doğum, yabancı dil sınavı puan barajı (YDS ≥70, e‑YDS ≥70, e‑TEP ≥58, TOEFL iBT ≥84), Türk vatandaşı, kamu haklarından yasaklı olmama
+TCMB, 9 Bilişim Uzman Yardımcısı kadrosu için bilgisayar mühendisliği gibi ilgili lisans mezunlarından başvuru alacak. Başvurular 15 Ekim‑16 Kasım 2026 arasında yapılacak ve seçim süreci genel yetenek testi, yazılı sınav, kişilik envanteri ve mülakatı kapsayacak.
+
+Kanıt: “...bilgisayar mühendisliği, elektrik-elektronik mühendisliği, ... gibi ilgili lisans programlarından mezun olmak gerekiyor...”
+İlana git ↗
+Bilgisayar Mühendisliği
+Batı Akdeniz Kalkınma Ajansı — 1 kadro
+İlan.gov.tr
+🧾 KPSS + mülakat
+KPSS Zorunlu: KPSS-P1, P2, P3 en az 70 puan
+Ek sınav: İngilizce Yabancı Dil Bilgisi Seviye Tespit Sınavı C düzeyi veya YDS/e-YDS
+📍 İkamet: Yok
+⚠ Ek şart: İngilizce Yabancı Dil (C düzeyi) / YDS/e-YDS
+Bilgisayar Mühendisliği mezunları için 1 pozisyon açılmıştır. Başvuru için KPSS P1‑P3 puan türünden en az 70 puan ve İngilizce YDS/C düzeyi gerekmektedir.
+
+Kanıt: “Bilgisayar Mühendisliği ... 1 (bir) 80 P1, P2, P3 70”
+İlana git ↗
+Uzman Personel
+İstanbul Kalkınma Ajansı — 2 kadro
+İlan.gov.tr
+🧾 KPSS
+KPSS Zorunlu: KPSSP1, KPSSP2, KPSSP3
+Ek sınav: Yabancı Dil Bilgisi Seviye Belirleme Sınavı (YDS, e‑YDS) en az C düzeyi, eşdeğer 80 puan
+📍 İkamet: Belirtilmemiş
+⚠ Ek şart: askerlik hizmeti tamamlanmış veya ertelenmiş, 50 yaşını doldurmamış, en az 4 yıllık lisans
+İstanbul Kalkınma Ajansı, Bilgisayar Mühendisliği mezunları için 2 uzman kadrosu açmıştır. Başvuru için KPSS puanı (KPSSP1‑3) zorunlu ve YDS en az C düzeyi gerekmektedir.
+
+Kanıt: “Bilgisayar Mühendisliği, ... 2 KPSS KPSSP1, KPSSP2, KPSSP3”
+İlana git ↗
+🎓 Tüm Lisans Mezunlarına Açık — 2 ilan
+memur
+Keşan Belediyesi — 2 kadro
+Memurlar.net İlan
+📅 ? → 19 Kasım 2026
+🧾 KPSS + sözlü sınav
+KPSS Zorunlu: KPSS-B
+Ek sınav: sözlü sınav; puan şartı belirtilmemiş
+📍 İkamet: Yok
+⏰ 19 gün kaldı
+⚠ kanıt zayıf — ilanı elle kontrol et
+Keşan Belediyesi 2 memur alacak. Başvuru son tarihi 19 Kasım 2026; adayların KPSS (B) grubundan geçerli puan alması ve sözlü sınava katılması gerekiyor.
+
+Kanıt: “ilan edilen memur kadrolarına atanmak için ... mezun olunan okul itibari ile öğrenim şartlarını taşımak”
+İlana git ↗
+Müfettiş Yardımcısı
+Ankara Büyükşehir Belediyesi — 5 kadro
+Memurlar.net İlan
+📅 ? → 4 Aralık 2026
+🧾 KPSS + yazılı sınav + sözlü mülakat
+KPSS Zorunlu: KPSS - A Grubu
+Ek sınav: Yazılı sınav ve sözlü sınav; puan şartı belirtilmemiş
+📍 İkamet: Yok
+⏰ 34 gün kaldı
+⚠ kanıt zayıf — ilanı elle kontrol et
+⚠ Ek şart: 35 yaş sınırı, sağlık raporu, adli sicil kaydı, askerlik durumu (erkek adaylar)
+Ankara Büyükşehir Belediyesi 5 Müfettiş Yardımcısı için KPSS A Grubu zorunlu, 35 yaş altı ve sağlık, adli sicil gibi ek şartlar aranıyor. Başvurular 4 Aralık 2026 tarihine kadar kabul edilecek.
+
+Kanıt: “KPSS puan türü, KPSS taban puanı ve diğer şartları taşımak kaydıyla belirtilen boş kadrolara...”
+İlana git ↗
+🚓 Fiziksel/yaş şartı aranan kadrolar — zabıta vb. (2)
+🔎 Elle kontrol listesi (1) — içeriği okunamadı ama başlığı ilgili görünüyor
+20261031-4-16.pdf Resmî Gazete — PDF metni okunamadı (taranmış görüntü olabilir)
+🚫 Profilinle uyuşmadığı için gizlenen ilanlar (26) — KPSS 71 (P3), 26 yaş
+🔍 Veri Çekim Doğrulama Kaydı
+Saat	Kaynak	Ham kayıt	Detay okunan (bugün)	İlgili	Durum	Not
+22:27:10	İlan.gov.tr	123	123	13	OK	sitede toplam: 123, okunan: 123, sayfalama: currentPage
+22:27:48	Resmî Gazete	25	5	0	ŞÜPHELİ (eksik okundu)	sitede toplam: 25, okunan: 24, personel ilanı: 5, PDF bulma: dizin linkleri — taranmış PDF Gemini ile okundu: 1 — okunamayan PDF: 1 (taranmış görüntü olabilir; elle kontrol listesinde)
+22:37:58	Kariyer Kapısı	20	20	7	OK	IlanDetay linkleri doğrudan bulundu; sitede toplam: 20, okunan: 20, harici siteye giden (İlana Git): 1
+22:38:07	SBB Kamu İlan	122	107	27	KISMİ (bazı ilanların içeriği okunamadı)	sitede toplam: 95, okunan: 122 (ham bağlantı: 122, tekrarlar elendi) — detay metni okunan: 107/110 (+12 ilgisiz başlık atlandı) — okunamayanlar: pdf-okunamadı; application/pdf; charset=utf-8; 273 ×1; pdf-okunamadı; application/pdf; charset=utf-8; 128 ×1; pdf-okunamadı; application/pdf; charset=utf-8; 109 ×1
+22:40:49	ÇŞB Yerel Yönetimler	35	35	0	OK	sitede toplam: 35, okunan: 35 (yalnız ilan/alım başlıklı duyurular; 3 sayfa gezildi)
+22:41:02	İŞKUR (e-şube)	1	1	0	OK	sitede toplam: 1, okunan: 1 (Kamu seçilerek arandı; 1 sayfa gezildi, sonraki sayfa yok)
+22:41:11	Memurlar.net İlan	56	56	17	KISMİ (tamlık doğrulanmadı)	8/8 kategori sayfası gezildi (tam ilan metni); sitede toplam sayısı bilinmiyor (yapı doğrulanmadı)
+Tanı sayfası (ekran görüntüleri, arka plan istekleri)
+
+🧪 Okuma Bütünlük Kontrolü
+Listelenen her ilan şu sonuçlardan birine ulaşmış olmalı; toplam listelenene eşit değilse "açıklanamayan" kırmızı yanar. "Kanıt" sütunu: yapay zekânın gösterdiği alıntı ilan metninde birebir bulunamayan kart sayısı.
+
+Kaynak	Listelenen	Analiz edildi	Anahtar süzgeciyle elendi	Yalnız liste	Okunamadı (neden)	Kuyrukta	Kanıtı doğrulanamayan	Durum
+Kariyer Kapısı	20	15	5	0	0	0	0	✔ tam
+Memurlar.net İlan	56	35	21	0	0	0	1	✔ tam
+Resmî Gazete	5	3	2	0	0	0	0	✔ tam
+SBB Kamu İlan	122	96	18	0	8 — ilgisiz başlık ×6; pdf-okunamadı; application/pdf; charset=utf-8; 1288125 bayt ×1; pdf-okunamadı; application/pdf; charset=utf-8; 273052 bayt ×1	0	2	⚠ eksik var
+ÇŞB Yerel Yönetimler	35	0	35	0	0	0	0	✔ tam
+İlan.gov.tr	123	95	28	0	0	0	0	✔ tam
+İŞKUR (e-şube)	1	0	1	0	0	0	0	✔ tam
+🕵️ İkinci yapay zekâ kontrolü — elenen ilanlardan 11 örnek farklı bir modele yeniden okutuldu (sağlayıcı: gemini, groq); yapılamayan: 0; şüpheli: 1
+Başvur Kariyer Kapısı
+1. okuma: anahtar kelime süzgeci → 2. okuma (groq): profil A için uygun olabilir — İlan, 'Mühendislik' gibi alanları kabul ederken engelli kadro veya önlisans mezunu adaylara yönelik bir şart veya kontenjan belirtmemektedir.
+♿ İkinci rapor: önlisans & engelli kadro ilanları
+
+📑 Bugün listede görülen tüm ilanlar (362) — okundu mu, sonuç ne?
