@@ -79,6 +79,7 @@ MEMURLAR_ADI = "Memurlar.net İlan"
 GROQ_ADAY_MODELLER = ["meta-llama/llama-4-maverick-17b-128e-instruct", "meta-llama/llama-4-scout-17b-16e-instruct",
                       "moonshotai/kimi-k2-instruct"]
 GROQ_MODEL_KONTROL = {"yapildi": False}
+PROFILE_PATH = "data/profiles.json"
 
 def load_profiles():
     with open(PROFILE_PATH, encoding="utf-8") as f:
@@ -105,7 +106,6 @@ GROQ_SLEEP_SEC = 2.5
 STATE_VERSION = 2
 STATE_PATH = "data/state.json"
 DATABASE_PATH = "data/ilanlar.sqlite3"
-PROFILE_PATH = "data/profiles.json"
 LOG_PATH = "logs/log.csv"
 
 TR_NOW = datetime.datetime.now(ZoneInfo("Europe/Istanbul"))
