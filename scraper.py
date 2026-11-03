@@ -57,8 +57,20 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # ---------------- AYARLAR ----------------
 # Birden çok Groq anahtarı (farklı hesaplar) ve isteğe bağlı Gemini yedeği: kota dolunca sıradakine geçilir
-GROQ_KEYS = [k.strip() for k in (os.environ.get("GROQ_API_KEY"), os.environ.get("GROQ_API_KEY_2"),
-                                 os.environ.get("GROQ_API_KEY_3")) if k and k.strip()]
+def load_groq_keys(environ=None):
+    """Load numbered Groq keys in order, while allowing gaps and duplicate values."""
+    environ = os.environ if environ is None else environ
+    numbered = []
+    for name, value in environ.items():
+        match = re.fullmatch(r"GROQ_API_KEY_(\d+)", name)
+        if match and int(match.group(1)) >= 2 and value and value.strip():
+            numbered.append((int(match.group(1)), value.strip()))
+    values = [environ.get("GROQ_API_KEY", "").strip()]
+    values.extend(value for _, value in sorted(numbered))
+    return list(dict.fromkeys(value for value in values if value))
+
+
+GROQ_KEYS = load_groq_keys()
 GEMINI_API_KEY = (os.environ.get("GEMINI_API_KEY") or "").strip()
 GEMINI_MODEL = (os.environ.get("GEMINI_MODEL") or "gemini-2.5-flash").strip()
 GEMINI_DEAD = {"v": False}
@@ -1522,12 +1534,19 @@ def groq_call(model, prompt, key=None, slot=None):
                 GROQ_DEAD_NEDEN[slot] = "günlük kota doldu"
                 print(f"Groq günlük kota doldu ({slot}, retry-after {bekle:.0f}s).")
                 return "KOTA"
+            if deneme == 3:
+                GROQ_DEAD_MODELS.add(slot)
+                GROQ_DEAD_NEDEN[slot] = "hız sınırı; bu çalıştırmada başka anahtar/model denenecek"
+                return "KOTA"
             print(f"Groq 429, {bekle:.0f}s bekleniyor")
             time.sleep(bekle + 2)
             continue
         if r.status_code == 400 and re.search(r"validate JSON|json_validate_failed|failed_generation", r.text, re.I):
             print("Groq JSON üretemedi (yalnız bu istek):", model, r.text[:100])
             return "JSON_HATA"                 # model sağlam; bu ilan için sıradaki modele geçilir
+        if r.status_code in (401, 403):
+            print("Groq anahtarı kullanılamıyor:", r.status_code, r.text[:120])
+            return "KEY_HATA"
         if r.status_code in (400, 404):
             print("Groq model/istek hatası:", model, r.status_code, r.text[:150])
             GROQ_DEAD_NEDEN[slot] = f"model/istek hatası {r.status_code}: {r.text[:90]}"
@@ -1742,6 +1761,12 @@ def groq_zincir(prompt):
                 for kj in range(len(GROQ_KEYS)):          # model hatası anahtardan bağımsızdır
                     GROQ_DEAD_MODELS.add(f"{model}#{kj + 1}" if coklu else model)
                 break
+            if res == "KEY_HATA":
+                for other_model in GROQ_MODELS:
+                    failed_slot = f"{other_model}#{ki + 1}" if coklu else other_model
+                    GROQ_DEAD_MODELS.add(failed_slot)
+                    GROQ_DEAD_NEDEN[failed_slot] = "anahtar geçersiz veya erişim izni yok"
+                continue
             if res == "KOTA":
                 continue
             if res == "JSON_HATA":

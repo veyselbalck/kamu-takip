@@ -219,5 +219,42 @@ class IskurMapSourceTests(unittest.TestCase):
         extract.assert_called_once_with(b"%PDF test", "application/pdf", url)
 
 
+class GroqRotationTests(unittest.TestCase):
+    def test_load_groq_keys_supports_numbered_secrets_and_gaps(self):
+        keys = scraper.load_groq_keys({
+            "GROQ_API_KEY": " first ",
+            "GROQ_API_KEY_2": "",
+            "GROQ_API_KEY_3": "third",
+            "GROQ_API_KEY_5": "fifth",
+            "GROQ_API_KEY_EXTRA": "ignored",
+        })
+
+        self.assertEqual(keys, ["first", "third", "fifth"])
+
+    def test_rate_limited_key_falls_through_to_the_next_key(self):
+        limited = Mock(status_code=429, headers={"retry-after": "0"}, text="rate limit")
+        success = Mock(status_code=200)
+        success.json.return_value = {
+            "choices": [{"message": {"content": '{"ok": true}'}}],
+        }
+
+        with (
+            patch.object(scraper, "GROQ_KEYS", ["first-key", "second-key"]),
+            patch.object(scraper, "GROQ_MODELS", ["test-model"]),
+            patch.object(scraper, "GROQ_DEAD_MODELS", set()),
+            patch.object(scraper, "GROQ_DEAD_NEDEN", {}),
+            patch.object(scraper, "GROQ_JSON_HATA", {}),
+            patch.object(scraper, "groq_modelleri_dogrula"),
+            patch.object(scraper.time, "sleep"),
+            patch.object(scraper.requests, "post", side_effect=[limited, limited, limited, success]) as post
+        ):
+            result = scraper.groq_zincir("prompt")
+
+        self.assertTrue(result["ok"])
+        self.assertEqual(post.call_count, 4)
+        self.assertIn("first-key", post.call_args_list[0].kwargs["headers"]["Authorization"])
+        self.assertIn("second-key", post.call_args_list[3].kwargs["headers"]["Authorization"])
+
+
 if __name__ == "__main__":
     unittest.main()

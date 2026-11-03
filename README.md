@@ -28,3 +28,11 @@ ve [Kurumdışı Kamu İşçi Alım İlanları](https://www.iskur.gov.tr/ilanlar
 sayfalarındaki haritalar da ayrı kaynaklar olarak taranır. İlan bulunan illerin PDF
 bağlantıları toplanır; PDF metni çıkarılır, gerektiğinde mevcut Gemini OCR yolu
 denenir ve ilanlar iki profilin rapor akışına dahil edilir.
+
+GitHub Actions, `GROQ_API_KEY` ve numaralı `GROQ_API_KEY_2`–`GROQ_API_KEY_5`
+depolarını sırayla kullanır; kota veya hız sınırına takılan anahtar/model
+çifti atlanıp sıradaki denenir. Ek hesap eklemek için GitHub deposunda
+**Settings → Secrets and variables → Actions** altında `GROQ_API_KEY_3`,
+`GROQ_API_KEY_4` ve `GROQ_API_KEY_5` adlarıyla secret oluşturun. `GEMINI_API_KEY`
+ayrı bir yedektir; Gemini kotasının dolması tek başına Groq kotalarının da
+dolduğu anlamına gelmez.
