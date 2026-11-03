@@ -22,3 +22,9 @@ Günlük çıktı `docs/index.html` ve `docs/onlisans.html` dosyalarına yazıl�
 Kaynak bazında okuma hataları, analiz kuyruğu ve uygun bulunmayan ilanlar
 raporlarda ayrı gösterilir. Çalıştırma ve kaynak özetleri de SQLite'ta
 `scrape_runs` ve `source_runs` tablolarında tutulur.
+
+İŞKUR'un e-Şube kamu aramasına ek olarak, [Kamu Memur Alım İlanları](https://www.iskur.gov.tr/ilanlar/kamu-memur-alim-ilanlari/)
+ve [Kurumdışı Kamu İşçi Alım İlanları](https://www.iskur.gov.tr/ilanlar/kurumdisi-kamu-isci-alim-ilanlari/)
+sayfalarındaki haritalar da ayrı kaynaklar olarak taranır. İlan bulunan illerin PDF
+bağlantıları toplanır; PDF metni çıkarılır, gerektiğinde mevcut Gemini OCR yolu
+denenir ve ilanlar iki profilin rapor akışına dahil edilir.

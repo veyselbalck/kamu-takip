@@ -38,7 +38,7 @@ import html as htmllib
 import datetime
 from contextlib import closing
 from zoneinfo import ZoneInfo
-from urllib.parse import urljoin, urlparse
+from urllib.parse import urlencode, urljoin, urlparse
 
 # Windows'ta antivirüs/proxy HTTPS'i araya girip tarıyorsa Python'un kendi sertifika
 # listesi güvenmez. truststore, Windows sertifika deposunu kullanmasını sağlar.
@@ -75,6 +75,12 @@ SBB_ADI = "SBB Kamu İlan"
 SBB_ATLA = re.compile(r"iptal|düzeltme|subay|pilot|hâkim|hakim|savcı|tabip|kaymakam|öğretmen", re.I)
 SBB_ANA = "https://kamuilan.sbb.gov.tr/"     # ilanDetay.aspx?kod=... bağlantıları oturuma özel; sonradan açılınca 404 veriyor
 MEMURLAR_ADI = "Memurlar.net İlan"
+ISKUR_MEMUR_ADI = "İŞKUR Kamu Memur Alım İlanları"
+ISKUR_KURUMDISI_ADI = "İŞKUR Kurumdışı Kamu İşçi Alım İlanları"
+ISKUR_HARITA_URLS = {
+    ISKUR_MEMUR_ADI: "https://www.iskur.gov.tr/ilanlar/kamu-memur-alim-ilanlari/",
+    ISKUR_KURUMDISI_ADI: "https://www.iskur.gov.tr/ilanlar/kurumdisi-kamu-isci-alim-ilanlari/",
+}
 # Groq'ta kaldırılmış model olursa listeden elenir; bu adaylar (varsa) 120b'den sonra zincire eklenir
 GROQ_ADAY_MODELLER = ["meta-llama/llama-4-maverick-17b-128e-instruct", "meta-llama/llama-4-scout-17b-16e-instruct",
                       "moonshotai/kimi-k2-instruct"]
@@ -1157,6 +1163,103 @@ def _fetch_iskur_esube(page):
     return entries[:MAX_LINKS_PER_SOURCE], len(entries), note
 
 
+def _iskur_entries_from_rows(rows):
+    """İŞKUR harita sayfasındaki tablo satırlarını ilan PDF kayıtlarına çevirir."""
+    entries = {}
+    for row in rows:
+        cells = row.get("cells") or []
+        title = cells[1].strip() if len(cells) > 1 else ""
+        for link in row.get("links") or []:
+            parsed = urlparse(link)
+            if (parsed.hostname != "www.iskur.gov.tr" or not parsed.path.startswith("/medya/")
+                    or not parsed.path.lower().endswith(".pdf")):
+                continue
+            entries.setdefault(link, {
+                "title": title or link.rsplit("/", 1)[-1],
+                "link": link,
+                "detail_level": "İŞKUR ilan PDF'si",
+            })
+    return list(entries.values())
+
+
+def fetch_iskur_harita(page, source_name):
+    """İŞKUR'un harita il seçimindeki tüm aktif illeri gezip PDF ilan bağlantılarını toplar."""
+    base_url = ISKUR_HARITA_URLS[source_name]
+    page.goto(base_url, timeout=60000, wait_until="domcontentloaded")
+    cities = page.locator("svg [role='button'][data-iladi][data-count]").evaluate_all(
+        """els => els.map(el => ({
+            id: el.id,
+            name: el.getAttribute('data-iladi'),
+            count: Number(el.getAttribute('data-count'))
+        }))"""
+    )
+    if len(cities) < 70:
+        raise RuntimeError(f"İŞKUR il haritası yapısı değişmiş görünüyor; {len(cities)} il bulundu.")
+
+    active_cities = [city for city in cities if city["count"] > 0]
+    map_total = sum(city["count"] for city in active_cities)
+    if not active_cities:
+        return [], 0, "aktif ilan yok (81 il haritası tarandı)"
+
+    all_entries, listed_rows, mismatches = {}, 0, []
+    for city in active_cities:
+        query = urlencode({"idId": city["id"], "il": city["name"]})
+        city_url = f"{base_url}?{query}"
+        try:
+            page.goto(city_url, timeout=60000, wait_until="domcontentloaded")
+            rows = page.locator("table tr").evaluate_all(
+                """rows => rows.map(row => ({
+                    cells: Array.from(row.querySelectorAll('td')).map(cell => cell.innerText.trim()),
+                    links: Array.from(row.querySelectorAll('a[href]')).map(link => link.href)
+                }))"""
+            )
+            city_entries = _iskur_entries_from_rows(rows)
+            listed_rows += len(city_entries)
+            if len(city_entries) != city["count"]:
+                mismatches.append(f"{city['name']}: haritada {city['count']}, PDF {len(city_entries)}")
+            for entry in city_entries:
+                all_entries.setdefault(entry["link"], entry)
+        except Exception as e:
+            mismatches.append(f"{city['name']}: {hata_sinifla(e)}")
+            print(f"{source_name} — {city['name']} ilanları okunamadı: {hata_sinifla(e)}")
+
+    note = (f"sitede toplam: {map_total}, okunan: {listed_rows} "
+            f"(haritada ilan bulunan il: {len(active_cities)}, tekil PDF: {len(all_entries)})")
+    if mismatches:
+        note += " — EKSİK: " + "; ".join(mismatches[:8])
+        if len(mismatches) > 8:
+            note += f"; ayrıca {len(mismatches) - 8} il"
+    if len(all_entries) > MAX_LINKS_PER_SOURCE:
+        note += f" — EKSİK: {len(all_entries) - MAX_LINKS_PER_SOURCE} ilan kaynak başına işlem sınırını aştı"
+    return list(all_entries.values())[:MAX_LINKS_PER_SOURCE], map_total, note
+
+
+def fetch_iskur_memur_harita(page):
+    return fetch_iskur_harita(page, ISKUR_MEMUR_ADI)
+
+
+def fetch_iskur_kurumdisi_harita(page):
+    return fetch_iskur_harita(page, ISKUR_KURUMDISI_ADI)
+
+
+def read_iskur_pdf(page, url):
+    """İŞKUR ilan PDF'sini oturumlu tarayıcı isteğiyle indirip metin/OCR olarak okur."""
+    try:
+        response = page.context.request.get(
+            url, timeout=60000, headers={"Referer": "https://www.iskur.gov.tr/ilanlar/"}
+        )
+        if not response.ok:
+            raise RuntimeError(f"PDF isteği HTTP {response.status}")
+        text, kind = ek_metni(response.body(), response.headers.get("content-type", ""), url)
+        if not text or len(text.strip()) < 100:
+            raise RuntimeError(f"PDF metni çıkarılamadı ({kind})")
+        return text[:40000]
+    except Exception as e:
+        DETAY_HATA[url] = f"İŞKUR PDF okunamadı: {hata_sinifla(e)}"
+        print(f"İŞKUR ilan PDF'si okunamadı ({url}): {DETAY_HATA[url]}")
+        return ""
+
+
 SOURCES = [
     ("İlan.gov.tr", fetch_ilan_gov_tr),
     ("Resmî Gazete", fetch_resmi_gazete),
@@ -1164,6 +1267,8 @@ SOURCES = [
     ("SBB Kamu İlan", fetch_sbb_kamu_ilan),
     ("ÇŞB Yerel Yönetimler", fetch_csb_yerel),
     ("İŞKUR (e-şube)", fetch_iskur_esube),
+    (ISKUR_MEMUR_ADI, fetch_iskur_memur_harita),
+    (ISKUR_KURUMDISI_ADI, fetch_iskur_kurumdisi_harita),
     (MEMURLAR_ADI, fetch_memurlar),
 ]
 
@@ -2555,8 +2660,14 @@ def main():
                     else:
                         detail_reused += 1
                 else:
-                    metin = e.get("content") or (read_memurlar(detail_page, key) if name == MEMURLAR_ADI
-                                                 else read_detail(detail_page, key))
+                    if e.get("content"):
+                        metin = e["content"]
+                    elif name in ISKUR_HARITA_URLS:
+                        metin = read_iskur_pdf(detail_page, key)
+                    elif name == MEMURLAR_ADI:
+                        metin = read_memurlar(detail_page, key)
+                    else:
+                        metin = read_detail(detail_page, key)
                     if metin:
                         detail_reads += 1
                 if not metin:

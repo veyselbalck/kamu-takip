@@ -3,6 +3,7 @@ import os
 import sqlite3
 import tempfile
 import unittest
+from unittest.mock import Mock, patch
 
 import scraper
 
@@ -137,6 +138,85 @@ class ProfileFilterTests(unittest.TestCase):
         self.assertIn("önlisans programı uymuyor", groups["_uymayan"][0]["_uygunsuz"])
         self.assertIn("Muhasebe personeli", report)
         self.assertIn("önlisans programı uymuyor", report)
+
+
+class IskurMapSourceTests(unittest.TestCase):
+    def test_map_crawl_visits_only_active_cities(self):
+        class FakeLocator:
+            def __init__(self, page, selector):
+                self.page = page
+                self.selector = selector
+
+            def evaluate_all(self, _script):
+                return self.page.cities if "data-count" in self.selector else self.page.rows
+
+        class FakePage:
+            def __init__(self):
+                self.cities = [
+                    {"id": f"il-{number}", "name": f"İl {number}", "count": 0}
+                    for number in range(80)
+                ]
+                self.cities.append({"id": "ankara", "name": "Ankara", "count": 1})
+                self.rows = [{
+                    "cells": ["05.11.2026", "Bilişim Personeli"],
+                    "links": ["https://www.iskur.gov.tr/medya/abc/ilan.pdf"],
+                }]
+                self.visited = []
+
+            def goto(self, url, **_kwargs):
+                self.visited.append(url)
+
+            def locator(self, selector):
+                return FakeLocator(self, selector)
+
+        page = FakePage()
+
+        entries, total, note = scraper.fetch_iskur_harita(page, scraper.ISKUR_MEMUR_ADI)
+
+        self.assertEqual(len(page.visited), 2)
+        self.assertIn("?idId=ankara&il=Ankara", page.visited[1])
+        self.assertEqual(total, 1)
+        self.assertEqual(len(entries), 1)
+        self.assertIn("haritada ilan bulunan il: 1", note)
+
+    def test_map_rows_become_unique_pdf_entries(self):
+        rows = [
+            {
+                "cells": ["05.11.2026 18:00", "Bilişim Personeli Alım İlanı"],
+                "links": [
+                    "https://www.iskur.gov.tr/medya/abc/ilan.pdf",
+                    "https://www.iskur.gov.tr/ilanlar/",
+                ],
+            },
+            {
+                "cells": ["05.11.2026 18:00", "Bilişim Personeli Alım İlanı"],
+                "links": ["https://www.iskur.gov.tr/medya/abc/ilan.pdf"],
+            },
+            {
+                "cells": ["05.11.2026 18:00", "Başka ilan"],
+                "links": ["https://example.test/medya/ilan.pdf"],
+            },
+        ]
+
+        entries = scraper._iskur_entries_from_rows(rows)
+
+        self.assertEqual(len(entries), 1)
+        self.assertEqual(entries[0]["title"], "Bilişim Personeli Alım İlanı")
+        self.assertEqual(entries[0]["detail_level"], "İŞKUR ilan PDF'si")
+
+    def test_iskur_pdf_reader_downloads_and_extracts_the_pdf(self):
+        url = "https://www.iskur.gov.tr/medya/abc/ilan.pdf"
+        response = Mock(ok=True, headers={"content-type": "application/pdf"})
+        response.body.return_value = b"%PDF test"
+        page = Mock()
+        page.context.request.get.return_value = response
+        expected_text = "İlan metni " * 20
+
+        with patch.object(scraper, "ek_metni", return_value=(expected_text, "pdf")) as extract:
+            text = scraper.read_iskur_pdf(page, url)
+
+        self.assertEqual(text, expected_text)
+        extract.assert_called_once_with(b"%PDF test", "application/pdf", url)
 
 
 if __name__ == "__main__":
