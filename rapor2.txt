@@ -1,7 +1,7 @@
-♿ Sevgilim — Önlisans / Anestezi / Engelli kadro İlanları — 03.11.2026 17:54
+♿ Sevgilim — Önlisans / Anestezi / Engelli kadro İlanları — 03.11.2026 22:46
 ← Ana rapora dön · Bugün yeni eklenen ilgili ilan: 0
 
-Bu çalıştırma: 9466 ilan veritabanında · 0 yeni kayıt · 0 ayrıntı yeni okundu · 361 kayıt/metin önbellekten kullanıldı · 148 ayrıntı okuma hatası · 0 analiz hatası
+Bu çalıştırma: 9466 ilan veritabanında · 0 yeni kayıt · 0 ayrıntı yeni okundu · 361 kayıt/metin önbellekten kullanıldı · 145 ayrıntı okuma hatası · 0 analiz hatası
 Profil: KPSS önlisans 66 puan (P93), EKPSS 62 puan. İlanda açıkça yazan en düşük puan bunlardan yüksekse ilan gizlenir (nedeniyle birlikte alttaki listede durur); puan şartı yazmayan ilanlar elenmez. Sıralama: son başvuru tarihi. Aynı ilanlar ana kaynaklardan (İlan.gov.tr, Resmî Gazete, Kariyer Kapısı, ÇŞB, İŞKUR, Memurlar.net) taranır.
 
 ♿ Engelli kadrosu / EKPSS'li ilanlar — 2 ilan
@@ -37,6 +37,24 @@ Kanıt: “Engelli İdari Personel kadrosu için 1 (bir) olmak üzere toplam 7 (
 Şu an bu kategoride aktif ilan bulunamadı.
 
 🚫 Uygun görünmediği için gizlenen ilanlar (18) — KPSS önlisans 66, EKPSS 62
+Hemşire — Dokuz Eylül Üniversitesi önlisans programı uymuyor — Hayır (yalnız: Hemşirelik lisans)
+Teknisyen — Posof Belediye Başkanlığı önlisans programı uymuyor — Hayır (yalnız: İnşaat Teknolojisi, Elektrik-Elektronik Teknolojisi, Makine ve Tasarım Teknolojisi, Harita-Tapu Kadastro, Bilişim Teknolojileri, Motorlu Araçlar Teknolojisi)
+Proje Teknik Elemanı — Mersin İl Tarım ve Orman Müdürlüğü önlisans programı uymuyor — Hayır (yalnız: veteriner sağlık teknikerliği, veteriner sağlık/ziraat teknisyeni (Hayvan Sağlığı Alanı), veteriner hekim, ziraat mühendisi (zooteknist))
+Zabıta Memuru — Gaziosmanpaşa Belediye Başkanlığı önlisans programı uymuyor — Hayır (yalnız: Mahalli idareler, mahalli idareler (zabıta), yerel yönetimler, halkla ilişkiler, adalet, acil durum ve afet yönetimi, ilk ve acil yardım önlisans programları)
+Zabıta Memuru — Konya İli Karatay Belediye Başkanlığı önlisans programı uymuyor — Hayır (yalnız: Pazarlama, Pazarlama ve Satış, Piyasa Araştırmaları ve Pazarlama)
+Tekniker — ŞİLE BELEDİYE BAŞKANLIĞI önlisans programı uymuyor — Hayır (yalnız: Harita, Kadastro, İnşaat, Makine, Elektrik önlisans programları)
+Öğretim Üyesi — Başkent Üniversitesi Rektörlüğü ikinci profil için uygun ilan değil
+Doktor Öğretim Üyesi — Süleyman Demirel Üniversitesi ikinci profil için uygun ilan değil
+Sağlık Bakım Hizmetleri Yaşlı Bakımı Öğretim Görevlisi — Tarsus Üniversitesi önlisans programı uymuyor — Hayır (yalnız: Gerontoloji lisans)
+Öğretim Elemanı — Antalya Bilim Üniversitesi ikinci profil için uygun ilan değil
+Öğretim Üyesi — Sağlık Bilimleri Üniversitesi Rektorlüğü önlisans programı uymuyor — Hayır (yalnız: Hemşirelik, Halk Sağlığı Hemşireliği)
+Gelir Uzman Yardımcısı — Gelir İdaresi Başkanlığı önlisans programı uymuyor — Hayır (yalnız: dört yıllık fakülteler)
+Zabıta Memuru — İzmir Büyükşehir Belediye Başkanlığı önlisans programı uymuyor — Hayır (yalnız: Adalet, Yerel Yönetimler, Özel Güvenlik ve Koruma)
+Öğretim Görevlisi / Araştırma Görevlisi — Gaziantep Üniversitesi önlisans programı uymuyor — Hayır (yalnız: lisans mezunu)
+Öğretim Elemanı — İstanbul Arel Üniversitesi ikinci profil için uygun ilan değil
+Araştırma Görevlisi — TÜRKİYE ULUSLARARASI İSLAM, BİLİM VE TEKNOLOJİ ÜNİVERSİTESİ önlisans programı uymuyor — Hayır (yalnız: Sosyoloji, Psikoloji, Tarih)
+Zabıta Memuru — Gaziosmanpaşa Belediye Başkanlığı önlisans programı uymuyor — Hayır (yalnız: ilk ve acil yardım önlisans programları)
+İşçi — İstanbul Personel Yönetim Aş ikinci profil için uygun ilan değil
 🔎 SBB'de görülen, elle kontrol edilecek (1) — içeriği bu çalıştırmada okunamadı (neden yanında)
-KARŞIYAKA (İZMİR) BELEDİYE BAŞKANLIĞI 6 MEMUR ALACAK ( 30 Kasım - 2 Aralık) SBB Kamu İlan pdf-okunamadı; application/pdf; charset=utf-8; 273062 bayt
+KARŞIYAKA (İZMİR) BELEDİYE BAŞKANLIĞI 6 MEMUR ALACAK ( 30 Kasım - 2 Aralık) SBB Kamu İlan pdf-okunamadı; application/pdf; charset=utf-8; 273064 bayt
 Not: Sağlık Bakanlığı'nın kendi KPSS tercih alımları bu kaynaklarda yer almaz; ayrıca takip edilmelidir.

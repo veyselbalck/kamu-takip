@@ -1,3 +1,4 @@
+import io
 import json
 import os
 import sqlite3
@@ -6,6 +7,7 @@ import unittest
 from unittest.mock import Mock, patch
 
 import scraper
+from pypdf import PdfWriter
 
 
 class StorageTests(unittest.TestCase):
@@ -218,6 +220,47 @@ class IskurMapSourceTests(unittest.TestCase):
         self.assertEqual(text, expected_text)
         extract.assert_called_once_with(b"%PDF test", "application/pdf", url)
 
+    def test_iskur_pdf_reader_uses_http_fallback_when_browser_returns_html(self):
+        url = "https://www.iskur.gov.tr/medya/abc/ilan.pdf"
+        browser_response = Mock(
+            ok=True, status=200, headers={"content-type": "text/html"}
+        )
+        browser_response.body.return_value = b"<html>temporary error</html>"
+        page = Mock()
+        page.context.request.get.return_value = browser_response
+        http_response = Mock(
+            status_code=200,
+            headers={"content-type": "application/pdf"},
+            content=b"%PDF from HTTP fallback",
+        )
+        expected_text = "İlan metni " * 20
+        scraper.DETAY_HATA.pop(url, None)
+
+        with (
+            patch.object(scraper, "request_with_retry", return_value=http_response),
+            patch.object(scraper, "ek_metni", return_value=(expected_text, "pdf")) as extract,
+        ):
+            text = scraper.read_iskur_pdf(page, url)
+
+        self.assertEqual(text, expected_text)
+        extract.assert_called_once_with(b"%PDF from HTTP fallback", "application/pdf", url)
+
+    def test_pdf_text_extraction_falls_back_to_groq_when_gemini_is_unavailable(self):
+        page = Mock()
+        page.extract_text.return_value = ""
+        expected_text = "Kamu personeli alım koşulları. " * 10
+
+        with (
+            patch.object(scraper, "PdfReader", return_value=Mock(pages=[page])),
+            patch.object(scraper, "gemini_ocr_dosya", return_value=None),
+            patch.object(scraper, "groq_ocr_pdf", return_value=(expected_text, "")) as groq_ocr,
+        ):
+            text, kind = scraper.ek_metni(b"%PDF-1.7 image-only", "application/pdf", "ilan.pdf")
+
+        self.assertEqual(text, expected_text)
+        self.assertEqual(kind, "pdf-ocr-groq")
+        groq_ocr.assert_called_once()
+
 
 class GroqRotationTests(unittest.TestCase):
     def test_load_groq_keys_supports_numbered_secrets_and_gaps(self):
@@ -254,6 +297,48 @@ class GroqRotationTests(unittest.TestCase):
         self.assertEqual(post.call_count, 4)
         self.assertIn("first-key", post.call_args_list[0].kwargs["headers"]["Authorization"])
         self.assertIn("second-key", post.call_args_list[3].kwargs["headers"]["Authorization"])
+
+    def test_vision_ocr_rotates_to_the_next_key_after_rate_limit(self):
+        limited = Mock(status_code=429)
+        success = Mock(status_code=200)
+        success.json.return_value = {
+            "choices": [{"message": {"content": "Okunan ilan metni"}}],
+        }
+
+        with (
+            patch.object(scraper, "GROQ_KEYS", ["first-key", "second-key"]),
+            patch.object(scraper, "GROQ_DEAD_MODELS", set()),
+            patch.object(scraper, "GROQ_DEAD_NEDEN", {}),
+            patch.object(scraper.requests, "post", side_effect=[limited, success]) as post,
+        ):
+            text, error = scraper.groq_vision_call(["ZmFrZQ=="], [1])
+
+        self.assertEqual(text, "Okunan ilan metni")
+        self.assertEqual(error, "")
+        self.assertEqual(post.call_count, 2)
+        self.assertIn("first-key", post.call_args_list[0].kwargs["headers"]["Authorization"])
+        self.assertIn("second-key", post.call_args_list[1].kwargs["headers"]["Authorization"])
+
+    def test_groq_pdf_ocr_batches_all_pages_in_groups_of_three(self):
+        writer = PdfWriter()
+        for _ in range(4):
+            writer.add_blank_page(width=200, height=200)
+        pdf = io.BytesIO()
+        writer.write(pdf)
+
+        with (
+            patch.object(scraper, "GROQ_KEYS", ["test-key"]),
+            patch.object(
+                scraper, "groq_vision_call",
+                side_effect=[("İlk üç sayfa", ""), ("Dördüncü sayfa", "")],
+            ) as vision,
+        ):
+            text, error = scraper.groq_ocr_pdf(pdf.getvalue())
+
+        self.assertEqual(text, "İlk üç sayfa\n\nDördüncü sayfa")
+        self.assertEqual(error, "")
+        self.assertEqual(vision.call_args_list[0].args[1], [1, 2, 3])
+        self.assertEqual(vision.call_args_list[1].args[1], [4])
 
 
 if __name__ == "__main__":

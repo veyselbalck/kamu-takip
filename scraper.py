@@ -52,6 +52,7 @@ import requests
 import urllib3
 from playwright.sync_api import sync_playwright
 from pypdf import PdfReader
+import pypdfium2 as pdfium
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -77,6 +78,7 @@ GEMINI_DEAD = {"v": False}
 GEMINI_MODEL_KONTROL = {"yapildi": False}
 GROQ_API_KEY = GROQ_KEYS[0] if GROQ_KEYS else ("gemini" if GEMINI_API_KEY else None)   # "yapay zekâ erişimi var mı" bayrağı
 GROQ_MODELS = ["openai/gpt-oss-120b", "openai/gpt-oss-20b"]   # kaldırılmış llama modelleri çıkarıldı; yeni modeller otomatik eklenir
+GROQ_OCR_MODEL = "qwen/qwen3.8-27b"
 GROQ_MODEL = GROQ_MODELS[0]                 # ana model; kotası dolarsa sıradakine geçilir
 GROQ_DEAD_MODELS = set()                    # bugün kotası bitmiş / kullanılamayan modeller
 GROQ_JSON_HATA = {}                         # model -> bu çalıştırmadaki geçersiz-JSON sayısı
@@ -683,7 +685,9 @@ OLE_IMZA = b"\xd0\xcf\x11\xe0\xa1\xb1\x1a\xe1"      # eski .doc biçimi
 
 def ek_metni(veri, tur, url):
     """Baytlara bakarak PDF / Word / görsel ayırt edip metne çevirir -> (metin | None, cins)."""
-    if veri[:4] == b"%PDF":
+    pdf_imza = veri[:1024].find(b"%PDF")
+    if pdf_imza >= 0:
+        veri = veri[pdf_imza:]
         try:
             t = "\n".join((pg.extract_text() or "") for pg in PdfReader(io.BytesIO(veri)).pages)
         except Exception:
@@ -691,7 +695,12 @@ def ek_metni(veri, tur, url):
         if len(t.strip()) >= 100:
             return t, "pdf"
         t2 = gemini_ocr_dosya(veri, "application/pdf")
-        return (t2, "pdf-ocr") if t2 and len(t2.strip()) >= 100 else (None, "pdf-okunamadı")
+        if t2 and len(t2.strip()) >= 100:
+            return t2, "pdf-ocr-gemini"
+        t3, neden = groq_ocr_pdf(veri)
+        if t3 and len(t3.strip()) >= 100:
+            return t3, "pdf-ocr-groq"
+        return None, f"pdf-ocr-okunamadı ({neden})"
     if veri[:2] == b"PK":
         try:
             with zipfile.ZipFile(io.BytesIO(veri)) as z:
@@ -1255,21 +1264,65 @@ def fetch_iskur_kurumdisi_harita(page):
 
 
 def read_iskur_pdf(page, url):
-    """İŞKUR ilan PDF'sini oturumlu tarayıcı isteğiyle indirip metin/OCR olarak okur."""
+    """İŞKUR PDF'sini tarayıcı isteği, gerekirse HTTP yedeği ve OCR ile okur."""
+    pdf_bytes, attempts = None, []
     try:
         response = page.context.request.get(
-            url, timeout=60000, headers={"Referer": "https://www.iskur.gov.tr/ilanlar/"}
+            url, timeout=60000, headers={
+                "Referer": "https://www.iskur.gov.tr/ilanlar/",
+                "Accept": "application/pdf,*/*",
+                "User-Agent": BROWSER_UA,
+            }
         )
-        if not response.ok:
-            raise RuntimeError(f"PDF isteği HTTP {response.status}")
-        text, kind = ek_metni(response.body(), response.headers.get("content-type", ""), url)
-        if not text or len(text.strip()) < 100:
-            raise RuntimeError(f"PDF metni çıkarılamadı ({kind})")
-        return text[:40000]
+        body = response.body()
+        if response.ok and body[:1024].find(b"%PDF") >= 0:
+            pdf_bytes = body
+        else:
+            attempts.append(
+                f"tarayıcı isteği HTTP {response.status}, "
+                f"tür={response.headers.get('content-type', '?')}, boyut={len(body)}"
+            )
     except Exception as e:
-        DETAY_HATA[url] = f"İŞKUR PDF okunamadı: {hata_sinifla(e)}"
-        print(f"İŞKUR ilan PDF'si okunamadı ({url}): {DETAY_HATA[url]}")
+        attempts.append(f"tarayıcı isteği: {hata_sinifla(e)}")
+
+    if pdf_bytes is None:
+        try:
+            response = request_with_retry(
+                "GET", url, retries=2, timeout=60,
+                headers={
+                    "Accept": "application/pdf,*/*",
+                    "Referer": "https://www.iskur.gov.tr/ilanlar/",
+                    "User-Agent": BROWSER_UA,
+                },
+            )
+            if response.status_code == 200 and response.content[:1024].find(b"%PDF") >= 0:
+                pdf_bytes = response.content
+            else:
+                attempts.append(
+                    f"HTTP yedeği HTTP {response.status_code}, "
+                    f"tür={response.headers.get('content-type', '?')}, "
+                    f"boyut={len(response.content)}"
+                )
+        except Exception as e:
+            attempts.append(f"HTTP yedeği: {hata_sinifla(e)}")
+
+    if pdf_bytes is None:
+        reason = "PDF yerine başka içerik geldi (" + "; ".join(attempts) + ")"
+        DETAY_HATA[url] = f"İŞKUR PDF okunamadı: {reason}"
+        print(f"İŞKUR ilan PDF'si okunamadı ({url}): {reason}")
         return ""
+
+    try:
+        text, kind = ek_metni(pdf_bytes, "application/pdf", url)
+        if text and len(text.strip()) >= 100:
+            return text[:40000]
+        reason = f"PDF metni çıkarılamadı ({kind})"
+    except Exception as e:
+        reason = f"PDF ayrıştırma/OCR hatası ({hata_sinifla(e)})"
+
+    DETAY_HATA[url] = f"İŞKUR PDF okunamadı: {reason}"
+    print(f"İŞKUR ilan PDF'si okunamadı ({url}): {reason}")
+    return ""
 
 
 SOURCES = [
@@ -1700,6 +1753,120 @@ def gemini_ocr_dosya(veri, mime):
     except Exception as e:
         print("Gemini OCR istisnası:", str(e)[:100])
         return None
+
+
+def groq_vision_call(images, page_numbers):
+    """Groq vision ile en çok üç PDF sayfasını OCR eder; kota dolunca sonraki anahtara geçer."""
+    if not GROQ_KEYS:
+        return None, "Groq OCR anahtarı tanımlı değil"
+    slotlar_coklu = len(GROQ_KEYS) > 1
+    content = [{
+        "type": "text",
+        "text": ("Bu kamu personeli ilanı PDF'sinin sayfalarını sırayla, yorum eklemeden ve "
+                 "Türkçe karakterleri koruyarak yazıya aktar. Başlıkları, tabloları, tarihleri, "
+                 "başvuru şartlarını ve puanları koru. Okunmayan kısım için [okunamadı] yaz. "
+                 f"Bu görseller PDF sayfaları {page_numbers[0]}-{page_numbers[-1]} arasındadır."),
+    }]
+    content.extend({
+        "type": "image_url",
+        "image_url": {"url": "data:image/jpeg;base64," + image},
+    } for image in images)
+    errors = []
+
+    for key_index, key in enumerate(GROQ_KEYS):
+        slot = f"{GROQ_OCR_MODEL}#{key_index + 1}" if slotlar_coklu else GROQ_OCR_MODEL
+        if slot in GROQ_DEAD_MODELS:
+            continue
+        try:
+            response = requests.post(
+                "https://api.groq.com/openai/v1/chat/completions",
+                headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
+                json={
+                    "model": GROQ_OCR_MODEL,
+                    "messages": [{"role": "user", "content": content}],
+                    "temperature": 0.0,
+                    "max_completion_tokens": 6000,
+                },
+                timeout=120,
+            )
+        except requests.exceptions.RequestException as e:
+            errors.append(f"{slot}: bağlantı hatası ({hata_sinifla(e)})")
+            continue
+
+        if response.status_code == 200:
+            try:
+                text = response.json()["choices"][0]["message"]["content"]
+            except (KeyError, IndexError, TypeError, ValueError) as e:
+                errors.append(f"{slot}: yanıt okunamadı ({type(e).__name__})")
+                continue
+            if text and text.strip():
+                return text.strip(), ""
+            errors.append(f"{slot}: boş yanıt")
+            continue
+
+        if response.status_code == 429:
+            GROQ_DEAD_MODELS.add(slot)
+            GROQ_DEAD_NEDEN[slot] = "OCR kota/hız sınırı; sıradaki anahtara geçildi"
+            errors.append(f"{slot}: kota/hız sınırı (HTTP 429)")
+            continue
+
+        if response.status_code in (401, 403):
+            errors.append(f"{slot}: anahtar geçersiz veya erişim reddedildi (HTTP {response.status_code})")
+            for model in (*GROQ_MODELS, GROQ_OCR_MODEL):
+                dead_slot = f"{model}#{key_index + 1}" if slotlar_coklu else model
+                GROQ_DEAD_MODELS.add(dead_slot)
+                GROQ_DEAD_NEDEN[dead_slot] = f"anahtar geçersiz veya erişim reddedildi (HTTP {response.status_code})"
+            continue
+
+        if response.status_code in (400, 404):
+            GROQ_DEAD_MODELS.add(slot)
+            errors.append(f"{slot}: model/istek reddedildi (HTTP {response.status_code})")
+            continue
+
+        errors.append(f"{slot}: HTTP {response.status_code}")
+
+    return None, "; ".join(errors) if errors else "kullanılabilir Groq OCR anahtarı kalmadı"
+
+
+def groq_ocr_pdf(veri):
+    """Görüntü PDF'lerini üçer sayfa halinde Groq vision modeline gönderir."""
+    if not GROQ_KEYS:
+        return None, "Groq OCR anahtarı tanımlı değil"
+    try:
+        document = pdfium.PdfDocument(veri)
+    except Exception as e:
+        return None, f"PDF sayfaları görüntüye çevrilemedi ({hata_sinifla(e)})"
+
+    parts = []
+    try:
+        page_count = len(document)
+        if not page_count:
+            return None, "PDF boş"
+        for start in range(0, page_count, 3):
+            images, page_numbers = [], []
+            for index in range(start, min(start + 3, page_count)):
+                page = document[index]
+                bitmap = page.render(scale=1.8)
+                image = bitmap.to_pil()
+                try:
+                    buffer = io.BytesIO()
+                    image.save(buffer, format="JPEG", quality=78, optimize=True)
+                    images.append(base64.b64encode(buffer.getvalue()).decode("ascii"))
+                finally:
+                    image.close()
+                    bitmap.close()
+                    page.close()
+                page_numbers.append(index + 1)
+
+            text, error = groq_vision_call(images, page_numbers)
+            if not text:
+                return None, f"sayfa {page_numbers[0]}-{page_numbers[-1]} OCR başarısız: {error}"
+            parts.append(text)
+    except Exception as e:
+        return None, f"PDF OCR işlenemedi ({hata_sinifla(e)})"
+    finally:
+        document.close()
+    return "\n\n".join(parts), ""
 
 
 def gemini_call(prompt):

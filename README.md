@@ -27,7 +27,10 @@ raporlarda ayrı gösterilir. Çalıştırma ve kaynak özetleri de SQLite'ta
 ve [Kurumdışı Kamu İşçi Alım İlanları](https://www.iskur.gov.tr/ilanlar/kurumdisi-kamu-isci-alim-ilanlari/)
 sayfalarındaki haritalar da ayrı kaynaklar olarak taranır. İlan bulunan illerin PDF
 bağlantıları toplanır; PDF metni çıkarılır, gerektiğinde mevcut Gemini OCR yolu
-denenir ve ilanlar iki profilin rapor akışına dahil edilir.
+veya Groq Vision OCR denenir ve ilanlar iki profilin rapor akışına dahil edilir.
+Görüntü PDF'leri için PDFium sayfaları resme çevirir; OCR kotası bittiğinde
+Groq anahtarları sırayla kullanılır. İŞKUR PDF'si gerçek PDF olarak alınamazsa
+tarayıcı isteğine ek olarak HTTP yedek yolu denenir ve iki yanıtın türü raporlanır.
 
 GitHub Actions, `GROQ_API_KEY` ve numaralı `GROQ_API_KEY_2`–`GROQ_API_KEY_5`
 depolarını sırayla kullanır; kota veya hız sınırına takılan anahtar/model
