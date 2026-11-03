@@ -2213,7 +2213,19 @@ def p2_rapor(ads, bugun, state):
         if p2.get("aday") and not p2.get("analiz"):
             bekleyen += 1
         an = p2.get("analiz")
-        if not an or an.get("kategori") not in gruplar:
+        if not an:
+            continue
+        if an.get("kategori") == "ILGISIZ":
+            a = dict(an)
+            a.update({"link": k.get("url_gercek") or key, "_kaynak": k.get("kaynak"),
+                      "_baslik": k.get("baslik"), "_p2": True, "_ilk": k.get("first_seen")})
+            bolum_nedeni = str(an.get("bolumUygun") or "").strip()
+            a["_uygunsuz"] = (f"önlisans programı uymuyor — {bolum_nedeni}"
+                              if bolum_nedeni.lower().startswith("hayır")
+                              else "ikinci profil için uygun ilan değil")
+            uymayan.append(a)
+            continue
+        if an.get("kategori") not in gruplar:
             continue
         bitis = tarih_ayrisir(an.get("basvuruBitis"))
         a = dict(an)

@@ -110,6 +110,34 @@ class ProfileFilterTests(unittest.TestCase):
         self.assertIsNone(scraper.profil2_kontrol(listing, higher_score)[0])
         self.assertIn("yetmez", scraper.profil2_kontrol(listing, scraper.PROFIL2)[0])
 
+    def test_secondary_report_shows_ilgisiz_ads_as_profile_mismatches(self):
+        key = "https://example.test/ilan/2"
+        ads = {
+            key: {
+                "kaynak": "Test kaynağı",
+                "baslik": "Muhasebe personeli",
+                "p2": {
+                    "aday": True,
+                    "analiz": {
+                        "kategori": "ILGISIZ",
+                        "pozisyon": "Muhasebe personeli",
+                        "kurum": "Test kurumu",
+                        "bolumUygun": "Hayır (yalnız muhasebe mezunları)",
+                    },
+                },
+            },
+        }
+
+        groups, expired, manual, pending = scraper.p2_rapor(
+            ads, {key}, {"first_run": scraper.TODAY}
+        )
+        report = scraper.build_report2(groups, expired, manual, pending, "")
+
+        self.assertEqual(len(groups["_uymayan"]), 1)
+        self.assertIn("önlisans programı uymuyor", groups["_uymayan"][0]["_uygunsuz"])
+        self.assertIn("Muhasebe personeli", report)
+        self.assertIn("önlisans programı uymuyor", report)
+
 
 if __name__ == "__main__":
     unittest.main()
