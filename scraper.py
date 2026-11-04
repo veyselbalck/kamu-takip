@@ -30,6 +30,7 @@ import base64
 import csv
 import json
 import sqlite3
+import shutil
 import time
 import io
 import zipfile
@@ -37,6 +38,7 @@ import hashlib
 import html as htmllib
 import datetime
 from contextlib import closing
+from pathlib import Path
 from zoneinfo import ZoneInfo
 from urllib.parse import urlencode, urljoin, urlparse
 
@@ -84,6 +86,13 @@ GROQ_DEAD_MODELS = set()                    # bugün kotası bitmiş / kullanıl
 GROQ_JSON_HATA = {}                         # model -> bu çalıştırmadaki geçersiz-JSON sayısı
 GROQ_MEVCUT = []                            # Groq model listesinden gelen kimlikler (tanı için)
 GROQ_DEAD_NEDEN = {}                        # model -> neden (rapor başlığında gösterilir)
+LOCAL_OCR_SETUP = None
+LOCAL_OCR_SETUP_ERROR = None
+TESSDATA_TUR_URL = (
+    "https://raw.githubusercontent.com/tesseract-ocr/tessdata_best/"
+    "9ddc24e750eec0994223a9edc3fcb434a2244f3b/tur.traineddata"
+)
+TESSDATA_TUR_SHA256 = "E0C3338DC17503DC7D335A507C9AE01B2B46CFD07561171E1E1AC55D85E8E438"
 GROQ_ZAYIF = {"openai/gpt-oss-20b"}   # kartta "doğrula" uyarısı yalnız bunlar için
 SBB_ADI = "SBB Kamu İlan"
 SBB_ATLA = re.compile(r"iptal|düzeltme|subay|pilot|hâkim|hakim|savcı|tabip|kaymakam|öğretmen", re.I)
@@ -694,13 +703,18 @@ def ek_metni(veri, tur, url):
             t = ""
         if len(t.strip()) >= 100:
             return t, "pdf"
+        yerel_metin, yerel_neden = yerel_ocr_pdf(veri)
+        if yerel_metin:
+            if len(yerel_metin.strip()) >= 100:
+                return yerel_metin, "pdf-ocr-yerel"
+            yerel_neden = f"metin kısa ({len(yerel_metin.strip())} karakter)"
         t2 = gemini_ocr_dosya(veri, "application/pdf")
         if t2 and len(t2.strip()) >= 100:
             return t2, "pdf-ocr-gemini"
         t3, neden = groq_ocr_pdf(veri)
         if t3 and len(t3.strip()) >= 100:
             return t3, "pdf-ocr-groq"
-        return None, f"pdf-ocr-okunamadı ({neden})"
+        return None, f"pdf-ocr-okunamadı (yerel: {yerel_neden}; bulut: {neden})"
     if veri[:2] == b"PK":
         try:
             with zipfile.ZipFile(io.BytesIO(veri)) as z:
@@ -723,6 +737,102 @@ def ek_metni(veri, tur, url):
         t = gemini_ocr_dosya(veri, mime)
         return (t, "görsel-ocr") if t and len(t.strip()) >= 80 else (None, "görsel-ocr-yok")
     return None, "bilinmeyen"
+
+
+def yerel_ocr_hazirla():
+    """Tesseract ve Türkçe dil modelini bulur; model yoksa kullanıcı önbelleğine indirir."""
+    global LOCAL_OCR_SETUP, LOCAL_OCR_SETUP_ERROR
+    if LOCAL_OCR_SETUP:
+        return LOCAL_OCR_SETUP, ""
+    if LOCAL_OCR_SETUP_ERROR:
+        return None, LOCAL_OCR_SETUP_ERROR
+
+    executable = os.environ.get("TESSERACT_CMD") or shutil.which("tesseract")
+    if not executable and os.name == "nt":
+        default_executable = Path("C:/Program Files/Tesseract-OCR/tesseract.exe")
+        if default_executable.is_file():
+            executable = str(default_executable)
+    if not executable:
+        LOCAL_OCR_SETUP_ERROR = "Tesseract kurulu değil"
+        return None, LOCAL_OCR_SETUP_ERROR
+
+    try:
+        from pytesseract import pytesseract
+
+        pytesseract.tesseract_cmd = executable
+        installed_data = Path(executable).resolve().parent / "tessdata"
+        if (installed_data / "tur.traineddata").is_file():
+            data_dir = installed_data
+        else:
+            cache_root = Path(os.environ.get("LOCALAPPDATA") or Path.home())
+            data_dir = cache_root / "kamu-takip" / "tessdata"
+            data_dir.mkdir(parents=True, exist_ok=True)
+            model_path = data_dir / "tur.traineddata"
+            model_hash = (
+                hashlib.sha256(model_path.read_bytes()).hexdigest().upper()
+                if model_path.is_file() else ""
+            )
+            if model_hash != TESSDATA_TUR_SHA256:
+                response = requests.get(TESSDATA_TUR_URL, timeout=90)
+                response.raise_for_status()
+                downloaded_hash = hashlib.sha256(response.content).hexdigest().upper()
+                if downloaded_hash != TESSDATA_TUR_SHA256:
+                    raise ValueError("indirilen Türkçe OCR modeli geçersiz veya eksik")
+                temporary_path = model_path.with_suffix(".traineddata.tmp")
+                temporary_path.write_bytes(response.content)
+                os.replace(temporary_path, model_path)
+        os.environ["TESSDATA_PREFIX"] = str(data_dir)
+        LOCAL_OCR_SETUP = (pytesseract, data_dir)
+        return LOCAL_OCR_SETUP, ""
+    except (OSError, requests.exceptions.RequestException, ValueError) as e:
+        LOCAL_OCR_SETUP_ERROR = f"Türkçe OCR modeli hazırlanamadı ({hata_sinifla(e)})"
+        print("Yerel OCR hazırlanamadı:", LOCAL_OCR_SETUP_ERROR)
+        return None, LOCAL_OCR_SETUP_ERROR
+    except ImportError as e:
+        LOCAL_OCR_SETUP_ERROR = f"pytesseract kurulu değil ({hata_sinifla(e)})"
+        print("Yerel OCR hazırlanamadı:", LOCAL_OCR_SETUP_ERROR)
+        return None, LOCAL_OCR_SETUP_ERROR
+
+
+def yerel_ocr_pdf(veri):
+    """Görüntü PDF'sini Türkçe Tesseract ile CPU'da okur; yapay zekâ kotası kullanmaz."""
+    setup, error = yerel_ocr_hazirla()
+    if not setup:
+        return None, error
+    pytesseract, data_dir = setup
+    try:
+        document = pdfium.PdfDocument(veri)
+    except Exception as e:
+        return None, f"PDF açılamadı ({hata_sinifla(e)})"
+
+    parts = []
+    try:
+        for index in range(len(document)):
+            page = document[index]
+            try:
+                bitmap = page.render(scale=2.4)
+                try:
+                    image = bitmap.to_pil()
+                    try:
+                        page_text = pytesseract.image_to_string(
+                            image,
+                            lang="tur",
+                            timeout=90,
+                        ).strip()
+                        if page_text:
+                            parts.append(page_text)
+                    finally:
+                        image.close()
+                finally:
+                    bitmap.close()
+            finally:
+                page.close()
+    except Exception as e:
+        return None, f"sayfa OCR hatası ({hata_sinifla(e)})"
+    finally:
+        document.close()
+    text = "\n\n".join(parts).strip()
+    return (text, "") if text else (None, "metin tanınamadı")
 
 
 def ek_linkleri(page, taban):

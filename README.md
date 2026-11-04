@@ -28,9 +28,17 @@ ve [Kurumdışı Kamu İşçi Alım İlanları](https://www.iskur.gov.tr/ilanlar
 sayfalarındaki haritalar da ayrı kaynaklar olarak taranır. İlan bulunan illerin PDF
 bağlantıları toplanır; PDF metni çıkarılır, gerektiğinde mevcut Gemini OCR yolu
 veya Groq Vision OCR denenir ve ilanlar iki profilin rapor akışına dahil edilir.
-Görüntü PDF'leri için PDFium sayfaları resme çevirir; OCR kotası bittiğinde
-Groq anahtarları sırayla kullanılır. İŞKUR PDF'si gerçek PDF olarak alınamazsa
+Görüntü PDF'leri için PDFium sayfaları resme çevirir; Tesseract Türkçe OCR önce
+yerel CPU'da çalışır, yeterli metin çıkaramazsa Gemini ve Groq denenir. Yerel OCR
+API kotası tüketmez ve GPU gerektirmez. Self-hosted Windows runner'a Tesseract
+kurulmalıdır; Türkçe dil modeli ilk çalıştırmada indirip yerel önbelleğe alınır.
+İŞKUR PDF'si gerçek PDF olarak alınamazsa
 tarayıcı isteğine ek olarak HTTP yedek yolu denenir ve iki yanıtın türü raporlanır.
+Self-hosted Windows makinesine kurmak için PowerShell'de:
+
+```powershell
+winget install --id UB-Mannheim.TesseractOCR --exact
+```
 
 GitHub Actions, `GROQ_API_KEY` ve numaralı `GROQ_API_KEY_2`–`GROQ_API_KEY_5`
 depolarını sırayla kullanır; kota veya hız sınırına takılan anahtar/model

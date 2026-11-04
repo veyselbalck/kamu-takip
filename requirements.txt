@@ -3,5 +3,6 @@ requests==2.32.3
 pypdf==5.1.0
 pypdfium2>=4.30,<5
 Pillow>=10,<13
+pytesseract>=0.3.13,<1
 tzdata
 truststore

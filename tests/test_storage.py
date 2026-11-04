@@ -252,6 +252,7 @@ class IskurMapSourceTests(unittest.TestCase):
 
         with (
             patch.object(scraper, "PdfReader", return_value=Mock(pages=[page])),
+            patch.object(scraper, "yerel_ocr_pdf", return_value=(None, "model yok")),
             patch.object(scraper, "gemini_ocr_dosya", return_value=None),
             patch.object(scraper, "groq_ocr_pdf", return_value=(expected_text, "")) as groq_ocr,
         ):
@@ -260,6 +261,40 @@ class IskurMapSourceTests(unittest.TestCase):
         self.assertEqual(text, expected_text)
         self.assertEqual(kind, "pdf-ocr-groq")
         groq_ocr.assert_called_once()
+
+    def test_pdf_text_extraction_prefers_local_ocr_before_cloud(self):
+        page = Mock()
+        page.extract_text.return_value = ""
+        expected_text = "Türkçe yerel OCR ilan metni " * 10
+
+        with (
+            patch.object(scraper, "PdfReader", return_value=Mock(pages=[page])),
+            patch.object(scraper, "yerel_ocr_pdf", return_value=(expected_text, "")) as local_ocr,
+            patch.object(scraper, "gemini_ocr_dosya") as gemini,
+            patch.object(scraper, "groq_ocr_pdf") as groq_ocr,
+        ):
+            text, kind = scraper.ek_metni(b"%PDF-1.7 image-only", "application/pdf", "ilan.pdf")
+
+        self.assertEqual(text, expected_text)
+        self.assertEqual(kind, "pdf-ocr-yerel")
+        local_ocr.assert_called_once()
+        gemini.assert_not_called()
+        groq_ocr.assert_not_called()
+
+    def test_local_ocr_reads_pdf_pages_and_joins_recognized_lines(self):
+        writer = PdfWriter()
+        writer.add_blank_page(width=200, height=200)
+        pdf = io.BytesIO()
+        writer.write(pdf)
+        ocr = Mock()
+        ocr.image_to_string.return_value = "Kamu personeli\nAlım ilanı"
+
+        with patch.object(scraper, "yerel_ocr_hazirla", return_value=((ocr, "tessdata"), "")):
+            text, error = scraper.yerel_ocr_pdf(pdf.getvalue())
+
+        self.assertEqual(text, "Kamu personeli\nAlım ilanı")
+        self.assertEqual(error, "")
+        ocr.image_to_string.assert_called_once()
 
 
 class GroqRotationTests(unittest.TestCase):
