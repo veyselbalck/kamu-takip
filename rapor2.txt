@@ -1,23 +1,10 @@
-♿ Sevgilim — Önlisans / Anestezi / Engelli kadro İlanları — 03.11.2026 23:50
-← Ana rapora dön · Bugün yeni eklenen ilgili ilan: 0
+♿ Sevgilim — Önlisans / Anestezi / Engelli kadro İlanları — 04.11.2026 18:32
+← Ana rapora dön · Bugün yeni eklenen ilgili ilan: 0 — ⏳ 12 ilan analiz kuyruğunda (sonraki çalıştırmalarda işlenecek)
 
-Bu çalıştırma: 9466 ilan veritabanında · 0 yeni kayıt · 43 ayrıntı yeni okundu · 361 kayıt/metin önbellekten kullanıldı · 102 ayrıntı okuma hatası · 0 analiz hatası
+Bu çalıştırma: 9535 ilan veritabanında · 69 yeni kayıt · 45 ayrıntı yeni okundu · 379 kayıt/metin önbellekten kullanıldı · 103 ayrıntı okuma hatası · 1 analiz hatası
 Profil: KPSS önlisans 66 puan (P93), EKPSS 62 puan. İlanda açıkça yazan en düşük puan bunlardan yüksekse ilan gizlenir (nedeniyle birlikte alttaki listede durur); puan şartı yazmayan ilanlar elenmez. Sıralama: son başvuru tarihi. Aynı ilanlar ana kaynaklardan (İlan.gov.tr, Resmî Gazete, Kariyer Kapısı, ÇŞB, İŞKUR, Memurlar.net) taranır.
 
-♿ Engelli kadrosu / EKPSS'li ilanlar — 2 ilan
-Beden İşçisi (Genel)
-DSİ 4 Bölge Müdürlüğü
-İŞKUR (e-şube)
-🧾 kura
-KPSS Belirtilmemiş: belirtilmemiş
-Ek sınav: Yok
-📍 İkamet: Yok
-♿ Engelli: Engelli belgesi olanlar başvurabilir; EKPSS şartı yok
-⚠ Ek şart: Sağlık şartı: engel sağlık yönünden sakınca olmaması
-DSİ 4 Bölge Müdürlüğü Beden İşçisi (Genel) pozisyonu için engelli belge sahibi adaylar başvurabilir. Başvuru 5 gün içinde yapılmalı, değerlendirme kura ile yapılacaktır.
-
-Kanıt: “Bu ilana onaylanmış ve geçerli "Engelli" belgesi olanlar başvurabilir.”
-İlana git ↗
+♿ Engelli kadrosu / EKPSS'li ilanlar — 1 ilan
 Engelli İdari Personel
 Hizmet İhracatçıları Birliği Genel Sekreterliği — 1 kadro
 İlan.gov.tr
@@ -36,5 +23,5 @@ Kanıt: “Engelli İdari Personel kadrosu için 1 (bir) olmak üzere toplam 7 (
 🎓 Önlisans mezunlarına açık kadrolar — 0 ilan
 Şu an bu kategoride aktif ilan bulunamadı.
 
-🚫 Uygun görünmediği için gizlenen ilanlar (19) — KPSS önlisans 66, EKPSS 62
+🚫 Uygun görünmediği için gizlenen ilanlar (16) — KPSS önlisans 66, EKPSS 62
 Not: Sağlık Bakanlığı'nın kendi KPSS tercih alımları bu kaynaklarda yer almaz; ayrıca takip edilmelidir.

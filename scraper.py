@@ -1597,9 +1597,12 @@ def groq_call(model, prompt, key=None, slot=None):
         if r.status_code == 400 and re.search(r"validate JSON|json_validate_failed|failed_generation", r.text, re.I):
             print("Groq JSON üretemedi (yalnız bu istek):", model, r.text[:100])
             return "JSON_HATA"                 # model sağlam; bu ilan için sıradaki modele geçilir
-        if r.status_code in (401, 403):
-            print("Groq anahtarı kullanılamıyor:", r.status_code, r.text[:120])
+        if r.status_code == 401:
+            print("Groq API anahtarı reddedildi (HTTP 401):", r.text[:120])
             return "KEY_HATA"
+        if r.status_code == 403:
+            print("Groq erişimi reddedildi (HTTP 403):", r.text[:120])
+            return "ACCESS_HATA"
         if r.status_code in (400, 404):
             print("Groq model/istek hatası:", model, r.status_code, r.text[:150])
             GROQ_DEAD_NEDEN[slot] = f"model/istek hatası {r.status_code}: {r.text[:90]}"
@@ -1811,11 +1814,15 @@ def groq_vision_call(images, page_numbers):
             continue
 
         if response.status_code in (401, 403):
-            errors.append(f"{slot}: anahtar geçersiz veya erişim reddedildi (HTTP {response.status_code})")
+            if response.status_code == 401:
+                reason = "Groq API anahtarı reddedildi (HTTP 401)"
+            else:
+                reason = "Groq HTTP 403: erişim/ağ izni reddedildi; runner çıkış IP'sini ve Groq ağ ayarlarını kontrol edin"
+            errors.append(f"{slot}: {reason}")
             for model in (*GROQ_MODELS, GROQ_OCR_MODEL):
                 dead_slot = f"{model}#{key_index + 1}" if slotlar_coklu else model
                 GROQ_DEAD_MODELS.add(dead_slot)
-                GROQ_DEAD_NEDEN[dead_slot] = f"anahtar geçersiz veya erişim reddedildi (HTTP {response.status_code})"
+                GROQ_DEAD_NEDEN[dead_slot] = reason
             continue
 
         if response.status_code in (400, 404):
@@ -1928,11 +1935,19 @@ def groq_zincir(prompt):
                 for kj in range(len(GROQ_KEYS)):          # model hatası anahtardan bağımsızdır
                     GROQ_DEAD_MODELS.add(f"{model}#{kj + 1}" if coklu else model)
                 break
-            if res == "KEY_HATA":
+            if res in ("KEY_HATA", "ACCESS_HATA"):
                 for other_model in GROQ_MODELS:
                     failed_slot = f"{other_model}#{ki + 1}" if coklu else other_model
                     GROQ_DEAD_MODELS.add(failed_slot)
-                    GROQ_DEAD_NEDEN[failed_slot] = "anahtar geçersiz veya erişim izni yok"
+                    if res == "KEY_HATA":
+                        GROQ_DEAD_NEDEN[failed_slot] = (
+                            "Groq API anahtarı reddedildi (HTTP 401); secret değerini kontrol edin"
+                        )
+                    else:
+                        GROQ_DEAD_NEDEN[failed_slot] = (
+                            "Groq HTTP 403: erişim/ağ izni reddedildi; "
+                            "self-hosted runner çıkış IP'sini ve Groq ağ ayarlarını kontrol edin"
+                        )
                 continue
             if res == "KOTA":
                 continue

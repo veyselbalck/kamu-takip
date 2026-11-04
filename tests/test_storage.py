@@ -274,6 +274,38 @@ class GroqRotationTests(unittest.TestCase):
 
         self.assertEqual(keys, ["first", "third", "fifth"])
 
+    def test_groq_chain_reports_403_as_network_access_denial(self):
+        with (
+            patch.object(scraper, "GROQ_KEYS", ["test-key"]),
+            patch.object(scraper, "GROQ_MODELS", ["test-model"]),
+            patch.object(scraper, "GROQ_DEAD_MODELS", set()),
+            patch.object(scraper, "GROQ_DEAD_NEDEN", {}),
+            patch.object(scraper, "GROQ_JSON_HATA", {}),
+            patch.object(scraper, "GEMINI_API_KEY", ""),
+            patch.object(scraper, "groq_modelleri_dogrula"),
+            patch.object(scraper, "groq_call", return_value="ACCESS_HATA"),
+        ):
+            result = scraper.groq_zincir("prompt")
+
+            self.assertIsNone(result)
+            self.assertIn("HTTP 403", scraper.GROQ_DEAD_NEDEN["test-model"])
+            self.assertIn("runner çıkış IP'sini", scraper.GROQ_DEAD_NEDEN["test-model"])
+
+    def test_vision_ocr_reports_403_as_network_access_denial(self):
+        denied = Mock(status_code=403, text="Access denied. Please check your network settings.")
+
+        with (
+            patch.object(scraper, "GROQ_KEYS", ["test-key"]),
+            patch.object(scraper, "GROQ_DEAD_MODELS", set()),
+            patch.object(scraper, "GROQ_DEAD_NEDEN", {}),
+            patch.object(scraper.requests, "post", return_value=denied),
+        ):
+            text, error = scraper.groq_vision_call(["ZmFrZQ=="], [1])
+
+            self.assertIsNone(text)
+            self.assertIn("HTTP 403", error)
+            self.assertTrue(any("ağ izni" in reason for reason in scraper.GROQ_DEAD_NEDEN.values()))
+
     def test_rate_limited_key_falls_through_to_the_next_key(self):
         limited = Mock(status_code=429, headers={"retry-after": "0"}, text="rate limit")
         success = Mock(status_code=200)
