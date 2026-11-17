@@ -782,3 +782,12 @@ navigating to ""https://www.resmigaz — önceki günlerden 9 ilan taşındı (k
 2026-11-17,10:37:48,İŞKUR Kamu Memur Alım İlanları,35,35,6,OK,"sitede toplam: 35, okunan: 35 (haritada ilan bulunan il: 20, tekil PDF: 35)"
 2026-11-17,10:38:13,İŞKUR Kurumdışı Kamu İşçi Alım İlanları,86,86,4,OK,"sitede toplam: 86, okunan: 86 (haritada ilan bulunan il: 31, tekil PDF: 86)"
 2026-11-17,10:39:49,Memurlar.net İlan,64,35,20,KISMİ (tamlık doğrulanmadı),8/8 kategori sayfası gezildi (tam ilan metni); sitede toplam sayısı bilinmiyor (yapı doğrulanmadı)
+2026-11-17,19:45:34,İlan.gov.tr,121,107,10,OK,"sitede toplam: 121, okunan: 121, sayfalama: currentPage"
+2026-11-17,19:46:12,Resmî Gazete,12,4,0,ŞÜPHELİ (eksik okundu),"sitede toplam: 12, okunan: 10, personel ilanı: 4, PDF bulma: dizin linkleri — okunamayan PDF: 2 (taranmış görüntü olabilir; elle kontrol listesinde) — veritabanından tekrar kullanılan: 4"
+2026-11-17,19:50:33,Kariyer Kapısı,24,19,6,OK,"IlanDetay linkleri doğrudan bulundu; sitede toplam: 24, okunan: 24, harici siteye giden (İlana Git): 1"
+2026-11-17,19:50:42,SBB Kamu İlan,121,80,18,OK,"sitede toplam: 93, okunan: 121 (ham bağlantı: 121, tekrarlar elendi) — detay metni okunan: 1/107 — veritabanından tekrar kullanılan: 106 (+14 ilgisiz başlık atlandı)"
+2026-11-17,19:50:51,ÇŞB Yerel Yönetimler,44,9,0,OK,"sitede toplam: 44, okunan: 44 (yalnız ilan/alım başlıklı duyurular; 4 sayfa gezildi)"
+2026-11-17,19:51:08,İŞKUR (e-şube),14,14,1,OK,"sitede toplam: 14, okunan: 14 (Kamu seçilerek arandı; 1 sayfa gezildi, sonraki sayfa yok)"
+2026-11-17,19:51:20,İŞKUR Kamu Memur Alım İlanları,35,35,6,OK,"sitede toplam: 35, okunan: 35 (haritada ilan bulunan il: 20, tekil PDF: 35)"
+2026-11-17,19:51:45,İŞKUR Kurumdışı Kamu İşçi Alım İlanları,93,93,4,OK,"sitede toplam: 93, okunan: 93 (haritada ilan bulunan il: 33, tekil PDF: 93)"
+2026-11-17,19:53:25,Memurlar.net İlan,61,32,20,KISMİ (tamlık doğrulanmadı),8/8 kategori sayfası gezildi (tam ilan metni); sitede toplam sayısı bilinmiyor (yapı doğrulanmadı)
