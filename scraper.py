@@ -56,6 +56,8 @@ from playwright.sync_api import sync_playwright
 from pypdf import PdfReader
 import pypdfium2 as pdfium
 
+import report_ui
+
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # ---------------- AYARLAR ----------------
@@ -419,6 +421,31 @@ def hata_sinifla(e):
         if re.search(rx, t, re.I):
             return neden
     return t.strip().replace("\n", " ")[:90] or "bilinmeyen hata"
+
+
+OKUMA_DENEME_SINIRI = 3      # art arda bu kadar başarısız denemeden sonra yeniden deneme seyrekleşir
+OKUMA_BEKLEME_GUN = 7        # seyrek denemede iki deneme arası
+GECICI_HATA = re.compile(r"zaman aşımı|alan adı|bağlantı|sertifika|hız sınırı|\(429\)|\(5xx\)|\(403\)", re.I)
+
+
+def okuma_ertele(k, bugun=None):
+    """Aynı ilanın ayrıntısı art arda okunamıyorsa (ör. OCR'ın çıkaramadığı taranmış PDF) her çalıştırmada
+    OCR/API kotası ve süre harcamak yerine haftada bir denenir. Ağ kaynaklı geçici hatalar sayılmaz."""
+    if int(k.get("okuma_deneme") or 0) < OKUMA_DENEME_SINIRI:
+        return False
+    try:
+        son = datetime.date.fromisoformat(str(k.get("okuma_son")))
+    except ValueError:
+        return False
+    return ((bugun or TR_NOW.date()) - son).days < OKUMA_BEKLEME_GUN
+
+
+def okuma_basarisiz_say(k, hata):
+    """Başarısız okumayı kaydeder; geçici ağ hatalarında sayaç artmaz."""
+    if GECICI_HATA.search(str(hata or "")):
+        return
+    k["okuma_deneme"] = int(k.get("okuma_deneme") or 0) + 1
+    k["okuma_son"] = TODAY
 
 
 def html_metni(html):
@@ -1533,47 +1560,116 @@ def _kapsama(x, y):
 
 
 BILISIM_POZ = re.compile(r"bilişim|bilgi\s*işlem|yazılım|programc|sistem|veri", re.I)
+# Başlıkta anlam taşımayan dolgu sözcükleri: "Sözleşmeli Çözümleyici" ile "Çözümleyici alımı" aynı pozisyondur.
+POZ_DOLGU = {"sözleşmeli", "personel", "personeli", "alım", "alımı", "alim", "ilanı", "ilan", "kadro", "kadrosu",
+             "pozisyon", "pozisyonu", "ve", "ile", "için", "sınav", "sınavı", "duyuru", "duyurusu", "alınacaktır"}
+# Resmî kaynak önce: birleşen kartta ana bağlantı aracı siteye değil asıl yayıncıya gider.
+KAYNAK_ONCELIK = {"Kariyer Kapısı": 0, "İlan.gov.tr": 1, "Resmî Gazete": 2, "ÇŞB Yerel Yönetimler": 3,
+                  "İŞKUR (e-şube)": 4, "SBB Kamu İlan": 6, "Memurlar.net İlan": 7}
+METIN_ESIK = 0.85           # iki ilan metninin ortak anlamlı sözcük oranı (küçük olana göre)
+METIN_EN_AZ_SOZCUK = 40     # bundan kısa metinlerde metin karşılaştırması güvenilmez
+
+
+def imza(metin):
+    """İlan metninin karşılaştırma imzası: 5+ harfli sözcükler kümesi (çok kısa metinde boş)."""
+    s = (metin or "").replace("İ", "i").replace("I", "ı").lower()
+    sozcukler = frozenset(re.findall(r"[a-zçğıöşü0-9]{5,}", s))
+    return sozcukler if len(sozcukler) >= METIN_EN_AZ_SOZCUK else frozenset()
+
+
+def _poz_sozcukleri(s):
+    tam = _kelimeler(s)
+    cekirdek = tam - POZ_DOLGU
+    return cekirdek or tam
 
 
 def ayni_ilan(a, b):
+    """İki kartın aynı ilan olup olmadığı. Yanlış birleştirme bağlantıyı kaybettirmez (diğer kaynaklar kartta
+    listelenir), yanlış ayırma ise aynı ilanı iki kez gösterip "bugün eklenen"i şişirir: kararsız kalınca birleştir."""
     ka, kb = a.get("kadroSayisi"), b.get("kadroSayisi")
-    celisir = bool(ka and kb and str(ka) != str(kb))
+    kadro_celisir = bool(ka and kb and str(ka) != str(kb))
     ku = _kapsama(_kelimeler(a.get("kurum"), KURUM_GENEL), _kelimeler(b.get("kurum"), KURUM_GENEL))
+    pk = _kapsama(_poz_sozcukleri(a.get("pozisyon") or a.get("_baslik") or ""),
+                  _poz_sozcukleri(b.get("pozisyon") or b.get("_baslik") or ""))
+    ba, bb = a.get("_bitis"), b.get("_bitis")
+    bitis_celisir = bool(ba and bb and ba != bb)
+    # 1) aynı kurumun, neredeyse aynı metni: kadro/pozisyon adı farklı yazılmış olsa da aynı ilandır
+    ia, ib = a.get("_imza"), b.get("_imza")
+    if ia and ib and ku >= 0.6 and _kapsama(ia, ib) >= (METIN_ESIK + 0.05 if bitis_celisir else METIN_ESIK):
+        return True
+    if bitis_celisir:                       # farklı bitiş tarihi = büyük olasılıkla ayrı ilan turu
+        return False
+    # 2) kurum ve pozisyon adı benzer. Kadro sayısı kaynaktan kaynağa tutarsız çıkıyor (toplam/pozisyon başı),
+    #    bu yüzden yalnız pozisyon adı zayıf benziyorsa çelişki engel sayılır.
+    if ku >= 0.6 and pk >= 0.6 and (not kadro_celisir or (ku >= 0.8 and pk >= 0.8)):
+        return True
+    # 3) aynı kurum, aynı (birden büyük) kadro sayısı (başlıklar farklı yazılmış olabilir)
+    if ku >= 0.8 and ka and kb and not kadro_celisir and str(ka) not in ("0", "1"):
+        return True
+    # 4) aynı kurum, ikisi de bilişim kadrosu ve aynı gün ilk kez görüldü (aynı ilanın farklı yayımı)
     poz_a = a.get("pozisyon") or a.get("_baslik") or ""
     poz_b = b.get("pozisyon") or b.get("_baslik") or ""
-    # 1) kurum ve pozisyon adı benzer
-    if not celisir and ku >= 0.6 and _kapsama(_kelimeler(poz_a), _kelimeler(poz_b)) >= 0.6:
-        return True
-    # 2) aynı kurum, aynı (birden büyük) kadro sayısı, başvuru bitişi çelişmiyor (başlıklar farklı yazılmış olabilir)
-    ba, bb = a.get("_bitis"), b.get("_bitis")
-    if (ku >= 0.8 and ka and kb and not celisir and str(ka) not in ("0", "1")
-            and not (ba and bb and ba != bb)):
-        return True
-    # 3) aynı kurum, ikisi de bilişim kadrosu ve aynı gün ilk kez görüldü (aynı ilanın farklı yayımı)
     if (ku >= 0.8 and BILISIM_POZ.search(poz_a) and BILISIM_POZ.search(poz_b)
             and a.get("_ilk") and a.get("_ilk") == b.get("_ilk") and a.get("_kaynak") != b.get("_kaynak")):
         return True
     return False
 
 
-def birlestir(items):
-    """Aynı ilanın farklı kaynaklardaki kopyalarını tek karta indirir (diğer linkler korunur)."""
+def _bos(v):
+    return v in (None, "", [], (), "Belirtilmemiş", "belirtilmemiş", "Belirtilmedi", "belirtilmedi")
+
+
+def _ana_kart_anahtari(x):
+    doluluk = sum(1 for v in x.values() if not _bos(v))
+    return (KAYNAK_ONCELIK.get(x.get("_kaynak"), 5), -doluluk)
+
+
+_DOLDURMA_DISI = {"_digerleri", "_ilk", "link", "_kaynak", "_baslik", "_imza", "kategori"}
+
+
+def birlestir(items, kategori_sirasi=None):
+    """Aynı ilanın farklı kaynaklardaki kopyalarını tek karta indirir (diğer linkler korunur).
+
+    Zincirleme eşleşir (A~B, B~C ise üçü tek kart). Ana kart resmî kaynaktan seçilir; boş kalan alanlar diğer
+    kopyalardan tamamlanır. kategori_sirasi verilirse ve kopyaların kategorisi farklıysa (ör. biri BOLUM, diğeri
+    TUM_LISANS) en önde yazılan kategori kazanır."""
     gruplar = []
     for a in items:
-        for g in gruplar:
-            if ayni_ilan(g[0], a):
-                g.append(a)
-                break
-        else:
+        eslesen = [g for g in gruplar if any(ayni_ilan(m, a) for m in g)]
+        if not eslesen:
             gruplar.append([a])
+            continue
+        hedef = eslesen[0]
+        hedef.append(a)
+        for g in eslesen[1:]:
+            hedef.extend(g)
+            gruplar.remove(g)
     out = []
     for g in gruplar:
-        g.sort(key=lambda x: -sum(1 for v in x.values() if v not in (None, "", "Belirtilmemiş", "belirtilmemiş")))
+        g.sort(key=_ana_kart_anahtari)
         ana = dict(g[0])
+        for x in g[1:]:
+            for anahtar, deger in x.items():
+                if anahtar not in _DOLDURMA_DISI and _bos(ana.get(anahtar)) and not _bos(deger):
+                    ana[anahtar] = deger
         ana["_digerleri"] = [(x.get("_kaynak"), x.get("link")) for x in g[1:]]
         ana["_ilk"] = min((x.get("_ilk") or "9999") for x in g)       # kart, en eski görülme tarihine göre "yeni" sayılır
+        if kategori_sirasi:
+            kats = [x.get("kategori") for x in g if x.get("kategori") in kategori_sirasi]
+            if kats:
+                ana["kategori"] = min(kats, key=kategori_sirasi.index)
         out.append(ana)
     return out
+
+
+def sira_anahtari(a):
+    """Kart sırası: ağır tecrübe şartlısı en sona; sonra son başvuru tarihi yakın olan önde; tarihi bilinmeyenler
+    sonda ve kendi içinde en yeni görülen önde."""
+    try:
+        ilk = datetime.date.fromisoformat(str(a.get("_ilk") or "")[:10]).toordinal()
+    except ValueError:
+        ilk = 0
+    return ((a.get("_tecrube") or 0) >= 3, a.get("_bitis") is None, a.get("_bitis") or datetime.date.max, -ilk)
 
 
 TECRUBE_RX = re.compile(r"(\d+)(?:\s*[-–/]\s*\d+)?\s*yıl\w*[\s)]*(?:\(?[\w']+[\s)]*){0,5}?(?:tecrübe|deneyim)", re.I)
@@ -2391,195 +2487,213 @@ def kanit_yok(an):
 
 
 def card_html(a):
-    yeni = '<span class="new">🆕 Bugün eklendi</span>' if a.get("_yeni") else ""
+    yeni = '<span class="pill new">🆕 Bugün eklendi</span>' if a.get("_yeni") else ""
     ikamet = a.get("ikametSarti") or "Belirtilmemiş"
-    cls = "tag red" if str(ikamet).startswith("Var") else "tag"
+    ikamet_var = str(ikamet).startswith("Var")
     ek = a.get("ekSartlar") or "Yok"
-    ek_html = "" if str(ek).strip().lower() == "yok" else f'<div class="warn">⚠ Ek şart: {E(ek)}</div>'
+    ek_var = str(ek).strip().lower() != "yok"
+    ek_html = f'<div class="warn">⚠ Ek şart: {E(ek)}</div>' if ek_var else ""
     ek_sinav = a.get("ekSinavDetay") or ("Var (ayrıntı belirtilmemiş)" if a.get("ekSinav") else "Yok")
     tarih = ""
     if a.get("basvuruBaslangic") or a.get("basvuruBitis"):
-        tarih = f'<span class="tag">📅 {E(a.get("basvuruBaslangic") or "?")} → {E(a.get("basvuruBitis") or "?")}</span>'
-    kadro = f' — {E(a["kadroSayisi"])} kadro' if a.get("kadroSayisi") else ""
-    kalan = ""
+        tarih = f'{E(a.get("basvuruBaslangic") or "?")} → {E(a.get("basvuruBitis") or "?")}'
+    kadro = f' · {E(a["kadroSayisi"])} kadro' if a.get("kadroSayisi") else ""
+    kalan, urg, gun = "", "none", ""
     if a.get("_bitis"):
         g = (a["_bitis"] - TR_NOW.date()).days
-        kalan = (f'<span class="tag red">⏰ bugün son gün!</span>' if g == 0 else
-                 f'<span class="tag{" red" if g <= 3 else ""}">⏰ {g} gün kaldı</span>')
-    tecr = ""
+        gun = g
+        if g <= 0:
+            kalan, urg = '<span class="pill red">⏰ bugün son gün!</span>', "today"
+        elif g <= 3:
+            kalan, urg = f'<span class="pill red">⏰ {g} gün kaldı</span>', "soon"
+        elif g <= 7:
+            kalan, urg = f'<span class="pill orange">⏰ {g} gün kaldı</span>', "week"
+        else:
+            kalan, urg = f'<span class="pill green">⏰ {g} gün kaldı</span>', "later"
+    uyarilar = []                       # "dikkat gerekenler" filtresi için
+    etiket = []
     if a.get("_tecrube"):
-        tecr = (f'<span class="tag{" red" if a["_tecrube"] >= 3 else ""}">'
-                f'🧑‍💼 {a["_tecrube"]}+ yıl tecrübe şartı</span>')
-    zayif = ""
-    puan_etiket = ""
-    if a.get("_puan_notu"):
-        puan_etiket += f'<span class="tag src">✔ {E(a["_puan_notu"])}</span>'
-    if a.get("_puan_uyari"):
-        puan_etiket += f'<span class="tag red">⚠ {E(a["_puan_uyari"])}</span>'
-    eng = ""
-    if a.get("engelliBilgi") and str(a["engelliBilgi"]).strip().lower() not in ("yok", "belirtilmemiş", "none"):
-        eng = f'<span class="tag src">♿ Engelli: {E(a["engelliBilgi"])}</span>'
+        agir = a["_tecrube"] >= 3
+        if agir:
+            uyarilar.append("tecrübe")
+        etiket.append(f'<span class="tag{" red" if agir else ""}">🧑‍💼 {a["_tecrube"]}+ yıl tecrübe şartı</span>')
     if a.get("_kanit_ok") is False:
-        zayif += '<span class="tag red">⚠ kanıt alıntısı ilan metninde birebir bulunamadı — doğrula</span>'
+        uyarilar.append("kanıt")
+        etiket.append('<span class="tag red">⚠ kanıt alıntısı ilan metninde birebir bulunamadı — doğrula</span>')
     if not a.get("_p2") and not re.search(r"lisans|bilgisayar|bilişim|yazılım|herhangi|mühendis", str(a.get("kanit") or ""), re.I):
-        zayif = '<span class="tag red">⚠ kanıt zayıf — ilanı elle kontrol et</span>'
+        uyarilar.append("kanıt")
+        etiket = [t for t in etiket if "birebir" not in t]
+        etiket.append('<span class="tag red">⚠ kanıt zayıf — ilanı elle kontrol et</span>')
+    if a.get("engelliBilgi") and str(a["engelliBilgi"]).strip().lower() not in ("yok", "belirtilmemiş", "none"):
+        etiket.append(f'<span class="tag src">♿ Engelli: {E(a["engelliBilgi"])}</span>')
+    if a.get("_puan_notu"):
+        etiket.append(f'<span class="tag src">✔ {E(a["_puan_notu"])}</span>')
+    if a.get("_puan_uyari"):
+        uyarilar.append("puan")
+        etiket.append(f'<span class="tag red">⚠ {E(a["_puan_uyari"])}</span>')
+    if a.get("_model") in GROQ_ZAYIF:
+        etiket.append(f'<span class="tag">🤖 yedek model: {E(a.get("_model"))} (doğrula)</span>')
+    if ek_var or ikamet_var:
+        uyarilar.append("şart")
     diger = ""
     if a.get("_digerleri"):
-        diger = ('<div class="kanit">🔗 Aynı ilan başka kaynakta da: '
-                 + " · ".join(f'<a href="{E(l)}" target="_blank">{E(k)}</a>' for k, l in a["_digerleri"])
-                 + "</div>")
-    return f"""<div class="card">
-  <div class="top"><a href="{E(a.get('link'))}" target="_blank">{E(poz_adi(a) or a.get('_baslik'))}</a>{yeni}</div>
-  <div class="kurum">{E(a.get('kurum'))}{kadro}</div>
-  <div class="meta">
-    <span class="tag src">{E(a.get('_kaynak'))}</span>{tarih}
-    <span class="tag">🧾 {E(a.get('degerlendirmeSekli'))}</span>
-        <span class="tag">KPSS {E(a.get('kpssDurumu') or 'Belirtilmemiş')}: {E(a.get('kpssTuru') or 'belirtilmemiş')}</span>
-        <span class="tag">Ek sınav: {E(ek_sinav)}</span>
-    <span class="{cls}">📍 İkamet: {E(ikamet)}</span>{kalan}{tecr}{zayif}{eng}{puan_etiket}
-    {'<span class="tag">🤖 yedek model: ' + E(a.get('_model')) + ' (doğrula)</span>' if a.get('_model') in GROQ_ZAYIF else ''}
+        diger = ('<span class="note">🔗 Aynı ilan: '
+                 + " · ".join(f'<a href="{E(l)}" target="_blank" rel="noopener">{E(k)}</a>' for k, l in a["_digerleri"])
+                 + "</span>")
+    kanit = ""
+    if a.get("kanit"):
+        kanit = f'<details class="ev"><summary>Kanıt alıntısı</summary><blockquote>“{E(a.get("kanit"))}”</blockquote></details>'
+    ozet = f'<p class="sum">{E(a.get("kisaOzet"))}</p>' if a.get("kisaOzet") else ""
+    baslik = poz_adi(a) or a.get("_baslik")
+    arama = " ".join(str(x or "") for x in (baslik, a.get("kurum"), a.get("_kaynak"), a.get("kisaOzet"),
+                                           a.get("kpssTuru"), a.get("ekSartlar"))).lower()
+    link = E(a.get("link"))
+    return f"""<article class="card" data-urg="{urg}" data-days="{gun}" data-new="{1 if a.get('_yeni') else 0}" data-warn="{1 if uyarilar else 0}" data-q="{E(arama)}">
+  <div class="top">
+    <div><a class="ttl" href="{link}" target="_blank" rel="noopener">{E(baslik)}</a>
+    <div class="kurum">{E(a.get('kurum'))}{kadro}</div></div>
+    <div class="pills">{yeni}{kalan}</div>
   </div>
-  {ek_html}
-  <p>{E(a.get('kisaOzet'))}</p>
-  <div class="kanit">Kanıt: “{E(a.get('kanit'))}”</div>{diger}
-  <a class="btn" href="{E(a.get('link'))}" target="_blank">İlana git ↗</a>
-</div>"""
+  <dl class="facts">
+    <div><dt>Kaynak</dt><dd>{E(a.get('_kaynak'))}</dd></div>
+    {f'<div><dt>Başvuru</dt><dd>📅 {tarih}</dd></div>' if tarih else ''}
+    <div><dt>Değerlendirme</dt><dd>{E(a.get('degerlendirmeSekli')) or 'Belirtilmemiş'}</dd></div>
+    <div><dt>KPSS · {E(a.get('kpssDurumu') or 'Belirtilmemiş')}</dt><dd>{E(a.get('kpssTuru') or 'belirtilmemiş')}</dd></div>
+    <div><dt>Ek sınav</dt><dd>{E(ek_sinav)}</dd></div>
+    <div><dt>İkamet</dt><dd{' class="bad"' if ikamet_var else ''}>📍 {E(ikamet)}</dd></div>
+  </dl>
+  {f'<div class="meta">{"".join(etiket)}</div>' if etiket else ''}
+  {ek_html}{ozet}{kanit}
+  <div class="actions"><a class="btn" href="{link}" target="_blank" rel="noopener">İlana git ↗</a>{diger}</div>
+</article>"""
 
 
-STYLE = """
-body{font-family:system-ui,Arial,sans-serif;background:#f5f6fa;padding:24px;color:#1f2430;max-width:1000px;margin:auto}
-h1{font-size:22px} h2{font-size:18px;margin-top:32px}
-.card{background:#fff;border-radius:12px;padding:16px 20px;margin:12px 0;box-shadow:0 1px 4px rgba(0,0,0,.08)}
-.top a{color:#2a5bd7;text-decoration:none;font-weight:700;font-size:16px}
-.new{background:#16a34a;color:#fff;border-radius:6px;padding:2px 8px;font-size:12px;margin-left:8px}
-.kurum{color:#555;margin-top:2px}
-.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
-.tag{background:#eef1fb;color:#33418f;padding:3px 10px;border-radius:20px;font-size:12px}
-.tag.red{background:#fde8e8;color:#9b1c1c} .tag.src{background:#e8f5e9;color:#1b5e20}
-.warn{background:#fff3cd;color:#7a5b00;padding:4px 10px;border-radius:6px;font-size:12px;margin-top:8px}
-.kanit{font-size:11px;color:#777;font-style:italic;margin-top:4px}
-.btn{display:inline-block;margin-top:8px;font-size:12px;color:#2a5bd7}
-.box{font-size:12px;color:#444;margin-top:30px;overflow-x:auto}
-table{border-collapse:collapse;width:100%;font-size:12px}
-td,th{border:1px solid #ddd;padding:4px 8px;text-align:left;vertical-align:top}
-.bad{background:#fde8e8} img{max-width:100%;border:1px solid #ccc}
-pre{white-space:pre-wrap;background:#fff;padding:8px;border:1px solid #ddd;font-size:11px}
-"""
+STYLE = report_ui.STYLE
+
+
+def _acil_sayisi(items, gun=3):
+    return sum(1 for a in items if a.get("_bitis") and (a["_bitis"] - TR_NOW.date()).days <= gun)
+
+
+def _kosu_ozeti(run_metrics):
+    if not run_metrics:
+        return ""
+    hata = run_metrics["detail_errors"]
+    return report_ui.panel("<b>⚙️ Bu çalıştırma</b>", report_ui.stats([
+        (run_metrics["total_ads"], "veritabanındaki ilan", ""),
+        (run_metrics["new_ads"], "yeni kayıt", "ok" if run_metrics["new_ads"] else ""),
+        (run_metrics["details_read"], "ayrıntı yeni okundu", ""),
+        (run_metrics["details_reused"], "önbellekten", ""),
+        (hata, "okuma hatası", "bad" if hata else ""),
+        *(((run_metrics["detail_skipped"], "haftalığa alınan okuma", ""),) if run_metrics.get("detail_skipped") else ()),
+        (run_metrics["analysis_errors"], "analiz hatası", "bad" if run_metrics["analysis_errors"] else ""),
+    ], small=True))
+
+
+def _kartlar(items, anahtar):
+    if not items:
+        return '<p class="empty">Şu an bu kategoride aktif ilan bulunamadı.</p>'
+    return "\n".join(card_html(a) for a in sorted(items, key=anahtar))
 
 
 def build_report(bolum, tum, log_rows, yeni_sayisi, okunanlar, groq_notu, dolmus=(), elle=(), yetmeyen=(),
                  butunluk=(), denetim=None, run_metrics=None):
-    def section(items):
-        if not items:
-            return "<p>Şu an bu kategoride aktif ilan bulunamadı.</p>"
-        items = sorted(items, key=lambda x: ((x.get("_tecrube") or 0) >= 3, x.get("_bitis") is None,
-                                             x.get("_bitis") or datetime.date.max))
-        return "\n".join(card_html(a) for a in items)
+    def cards(items):
+        return _kartlar(items, sira_anahtari)
 
-    log_html = ("<table><tr><th>Saat</th><th>Kaynak</th><th>Ham kayıt</th><th>Detay okunan (bugün)</th>"
-                "<th>İlgili</th><th>Durum</th><th>Not</th></tr>")
+    P = report_ui.panel
+    kotu = ("HATA", "ŞÜPHELİ", "KISMİ")
+    log_satir = ""
     for r in log_rows:
-        cls = ' class="bad"' if str(r[5]).startswith(("HATA", "ŞÜPHELİ", "KISMİ")) else ""
-        log_html += f"<tr{cls}>" + "".join(f"<td>{E(c)}</td>" for c in r) + "</tr>"
-    log_html += "</table>"
+        cls = ' class="bad"' if str(r[5]).startswith(kotu) else ""
+        hucre = "".join(
+            "<td>" + (f'<span class="pill {"red" if str(c).startswith(kotu) else "green"}">{E(c)}</span>'
+                      if i == 5 else E(c)) + "</td>" for i, c in enumerate(r))
+        log_satir += f"<tr{cls}>{hucre}</tr>"
+    log_html = report_ui.table(["Saat", "Kaynak", "Ham kayıt", "Detay okunan (bugün)", "İlgili", "Durum", "Not"], log_satir)
 
-    okunan_html = ("<table><tr><th>Kaynak</th><th>Başlık</th><th>Metin uzunluğu</th>"
-                   "<th>Okuma düzeyi</th><th>Sonuç</th></tr>")
+    okunan_satir = ""
     for o in okunanlar:
         kisa = isinstance(o["len"], int) and o["len"] < 300
         cls = ' class="bad"' if kisa or o["sonuc"].startswith("BEKLEMEDE") else ""
         yeni = '<span class="new">🆕 Bugün eklendi</span>' if o.get("yeni") else ""
-        okunan_html += (f"<tr{cls}><td>{E(o['kaynak'])}</td>"
-                        f"<td><a href=\"{E(o['link'])}\" target=\"_blank\">{E(o['baslik'])[:140]}</a>{yeni}</td>"
-                        f"<td>{E(o['len'])}{' ⚠ kısa' if kisa else ''}</td>"
-                        f"<td>{E(o['duzey'])}</td><td>{E(o['sonuc'])}</td></tr>")
-    okunan_html += "</table>"
+        okunan_satir += (f"<tr{cls}><td>{E(o['kaynak'])}</td>"
+                         f"<td><a href=\"{E(o['link'])}\" target=\"_blank\" rel=\"noopener\">{E(o['baslik'])[:140]}</a>{yeni}</td>"
+                         f"<td>{E(o['len'])}{' ⚠ kısa' if kisa else ''}</td>"
+                         f"<td>{E(o['duzey'])}</td><td>{E(o['sonuc'])}</td></tr>")
+    okunan_html = report_ui.table(["Kaynak", "Başlık", "Metin uzunluğu", "Okuma düzeyi", "Sonuç"], okunan_satir)
 
     tum_fiz = [a for a in tum if FIZIKSEL.search(str(a.get("pozisyon") or "") + " " + str(a.get("ekSartlar") or ""))]
     tum_n = [a for a in tum if a not in tum_fiz]
-    fiz_html = ""
+    paneller = []
     if tum_fiz:
-        fiz_html = (f'<div class="box"><details><summary><b>🚓 Fiziksel/yaş şartı aranan kadrolar — zabıta vb. '
-                    f'({len(tum_fiz)})</b></summary>{section(tum_fiz)}</details></div>')
-    elle_html = ""
+        paneller.append(P(f'<b>🚓 Fiziksel/yaş şartı aranan kadrolar — zabıta vb.</b> <small>({len(tum_fiz)})</small>',
+                          cards(tum_fiz)))
     if elle:
-        satir = "".join(f'<li><a href="{E(x["link"])}" target="_blank">{E(x["baslik"])}</a> '
+        satir = "".join(f'<li><a href="{E(x["link"])}" target="_blank" rel="noopener">{E(x["baslik"])}</a> '
                         f'<span class="tag">{E(x["kaynak"])}</span> — {E(x["neden"])}</li>' for x in elle)
-        elle_html = (f'<div class="box"><details open><summary><b>🔎 Elle kontrol listesi ({len(elle)})</b> — '
-                     f'içeriği okunamadı ama başlığı ilgili görünüyor</summary><ul>{satir}</ul></details></div>')
-    but_html = ""
+        paneller.append(P(f'<b>🔎 Elle kontrol listesi</b> <small>({len(elle)}) — içeriği okunamadı ama başlığı ilgili görünüyor</small>',
+                          f"<ul>{satir}</ul>", open_=True))
+    if yetmeyen:
+        satirlar = "".join(
+            f'<li><a href="{E(a.get("link"))}" target="_blank" rel="noopener">{E(poz_adi(a) or a.get("_baslik"))}</a>'
+            f' — {E(a.get("kurum"))} <span class="tag red">{E(a.get("_uygunsuz"))}</span></li>' for a in yetmeyen)
+        paneller.append(P(f'<b>🚫 Profilinle uyuşmadığı için gizlenen ilanlar</b> <small>({len(yetmeyen)}) — '
+                          f'KPSS {PROFIL["kpss"]} ({PROFIL["kpss_turu"]}), {PROFIL["yas"]} yaş</small>', f"<ul>{satirlar}</ul>"))
+    if dolmus:
+        satirlar = "".join(
+            f'<li><a href="{E(a.get("link"))}" target="_blank" rel="noopener">{E(poz_adi(a) or a.get("_baslik"))}</a>'
+            f' — {E(a.get("kurum"))} (son gün: {a["_bitis"].strftime("%d.%m.%Y")})</li>' for a in dolmus)
+        paneller.append(P(f'<b>⌛ Süresi dolmuş, gizlenen ilanlar</b> <small>({len(dolmus)})</small>', f"<ul>{satirlar}</ul>"))
+
+    teknik = [f'<h3>🔍 Veri çekim doğrulama kaydı</h3>{log_html}'
+              '<p class="note"><a href="debug.html">Tanı sayfası (ekran görüntüleri, arka plan istekleri)</a></p>']
     if butunluk:
         sat = "".join(
             f'<tr{" class=bad" if not str(r["durum"]).startswith("✔") else ""}><td>{E(r["kaynak"])}</td><td>{r["liste"]}</td>'
             f'<td>{r["analiz"]}</td><td>{r["eleme"]}</td><td>{r["sadece_liste"]}</td>'
             f'<td>{r["okunamadi"]}{(" — " + E(r["nedenler"])) if r["nedenler"] else ""}</td>'
             f'<td>{r["bekleyen"]}</td><td>{r["kanit"]}</td><td>{E(r["durum"])}</td></tr>' for r in butunluk)
-        but_html = ('<div class="box"><h2>🧪 Okuma Bütünlük Kontrolü</h2>'
-                    '<p>Listelenen her ilan şu sonuçlardan birine ulaşmış olmalı; toplam listelenene eşit değilse '
-                    '"açıklanamayan" kırmızı yanar. "Kanıt" sütunu: yapay zekânın gösterdiği alıntı ilan metninde '
-                    'birebir bulunamayan kart sayısı.</p>'
-                    '<table><tr><th>Kaynak</th><th>Listelenen</th><th>Analiz edildi</th><th>Anahtar süzgeciyle elendi</th>'
-                    '<th>Yalnız liste</th><th>Okunamadı (neden)</th><th>Kuyrukta</th><th>Kanıtı doğrulanamayan</th>'
-                    f'<th>Durum</th></tr>{sat}</table></div>')
+        teknik.append('<h3>🧪 Okuma bütünlük kontrolü</h3>'
+                      '<p class="note">Listelenen her ilan şu sonuçlardan birine ulaşmış olmalı; toplam listelenene eşit değilse '
+                      '"açıklanamayan" kırmızı yanar. "Kanıt" sütunu: yapay zekânın gösterdiği alıntı ilan metninde '
+                      'birebir bulunamayan kart sayısı.</p>'
+                      + report_ui.table(["Kaynak", "Listelenen", "Analiz edildi", "Anahtar süzgeciyle elendi", "Yalnız liste",
+                                         "Okunamadı (neden)", "Kuyrukta", "Kanıtı doğrulanamayan", "Durum"], sat))
     if denetim:
         if denetim["supheli"]:
-            li = "".join(f'<li><a href="{E(x["link"])}" target="_blank">{E(x["baslik"])}</a> '
+            li = "".join(f'<li><a href="{E(x["link"])}" target="_blank" rel="noopener">{E(x["baslik"])}</a> '
                          f'<span class="tag">{E(x["kaynak"])}</span><br><small>{E(x["neden"])}</small></li>'
                          for x in denetim["supheli"])
         elif denetim["n"] == 0:
             li = "<li>İkinci okuma yapılamadı (yapay zekâ kotası/anahtarı yok ya da hata); bu çalıştırmada denetlenemedi.</li>"
         else:
             li = "<li>Şüpheli bulunmadı: ikinci okuma, elenen ilanlarla aynı sonuca vardı.</li>"
-        but_html += (f'<div class="box"><details open><summary><b>🕵️ İkinci yapay zekâ kontrolü</b> — '
-                     f'elenen ilanlardan {denetim["n"]} örnek farklı bir modele yeniden okutuldu '
-                     f'(sağlayıcı: {E(denetim["saglayici"])}); yapılamayan: {denetim["yapilamadi"]}; '
-                     f'şüpheli: {len(denetim["supheli"])}</summary><ul>{li}</ul></details></div>')
-    yetmeyen_html = ""
-    if yetmeyen:
-        satirlar = "".join(
-            f'<li><a href="{E(a.get("link"))}" target="_blank">{E(poz_adi(a) or a.get("_baslik"))}</a>'
-            f' — {E(a.get("kurum"))} <span class="tag red">{E(a.get("_uygunsuz"))}</span></li>' for a in yetmeyen)
-        yetmeyen_html = (f'<div class="box"><details><summary><b>🚫 Profilinle uyuşmadığı için gizlenen ilanlar '
-                         f'({len(yetmeyen)})</b> — KPSS {PROFIL["kpss"]} ({PROFIL["kpss_turu"]}), {PROFIL["yas"]} yaş'
-                         f'</summary><ul>{satirlar}</ul></details></div>')
-    dolmus_html = ""
-    if dolmus:
-        satirlar = "".join(
-            f'<li><a href="{E(a.get("link"))}" target="_blank">{E(poz_adi(a) or a.get("_baslik"))}</a>'
-            f' — {E(a.get("kurum"))} (son gün: {a["_bitis"].strftime("%d.%m.%Y")})</li>' for a in dolmus)
-        dolmus_html = (f'<div class="box"><details><summary><b>⌛ Süresi dolmuş, gizlenen ilanlar '
-                       f'({len(dolmus)})</b></summary><ul>{satirlar}</ul></details></div>')
-    metrics_html = ""
-    if run_metrics:
-        metrics_html = (
-            '<div class="box"><b>Bu çalıştırma:</b> '
-            f'{run_metrics["total_ads"]} ilan veritabanında · {run_metrics["new_ads"]} yeni kayıt · '
-            f'{run_metrics["details_read"]} ayrıntı yeni okundu · '
-            f'{run_metrics["details_reused"]} kayıt/metin önbellekten kullanıldı · '
-            f'{run_metrics["detail_errors"]} ayrıntı okuma hatası · '
-            f'{run_metrics["analysis_errors"]} analiz hatası</div>'
-        )
-    return f"""<!DOCTYPE html><html lang="tr"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Günlük Kamu İlan Raporu</title><style>{STYLE}</style></head><body>
-<h1>📋 Günlük Kamu İlan Raporu — {TR_NOW.strftime('%d.%m.%Y %H:%M')}</h1>
-<p>Bugün yeni eklenen ilgili ilan: <b>{yeni_sayisi}</b> {E(groq_notu)}</p>
-{metrics_html}
-<h2>🎯 {E(PROFIL["name"])} — {E(PROFIL["education"])} — {len(bolum)} ilan</h2>
-{section(bolum)}
-<h2>🎓 {E(PROFIL["name"])} için tüm lisans mezunlarına açık — {len(tum_n)} ilan</h2>
-{section(tum_n)}
-{fiz_html}
-{elle_html}
-{yetmeyen_html}
-{dolmus_html}
-<div class="box"><h2>🔍 Veri Çekim Doğrulama Kaydı</h2>{log_html}
-<p><a href="debug.html">Tanı sayfası (ekran görüntüleri, arka plan istekleri)</a></p>
-{but_html}
-<p><a href="onlisans.html">♿ İkinci rapor: önlisans &amp; engelli kadro ilanları</a></p></div>
-<div class="box"><details><summary><b>📑 Bugün listede görülen tüm ilanlar ({len(okunanlar)}) — okundu mu, sonuç ne?</b></summary>
-{okunan_html}</details></div>
-</body></html>"""
+        teknik.append(f'<h3>🕵️ İkinci yapay zekâ kontrolü</h3><p class="note">Elenen ilanlardan {denetim["n"]} örnek farklı bir '
+                      f'modele yeniden okutuldu (sağlayıcı: {E(denetim["saglayici"])}); yapılamayan: {denetim["yapilamadi"]}; '
+                      f'şüpheli: {len(denetim["supheli"])}</p><ul>{li}</ul>')
+    teknik.append('<p><a href="onlisans.html">♿ İkinci rapor: önlisans &amp; engelli kadro ilanları</a></p>')
+    paneller.append(P("<b>🧰 Teknik ayrıntılar</b> <small>kaynak durumu, bütünlük ve denetim</small>", "".join(teknik)))
+    paneller.append(P(f'<b>📑 Bugün listede görülen tüm ilanlar</b> <small>({len(okunanlar)}) — okundu mu, sonuç ne?</small>',
+                      okunan_html))
+
+    n_esles = len(bolum) + len(tum)
+    acil = _acil_sayisi(bolum + tum)
+    govde = (
+        report_ui.stats([
+            (n_esles, "eşleşen aktif ilan", "accent"),
+            (yeni_sayisi, "bugün eklenen", "ok" if yeni_sayisi else ""),
+            (acil, "3 gün içinde biten", "bad" if acil else ""),
+            (len(elle), "elle kontrol", "warn" if elle else ""),
+        ])
+        + report_ui.toolbar([("bolum", f"🎯 {PROFIL['education']}"), ("tum", "🎓 Tüm lisans")])
+        + report_ui.section("bolum", f'🎯 {E(PROFIL["name"])} — {E(PROFIL["education"])}', len(bolum), cards(bolum))
+        + report_ui.section("tum", f'🎓 {E(PROFIL["name"])} için tüm lisans mezunlarına açık', len(tum_n), cards(tum_n))
+        + _kosu_ozeti(run_metrics) + "".join(paneller))
+    zaman = TR_NOW.strftime('%d.%m.%Y %H:%M')
+    return report_ui.page(
+        "Günlük Kamu İlan Raporu", govde, "index",
+        report_ui.hero("Günlük Kamu İlan Raporu", f"{zaman} itibarıyla {n_esles} aktif ilan listeleniyor", E(groq_notu)), zaman)
 
 
 def butunluk_satirlari(okunanlar, ads, kanit_sorunlu):
@@ -2652,7 +2766,7 @@ def p2_rapor(ads, bugun, state):
         bitis = tarih_ayrisir(an.get("basvuruBitis"))
         a = dict(an)
         a.update({"link": k.get("url_gercek") or key, "_kaynak": k.get("kaynak"), "_baslik": k.get("baslik"), "_p2": True,
-                  "_bitis": bitis, "_ilk": k.get("first_seen")})
+                  "_bitis": bitis, "_ilk": k.get("first_seen"), "_imza": imza(k.get("metin") or k.get("p2metin"))})
         neden = dogrula2(an, k.get("baslik", ""))
         p_neden, a["_puan_notu"], a["_puan_uyari"] = profil2_kontrol(an, PROFIL2)
         neden = neden or p_neden
@@ -2665,10 +2779,13 @@ def p2_rapor(ads, bugun, state):
             fiziksel.append(a)           # zabıta/itfaiye/güvenlik/boy-kilo şartlı kadrolar ayrı kapalı bölüme
         else:
             gruplar[an["kategori"]].append(a)
-    for kat in gruplar:
-        gruplar[kat] = birlestir(gruplar[kat])
-        for c in gruplar[kat]:
-            c["_yeni"] = c.get("_ilk") == TODAY and TODAY != state.get("first_run")
+    # kategoriler birlikte birleştirilir; çelişirse en özel kategori kazanır (engelli > sağlık > önlisans)
+    kategori_sirasi = ("ENGELLI_KADRO", "ANESTEZI_SAGLIK", "ONLISANS")
+    kartlar = birlestir([c for kat in kategori_sirasi for c in gruplar[kat]], kategori_sirasi)
+    gruplar = {kat: [c for c in kartlar if c["kategori"] == kat] for kat in kategori_sirasi}
+    for c in kartlar:
+        c["_yeni"] = c.get("_ilk") == TODAY and TODAY != state.get("first_run")
+    dolmus = birlestir(dolmus, kategori_sirasi)
     # SBB'de içerik okunmadığı için başlığı uygun görünenler elle kontrol listesi olur
     elle, gorulen = [], set()
     for key in bugun:
@@ -2687,88 +2804,79 @@ def p2_rapor(ads, bugun, state):
 
 
 def build_report2(gruplar, dolmus, elle, bekleyen, groq_notu, run_metrics=None):
-    def section(items):
-        if not items:
-            return "<p>Şu an bu kategoride aktif ilan bulunamadı.</p>"
-        items = sorted(items, key=lambda x: (x.get("_bitis") is None, x.get("_bitis") or datetime.date.max))
-        return "\n".join(card_html(a) for a in items)
+    def cards(items):
+        return _kartlar(items, sira_anahtari)
 
+    P = report_ui.panel
     anagrup = {k: v for k, v in gruplar.items() if not k.startswith("_")}
     yeni = sum(1 for g in anagrup.values() for c in g if c.get("_yeni"))
-    fiz_html = uy_html = ""
+    toplam = sum(len(g) for g in anagrup.values())
+    acil = _acil_sayisi([c for g in anagrup.values() for c in g])
+    paneller = []
     if gruplar.get("_fiziksel"):
-        fiz_html = (f'<div class="box"><details><summary><b>🚓 Fiziksel/boy-kilo şartı aranan kadrolar — zabıta vb. '
-                    f'({len(gruplar["_fiziksel"])})</b></summary>{section(gruplar["_fiziksel"])}</details></div>')
+        paneller.append(P(f'<b>🚓 Fiziksel/boy-kilo şartı aranan kadrolar — zabıta vb.</b> '
+                          f'<small>({len(gruplar["_fiziksel"])})</small>', cards(gruplar["_fiziksel"])))
     if gruplar.get("_uymayan"):
-        satir = "".join(f'<li><a href="{E(a["link"])}" target="_blank">{E(poz_adi(a) or a.get("_baslik"))}</a> — '
+        satir = "".join(f'<li><a href="{E(a["link"])}" target="_blank" rel="noopener">{E(poz_adi(a) or a.get("_baslik"))}</a> — '
                         f'{E(a.get("kurum"))} <span class="tag red">{E(a["_uygunsuz"])}</span></li>'
                         for a in gruplar["_uymayan"])
-        uy_html = (f'<div class="box"><details><summary><b>🚫 Uygun görünmediği için gizlenen ilanlar '
-                   f'({len(gruplar["_uymayan"])})</b> — KPSS önlisans {PROFIL2["kpss_onlisans"]}, EKPSS {PROFIL2["ekpss"]}</summary><ul>{satir}</ul></details></div>')
-    elle_html = ""
+        paneller.append(P(f'<b>🚫 Uygun görünmediği için gizlenen ilanlar</b> <small>({len(gruplar["_uymayan"])}) — '
+                          f'KPSS önlisans {PROFIL2["kpss_onlisans"]}, EKPSS {PROFIL2["ekpss"]}</small>', f"<ul>{satir}</ul>"))
     if elle:
-        satir = "".join(f'<li><a href="{E(x["link"])}" target="_blank">{E(x["baslik"])}</a> '
-                        f'<span class="tag">{E(x["kaynak"])}</span> <span class="tag red">{E(x.get("neden") or "")}</span></li>' for x in elle)
-        elle_html = (f'<div class="box"><details><summary><b>🔎 SBB\'de görülen, elle kontrol edilecek ({len(elle)})</b>'
-                     f' — içeriği bu çalıştırmada okunamadı (neden yanında)</summary><ul>{satir}</ul></details></div>')
-    dolmus_html = ""
+        satir = "".join(f'<li><a href="{E(x["link"])}" target="_blank" rel="noopener">{E(x["baslik"])}</a> '
+                        f'<span class="tag">{E(x["kaynak"])}</span> <span class="tag red">{E(x.get("neden") or "")}</span></li>'
+                        for x in elle)
+        paneller.append(P(f'<b>🔎 SBB\'de görülen, elle kontrol edilecek</b> <small>({len(elle)}) — içeriği bu '
+                          f'çalıştırmada okunamadı (neden yanında)</small>', f"<ul>{satir}</ul>"))
     if dolmus:
-        satir = "".join(f'<li><a href="{E(a["link"])}" target="_blank">{E(poz_adi(a) or a.get("_baslik"))}</a> '
+        satir = "".join(f'<li><a href="{E(a["link"])}" target="_blank" rel="noopener">{E(poz_adi(a) or a.get("_baslik"))}</a> '
                         f'— {E(a.get("kurum"))} (son gün: {a["_bitis"].strftime("%d.%m.%Y")})</li>' for a in dolmus)
-        dolmus_html = (f'<div class="box"><details><summary><b>⌛ Süresi dolmuş, gizlenen ilanlar ({len(dolmus)})'
-                       f'</b></summary><ul>{satir}</ul></details></div>')
-    bekle = f" — ⏳ {bekleyen} ilan analiz kuyruğunda (sonraki çalıştırmalarda işlenecek)" if bekleyen else ""
-    metrics_html = ""
-    if run_metrics:
-        metrics_html = (
-            '<div class="box"><b>Bu çalıştırma:</b> '
-            f'{run_metrics["total_ads"]} ilan veritabanında · {run_metrics["new_ads"]} yeni kayıt · '
-            f'{run_metrics["details_read"]} ayrıntı yeni okundu · '
-            f'{run_metrics["details_reused"]} kayıt/metin önbellekten kullanıldı · '
-            f'{run_metrics["detail_errors"]} ayrıntı okuma hatası · '
-            f'{run_metrics["analysis_errors"]} analiz hatası</div>'
-        )
-    return f"""<!DOCTYPE html><html lang="tr"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Önlisans ve Engelli Kadro İlanları</title><style>{STYLE}</style></head><body>
-<h1>♿ {E(PROFIL2["name"])} — {E(PROFIL2["education"])} İlanları — {TR_NOW.strftime('%d.%m.%Y %H:%M')}</h1>
-<p><a href="index.html">← Ana rapora dön</a> · Bugün yeni eklenen ilgili ilan: <b>{yeni}</b>{E(bekle)}</p>
-{metrics_html}
-<p style="font-size:12px;color:#555">Profil: KPSS önlisans <b>{PROFIL2["kpss_onlisans"]}</b> puan ({E(PROFIL2["kpss_turu"])}), EKPSS <b>{PROFIL2["ekpss"]}</b> puan.
-İlanda açıkça yazan en düşük puan bunlardan yüksekse ilan gizlenir (nedeniyle birlikte alttaki listede durur); puan şartı yazmayan ilanlar elenmez.
-Sıralama: son başvuru tarihi.
-Aynı ilanlar ana kaynaklardan (İlan.gov.tr, Resmî Gazete, Kariyer Kapısı, ÇŞB, İŞKUR, Memurlar.net) taranır.</p>
-<h2>♿ Engelli kadrosu / EKPSS'li ilanlar — {len(gruplar['ENGELLI_KADRO'])} ilan</h2>
-{section(gruplar['ENGELLI_KADRO'])}
-<h2>🩺 Anestezi / sağlık teknikeri kadroları — {len(gruplar['ANESTEZI_SAGLIK'])} ilan</h2>
-{section(gruplar['ANESTEZI_SAGLIK'])}
-<h2>🎓 Önlisans mezunlarına açık kadrolar — {len(gruplar['ONLISANS'])} ilan</h2>
-{section(gruplar['ONLISANS'])}
-{fiz_html}
-{uy_html}
-{elle_html}
-{dolmus_html}
-<div class="box"><p>Not: Sağlık Bakanlığı'nın kendi KPSS tercih alımları bu kaynaklarda yer almaz; ayrıca takip edilmelidir.</p></div>
-</body></html>"""
+        paneller.append(P(f'<b>⌛ Süresi dolmuş, gizlenen ilanlar</b> <small>({len(dolmus)})</small>', f"<ul>{satir}</ul>"))
+    bekle = f"⏳ {bekleyen} ilan analiz kuyruğunda (sonraki çalıştırmalarda işlenecek)" if bekleyen else ""
+    profil_notu = (f'Profil: KPSS önlisans <b>{PROFIL2["kpss_onlisans"]}</b> puan ({E(PROFIL2["kpss_turu"])}), '
+                   f'EKPSS <b>{PROFIL2["ekpss"]}</b> puan. İlanda açıkça yazan en düşük puan bunlardan yüksekse ilan '
+                   f'gizlenir (nedeniyle birlikte alttaki listede durur); puan şartı yazmayan ilanlar elenmez. '
+                   f'Sıralama: son başvuru tarihi. Aynı ilanlar ana kaynaklardan (İlan.gov.tr, Resmî Gazete, '
+                   f'Kariyer Kapısı, ÇŞB, İŞKUR, Memurlar.net) taranır.')
+    govde = (
+        report_ui.stats([
+            (toplam, "eşleşen aktif ilan", "accent"),
+            (yeni, "bugün eklenen", "ok" if yeni else ""),
+            (acil, "3 gün içinde biten", "bad" if acil else ""),
+            (bekleyen, "analiz kuyruğunda", "warn" if bekleyen else ""),
+        ])
+        + f'<p class="note">{profil_notu}</p>'
+        + report_ui.toolbar([("engelli", "♿ Engelli / EKPSS"), ("anestezi", "🩺 Anestezi / sağlık"), ("onlisans", "🎓 Önlisans")])
+        + report_ui.section("engelli", "♿ Engelli kadrosu / EKPSS'li ilanlar", len(gruplar["ENGELLI_KADRO"]), cards(gruplar["ENGELLI_KADRO"]))
+        + report_ui.section("anestezi", "🩺 Anestezi / sağlık teknikeri kadroları", len(gruplar["ANESTEZI_SAGLIK"]), cards(gruplar["ANESTEZI_SAGLIK"]))
+        + report_ui.section("onlisans", "🎓 Önlisans mezunlarına açık kadrolar", len(gruplar["ONLISANS"]), cards(gruplar["ONLISANS"]))
+        + _kosu_ozeti(run_metrics) + "".join(paneller)
+        + '<p class="note" style="margin-top:18px">Not: Sağlık Bakanlığı\'nın kendi KPSS tercih alımları bu kaynaklarda '
+          'yer almaz; ayrıca takip edilmelidir.</p>')
+    zaman = TR_NOW.strftime('%d.%m.%Y %H:%M')
+    return report_ui.page(
+        "Önlisans ve Engelli Kadro İlanları", govde, "onlisans",
+        report_ui.hero(f'{E(PROFIL2["name"])} — {E(PROFIL2["education"])}',
+                       f"{zaman} itibarıyla {toplam} aktif ilan listeleniyor", E(bekle or groq_notu)), zaman)
 
 
 def build_debug():
     parts = []
     for d in DEBUG:
-        img = f'<img src="{d["img"]}" alt="ekran görüntüsü">' if d.get("img") else "(ekran görüntüsü yok)"
+        img = f'<img src="{d["img"]}" alt="ekran görüntüsü" loading="lazy">' if d.get("img") else "<p class=note>(ekran görüntüsü yok)</p>"
         xhr = "\n".join(f'{x["method"]} {x["status"]} {x["url"]}'
                         + (f'\n   gövde: {x["post"]}' if x.get("post") else "")
                         + (f'\n   yanıt: {x["preview"]}' if x.get("preview") else "")
                         for x in XHR.get(d["name"], [])[:25]) or "(yok)"
-        parts.append(f"""<h2>{E(d['name'])}</h2>
-<p><b>Not:</b> {E(d['note'])}<br><b>Son URL:</b> {E(d.get('url'))}<br><b>Başlık:</b> {E(d.get('title'))}</p>
-{img}
-<h3>Sayfa metni (ilk 1500 karakter)</h3><pre>{E(d.get('body'))}</pre>
-<h3>Bulunan linkler (ilk 40)</h3><pre>{E(d.get('links'))}</pre>
-<h3>Arka plan (XHR/fetch) istekleri</h3><pre>{E(xhr)}</pre><hr>""")
-    return (f'<!DOCTYPE html><html lang="tr"><head><meta charset="utf-8"><title>Tanı</title>'
-            f'<style>{STYLE}</style></head><body><h1>🛠 Tanı sayfası — {TR_NOW.strftime("%d.%m.%Y %H:%M")}</h1>'
-            f'<p><a href="index.html">← Rapora dön</a></p>{"".join(parts)}</body></html>')
+        parts.append(report_ui.panel(
+            f'<b>{E(d["name"])}</b> <small>{E(d["note"])}</small>',
+            f'<p class="note"><b>Son URL:</b> {E(d.get("url"))}<br><b>Başlık:</b> {E(d.get("title"))}</p>{img}'
+            f'<h3>Sayfa metni (ilk 1500 karakter)</h3><pre>{E(d.get("body"))}</pre>'
+            f'<h3>Bulunan linkler (ilk 40)</h3><pre>{E(d.get("links"))}</pre>'
+            f'<h3>Arka plan (XHR/fetch) istekleri</h3><pre>{E(xhr)}</pre>'))
+    zaman = TR_NOW.strftime("%d.%m.%Y %H:%M")
+    return report_ui.page("Tanı", "".join(parts), "debug",
+                          report_ui.hero("🛠 Tanı sayfası", f"{zaman} · {len(DEBUG)} adım", ""), zaman)
 
 
 def snapshot(page, idx, name, note):
@@ -2853,6 +2961,7 @@ def main():
         "details_reused": 0,
         "detail_errors": 0,
         "analysis_errors": 0,
+        "detail_skipped": 0,        # yalnız raporda gösterilir (veritabanı şemasında yok)
     }
 
     def on_resp(resp):
@@ -2977,6 +3086,10 @@ def main():
                     else:
                         detail_reused += 1
                 else:
+                    if not e.get("content") and okuma_ertele(k):
+                        k["last_seen"] = TODAY           # önceki "DETAY OKUNAMADI" sonucu ve nedeni korunur
+                        run_metrics["detail_skipped"] += 1
+                        continue
                     if e.get("content"):
                         metin = e["content"]
                     elif name in ISKUR_HARITA_URLS:
@@ -2991,6 +3104,7 @@ def main():
                     k = k or {"first_seen": TODAY, "kaynak": name, "baslik": baslik}
                     k.update(last_seen=TODAY, detail_checked=False, sonuc="DETAY OKUNAMADI",
                              hata=DETAY_HATA.get(key, "bilinmeyen neden"))
+                    okuma_basarisiz_say(k, k["hata"])
                     ads[key] = k
                     run_metrics["detail_errors"] += 1
                     continue
@@ -3003,6 +3117,8 @@ def main():
                           "detail_checked": True, "metin": metin[:8000]})
                 k.pop("detail_error", None)
                 k.pop("hata", None)
+                k.pop("okuma_deneme", None)
+                k.pop("okuma_son", None)
                 # İkinci profil (önlisans/engelli): metin burada elde olduğu için anahtar kelime süzgeci uygulanır
                 p2 = k.get("p2") or {}
                 if degisti or p2.get("v") != P2_VERSION:
@@ -3137,13 +3253,17 @@ def main():
         if ilgili:
             a = dict(an)
             a.update({"link": k.get("url_gercek") or key, "_kaynak": k.get("kaynak"), "_baslik": k.get("baslik"),
-                      "_yeni": yeni, "_bitis": bitis, "_ilk": k.get("first_seen")})
+                      "_yeni": yeni, "_bitis": bitis, "_ilk": k.get("first_seen"), "_imza": imza(k.get("metin"))})
             if sure_doldu:
                 dolmus.append(a)
             else:
                 ilgili_say[k.get("kaynak")] = ilgili_say.get(k.get("kaynak"), 0) + 1
                 (bolum if a["kategori"] == "BOLUM" else tum).append(a)
-    bolum, tum = birlestir(bolum), birlestir(tum)
+    # BOLUM ve TUM_LISANS birlikte birleştirilir: aynı ilanı iki kaynak farklı kategoriye koyabiliyor
+    kartlar = birlestir(bolum + tum, ("BOLUM", "TUM_LISANS"))
+    bolum = [c for c in kartlar if c["kategori"] == "BOLUM"]
+    tum = [c for c in kartlar if c["kategori"] != "BOLUM"]
+    dolmus = birlestir(dolmus, ("BOLUM", "TUM_LISANS"))
     for c in bolum + tum:      # "yeni": kartın en eski kaynağı bugün görülmüşse; sayı da kartlar üzerinden
         c["_yeni"] = c.get("_ilk") == TODAY and TODAY != state.get("first_run")
         c["_tecrube"] = tecrube_yili(c)

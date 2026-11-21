@@ -18,7 +18,9 @@ analizden sonra bazı ilan metinlerini sildiği için, bu eski metinler geriye
 dönük kurtarılamaz; kaydı/analizi tamamlanmış ilanlar yine de yeniden okunmaz.
 Yeni okunan metinler artık kalıcı olarak saklanır.
 
-Günlük çıktı `docs/index.html` ve `docs/onlisans.html` dosyalarına yazılır.
+Günlük çıktı `docs/index.html` ve `docs/onlisans.html` dosyalarına yazılır. Raporların görünümü
+`report_ui.py` içindedir (tek dosyalık sayfa, açık/koyu tema, mobil uyum, arama ve filtre düğmeleri,
+son başvuru tarihine göre renkli kartlar); veri mantığına dokunmadan oradan değiştirilebilir.
 Kaynak bazında okuma hataları, analiz kuyruğu ve uygun bulunmayan ilanlar
 raporlarda ayrı gösterilir. Çalıştırma ve kaynak özetleri de SQLite'ta
 `scrape_runs` ve `source_runs` tablolarında tutulur.
@@ -47,3 +49,27 @@ depolarını sırayla kullanır; kota veya hız sınırına takılan anahtar/mod
 `GROQ_API_KEY_4` ve `GROQ_API_KEY_5` adlarıyla secret oluşturun. `GEMINI_API_KEY`
 ayrı bir yedektir; Gemini kotasının dolması tek başına Groq kotalarının da
 dolduğu anlamına gelmez.
+
+## Tekrarlı ilanların birleştirilmesi
+
+Aynı ilan birçok kaynakta yayımlanır (ör. Kariyer Kapısı, İlan.gov.tr, Memurlar.net, SBB). Raporda her ilan tek
+kart olur; diğer kaynaklar kartın altında "Aynı ilan" olarak listelenir ve "bugün eklenen" sayısı kart başına
+sayılır (kartın en eski kaynağı bugün görüldüyse yenidir). Eşleştirme (`ayni_ilan`):
+
+- İki ilanın metni aynı kurumda %85+ örtüşüyorsa başlıklar farklı yazılmış olsa da aynı ilandır.
+- Kurum ve pozisyon adı benzerse aynıdır; "Sözleşmeli", "Personel" gibi dolgu sözcükleri yok sayılır. Kadro
+  sayısı kaynaktan kaynağa tutarsız çıktığı için (toplam / pozisyon başı) tek başına engel değildir.
+- Başvuru bitiş tarihleri farklıysa (metin neredeyse aynı değilse) ayrı ilan turu sayılır.
+- Eşleşme zincirlemedir; BOLUM/TUM_LISANS (ve ikinci raporda engelli/sağlık/önlisans) kategorileri birlikte
+  birleştirilir, kategori çelişirse en özel kategori kazanır. Ana kart resmî kaynaktan seçilir, boş alanlar
+  diğer kopyalardan tamamlanır.
+
+Kart sırası (`sira_anahtari`): ağır tecrübe şartlısı en sona, sonra son başvuru tarihi yakın olan önce; tarihi
+bilinmeyenler sonda ve en yeni görülen önde.
+
+## Tekrarlayan okuma hataları
+
+Ayrıntısı art arda 3 kez içerik nedeniyle okunamayan ilan (ör. OCR'ın çıkaramadığı taranmış PDF) her çalıştırmada
+yeniden denenmez; haftada bir denenir (`okuma_ertele`). Ağ kaynaklı geçici hatalar (zaman aşımı, 403/429/5xx)
+sayılmaz. Atlanan okumalar raporda "haftalığa alınan okuma" olarak görünür. Tesseract kurulup OCR düzelirse
+bekleyen ilanlar en geç bir hafta içinde yeniden okunur.

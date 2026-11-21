@@ -4,6 +4,7 @@ import os
 import sqlite3
 import tempfile
 import unittest
+from contextlib import closing
 from unittest.mock import Mock, patch
 
 import scraper
@@ -74,7 +75,7 @@ class StorageTests(unittest.TestCase):
 
         scraper.save_run_history([batch], [row], metrics)
 
-        with sqlite3.connect(scraper.DATABASE_PATH) as conn:
+        with closing(sqlite3.connect(scraper.DATABASE_PATH)) as conn:
             run = conn.execute(
                 "SELECT total_ads, new_ads, details_read, details_reused FROM scrape_runs"
             ).fetchone()
@@ -140,6 +141,118 @@ class ProfileFilterTests(unittest.TestCase):
         self.assertIn("önlisans programı uymuyor", groups["_uymayan"][0]["_uygunsuz"])
         self.assertIn("Muhasebe personeli", report)
         self.assertIn("önlisans programı uymuyor", report)
+
+
+class DedupTests(unittest.TestCase):
+    def _ad(self, kaynak, kurum, pozisyon, **extra):
+        ad = {"_kaynak": kaynak, "kurum": kurum, "pozisyon": pozisyon, "link": f"https://{kaynak}.test/{pozisyon}",
+              "_ilk": "2026-11-10", "kategori": "BOLUM"}
+        ad.update(extra)
+        return ad
+
+    def test_conflicting_quota_numbers_do_not_split_the_same_ad(self):
+        # Gerçek veri: aynı Sayıştay ilanı bir kaynakta 12, diğerinde 3 kadro olarak çıkmıştı.
+        a = self._ad("İlan.gov.tr", "Sayıştay Başkanlığı", "Sözleşmeli Çözümleyici ve Sözleşmeli Programcı", kadroSayisi=12)
+        b = self._ad("Memurlar.net İlan", "Sayıştay", "Sözleşmeli Çözümleyici", kadroSayisi=3)
+        self.assertTrue(scraper.ayni_ilan(a, b))
+        self.assertEqual(len(scraper.birlestir([a, b])), 1)
+
+    def test_same_institution_but_different_deadline_stays_separate(self):
+        import datetime
+        a = self._ad("SBB Kamu İlan", "Sayıştay Başkanlığı", "Sözleşmeli Bilişim Personeli",
+                     _bitis=datetime.date(2026, 10, 30))
+        b = self._ad("Memurlar.net İlan", "Sayıştay", "Sözleşmeli Bilişim Personeli",
+                     _bitis=datetime.date(2026, 11, 25))
+        self.assertFalse(scraper.ayni_ilan(a, b))
+
+    def test_near_identical_text_merges_even_when_titles_differ(self):
+        metin = " ".join(f"anlamlıkelime{i}" for i in range(120))
+        a = self._ad("İlan.gov.tr", "AFAD Başkanlığı", "Denetçi Yardımcısı", _imza=scraper.imza(metin))
+        b = self._ad("Memurlar.net İlan", "AFAD Başkanlığı", "Uzman Yardımcısı", _imza=scraper.imza(metin))
+        self.assertTrue(scraper.ayni_ilan(a, b))
+
+    def test_short_text_is_not_used_for_comparison(self):
+        self.assertEqual(scraper.imza("çok kısa bir metin"), frozenset())
+
+    def test_merge_prefers_official_source_and_fills_gaps(self):
+        official = self._ad("Kariyer Kapısı", "TÜİK Başkanlığı", "Mühendis", kisaOzet="")
+        mirror = self._ad("Memurlar.net İlan", "TÜİK", "Mühendis", kisaOzet="Özet burada", extra="x")
+        merged = scraper.birlestir([mirror, official])
+        self.assertEqual(len(merged), 1)
+        self.assertEqual(merged[0]["_kaynak"], "Kariyer Kapısı")
+        self.assertEqual(merged[0]["kisaOzet"], "Özet burada")
+        self.assertEqual([k for k, _ in merged[0]["_digerleri"]], ["Memurlar.net İlan"])
+
+    def test_categories_are_resolved_when_copies_disagree(self):
+        a = self._ad("İlan.gov.tr", "Adli Tıp Kurumu", "Mühendis (Bilişim)", kategori="TUM_LISANS")
+        b = self._ad("Kariyer Kapısı", "Adli Tıp Kurumu", "Mühendis (Bilişim)", kategori="BOLUM")
+        merged = scraper.birlestir([a, b], ("BOLUM", "TUM_LISANS"))
+        self.assertEqual(len(merged), 1)
+        self.assertEqual(merged[0]["kategori"], "BOLUM")
+
+    def test_first_seen_uses_the_earliest_copy(self):
+        a = self._ad("İlan.gov.tr", "Adli Tıp Kurumu", "Mühendis", _ilk="2026-11-20")
+        b = self._ad("Memurlar.net İlan", "Adli Tıp Kurumu", "Mühendis", _ilk="2026-11-18")
+        self.assertEqual(scraper.birlestir([a, b])[0]["_ilk"], "2026-11-18")
+
+    def test_unknown_deadline_sorts_last_and_newest_first(self):
+        import datetime
+        yakin = self._ad("A", "K1", "P1", _bitis=datetime.date(2026, 11, 22))
+        yeni_belirsiz = self._ad("A", "K2", "P2", _bitis=None, _ilk="2026-11-20")
+        eski_belirsiz = self._ad("A", "K3", "P3", _bitis=None, _ilk="2026-10-01")
+        sirali = sorted([eski_belirsiz, yeni_belirsiz, yakin], key=scraper.sira_anahtari)
+        self.assertEqual([x["kurum"] for x in sirali], ["K1", "K2", "K3"])
+
+
+class ReadRetryTests(unittest.TestCase):
+    def test_repeated_content_failures_move_to_weekly_retries(self):
+        import datetime
+        today = datetime.date(2026, 11, 21)
+        ad = {}
+        for _ in range(3):
+            self.assertFalse(scraper.okuma_ertele(ad, today))
+            scraper.okuma_basarisiz_say(ad, "İŞKUR PDF okunamadı: PDF metni çıkarılamadı")
+        ad["okuma_son"] = "2026-11-21"
+        self.assertTrue(scraper.okuma_ertele(ad, today))
+        self.assertTrue(scraper.okuma_ertele(ad, today + datetime.timedelta(days=6)))
+        self.assertFalse(scraper.okuma_ertele(ad, today + datetime.timedelta(days=7)))
+
+    def test_transient_network_errors_never_count(self):
+        ad = {}
+        for _ in range(5):
+            scraper.okuma_basarisiz_say(ad, "zaman aşımı (site yavaş ya da bu ağdan erişilemiyor)")
+        self.assertFalse(scraper.okuma_ertele(ad))
+        self.assertNotIn("okuma_deneme", ad)
+
+
+class ReportUiTests(unittest.TestCase):
+    def _ad(self, days, **extra):
+        import datetime
+        end = scraper.TR_NOW.date() + datetime.timedelta(days=days)
+        ad = {"pozisyon": "Bilişim Mühendisi", "kurum": "Test Kurumu", "link": "https://example.test/a",
+              "_kaynak": "Test", "_baslik": "b", "_bitis": end, "basvuruBitis": end.strftime("%d.%m.%Y"),
+              "kanit": "lisans mezunu bilgisayar mühendisliği", "ekSartlar": "Yok", "ikametSarti": "Yok"}
+        ad.update(extra)
+        return ad
+
+    def test_card_marks_urgency_by_remaining_days(self):
+        self.assertIn('data-urg="today"', scraper.card_html(self._ad(0)))
+        self.assertIn('data-urg="soon"', scraper.card_html(self._ad(2)))
+        self.assertIn('data-urg="week"', scraper.card_html(self._ad(6)))
+        self.assertIn('data-urg="later"', scraper.card_html(self._ad(30)))
+
+    def test_card_escapes_html_and_flags_new_and_warnings(self):
+        card = scraper.card_html(self._ad(10, kurum="<script>x</script>", _yeni=True, ekSartlar="Askerlik"))
+        self.assertNotIn("<script>x", card)
+        self.assertIn('data-new="1"', card)
+        self.assertIn('data-warn="1"', card)
+
+    def test_report_page_is_self_contained_with_theme_and_filter(self):
+        groups = {"ENGELLI_KADRO": [], "ANESTEZI_SAGLIK": [], "ONLISANS": [], "_uymayan": [], "_fiziksel": []}
+        report = scraper.build_report2(groups, [], [], 0, "")
+        self.assertIn('id="q"', report)
+        self.assertIn("prefers-color-scheme", report)
+        self.assertNotIn("http://fonts", report)
 
 
 class IskurMapSourceTests(unittest.TestCase):
