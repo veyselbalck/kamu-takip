@@ -204,6 +204,38 @@ class DedupTests(unittest.TestCase):
         self.assertEqual([x["kurum"] for x in sirali], ["K1", "K2", "K3"])
 
 
+class FitRankingTests(unittest.TestCase):
+    def _ad(self, **extra):
+        ad = {"pozisyon": "Sözleşmeli Bilişim Personeli", "kategori": "BOLUM", "kpssTuru": "KPSS-P3",
+              "kanit": "Bilgisayar mühendisliği lisans mezunu", "ikametSarti": "Yok", "_baslik": "x"}
+        ad.update(extra)
+        return ad
+
+    def test_department_match_with_matching_kpss_is_a_strong_fit(self):
+        self.assertGreaterEqual(scraper.uyum_puani(self._ad()), scraper.UYUM_GUCLU)
+
+    def test_experience_requirement_and_weak_evidence_lower_the_fit(self):
+        zayif = self._ad(_tecrube=4, kanit="ilan metni")
+        self.assertLess(scraper.uyum_puani(zayif), scraper.UYUM_GUCLU)
+
+    def test_generic_posting_is_not_a_strong_fit(self):
+        genel = self._ad(kategori="TUM_LISANS", pozisyon="Memur", kpssTuru="KPSS-P10")
+        self.assertLess(scraper.uyum_puani(genel), scraper.UYUM_GUCLU)
+
+    def test_strong_fit_is_listed_before_an_earlier_deadline(self):
+        import datetime
+        yakin_zayif = {"kurum": "A", "_bitis": datetime.date(2026, 11, 22), "_uyum": 1}
+        uzak_guclu = {"kurum": "B", "_bitis": datetime.date(2026, 12, 30), "_uyum": 5}
+        sirali = sorted([yakin_zayif, uzak_guclu], key=scraper.sira_anahtari)
+        self.assertEqual([x["kurum"] for x in sirali], ["B", "A"])
+
+    def test_second_profile_prefers_disabled_quota_postings(self):
+        engelli = {"_p2": True, "kategori": "ENGELLI_KADRO", "_puan_notu": "puan şartını karşılıyor"}
+        onlisans = {"_p2": True, "kategori": "ONLISANS"}
+        self.assertGreaterEqual(scraper.uyum_puani(engelli), scraper.UYUM_GUCLU)
+        self.assertLess(scraper.uyum_puani(onlisans), scraper.UYUM_GUCLU)
+
+
 class ReadRetryTests(unittest.TestCase):
     def test_repeated_content_failures_move_to_weekly_retries(self):
         import datetime

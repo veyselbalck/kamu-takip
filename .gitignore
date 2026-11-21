@@ -1,0 +1,6 @@
+# Impeccable (AI tasarım aracı) — yerel kurulum dosyaları
+.claude/
+.github/skills/
+.github/agents/
+.github/hooks/
+.impeccable/
