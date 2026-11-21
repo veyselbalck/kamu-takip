@@ -2241,6 +2241,7 @@ SEMA = """{
   "kpssTuru": "örn: KPSS-P3 en az 70 puan | belirtilmemiş",
   "ekSinav": boolean,
     "ekSinavDetay": "sınav türü ve puan şartı; yoksa Yok veya Belirtilmemiş",
+  "gorevYeri": "kadronun görev yapılacak il/ilçe (örn. Ankara / Çankaya); yazmıyorsa 'Belirtilmemiş'",
   "ikametSarti": "Yok" | "Belirtilmemiş" | "Var: <il/ilçe>",
   "ekSartlar": "boy/kilo/yaş sınırı, yabancı dil puanı, ehliyet, deneyim, askerlik vb. yoksa 'Yok'",
   "kisaOzet": "en fazla 2 cümle"
@@ -2356,6 +2357,7 @@ SEMA2 = """{
   "kpssTuru": "örn: KPSS-B grubu en az 60 puan | EKPSS | belirtilmemiş",
   "ekSinav": boolean,
   "ekSinavDetay": "sınav türü ve puan şartı; yoksa Yok veya Belirtilmemiş",
+  "gorevYeri": "kadronun görev yapılacak il/ilçe (örn. Ankara / Çankaya); yazmıyorsa 'Belirtilmemiş'",
   "ikametSarti": "Yok" | "Belirtilmemiş" | "Var: <il/ilçe>",
   "ekSartlar": "yaş sınırı, sağlık şartı, ehliyet, deneyim, askerlik vb. yoksa 'Yok'",
   "kisaOzet": "en fazla 2 cümle"
@@ -2517,6 +2519,38 @@ def poz_adi(a):
                                 "duyuru") or len(p) < 4) else p
 
 
+_ILLER = ("Adana Adıyaman Afyonkarahisar Ağrı Aksaray Amasya Ankara Antalya Ardahan Artvin Aydın Balıkesir Bartın Batman "
+          "Bayburt Bilecik Bingöl Bitlis Bolu Burdur Bursa Çanakkale Çankırı Çorum Denizli Diyarbakır Düzce Edirne Elazığ "
+          "Erzincan Erzurum Eskişehir Gaziantep Giresun Gümüşhane Hakkari Hatay Iğdır Isparta İstanbul İzmir Kahramanmaraş "
+          "Karabük Karaman Kars Kastamonu Kayseri Kilis Kırıkkale Kırklareli Kırşehir Kocaeli Konya Kütahya Malatya Manisa "
+          "Mardin Mersin Muğla Muş Nevşehir Niğde Ordu Osmaniye Rize Sakarya Samsun Şanlıurfa Siirt Sinop Sivas Şırnak "
+          "Tekirdağ Tokat Trabzon Tunceli Uşak Van Yalova Yozgat Zonguldak").split()
+def _tr_kucuk(s):
+    return str(s or "").replace("İ", "i").replace("I", "ı").lower()
+
+
+_IL_ADLARI = {_tr_kucuk(i): i for i in _ILLER}
+_IL_ADLARI.update({"urfa": "Şanlıurfa", "antep": "Gaziantep", "maraş": "Kahramanmaraş", "k.maraş": "Kahramanmaraş",
+                   "içel": "Mersin", "afyon": "Afyonkarahisar"})
+_IL_DESEN = re.compile(r"(?<![\wçğıöşü])(" + "|".join(sorted(map(re.escape, _IL_ADLARI), key=len, reverse=True))
+                       + r")(?![a-zçğıöşü]{5,})", re.I)
+# Ek tolerans: en fazla 4 harflik ek (Ankara'da, Konya'nın); "Aydınlatma" gibi uzun devamlar eşleşmez.
+
+
+def il_bul(*parcalar, en_cok=2):
+    """İlan başlığı/kurumu/görev yerinden il adlarını çıkarır (sırayla ilk bulunanlar). Bulunamazsa ''.
+    Önce kesin alanlar (görev yeri, kurum, başlık), sonra isteğe bağlı kalabalık metin (ilk parça sonuç vermezse)."""
+    bulunan = []
+    for p in parcalar:
+        for m in _IL_DESEN.finditer(_tr_kucuk(p)):
+            il = _IL_ADLARI.get(m.group(1))
+            if il and il not in bulunan:
+                bulunan.append(il)
+        if bulunan:
+            break
+    return " · ".join(bulunan[:en_cok])
+
+
 def kanit_yok(an):
     k = str(an.get("kanit") or "").strip().strip("“”\"'").lower()
     return k in ("", "belirtilmemiş", "belirtilmedi", "yok", "null", "none") or len(k) < 12
@@ -2584,26 +2618,30 @@ def card_html(a):
         kanit = f'<details class="ev"><summary>Kanıt alıntısı</summary><blockquote>“{E(a.get("kanit"))}”</blockquote></details>'
     ozet = f'<p class="sum">{E(a.get("kisaOzet"))}</p>' if a.get("kisaOzet") else ""
     baslik = poz_adi(a) or a.get("_baslik")
-    arama = " ".join(str(x or "") for x in (baslik, a.get("kurum"), a.get("_kaynak"), a.get("kisaOzet"),
-                                           a.get("kpssTuru"), a.get("ekSartlar"))).lower()
+    arama = _tr_kucuk(" ".join(str(x or "") for x in (baslik, a.get("kurum"), a.get("_kaynak"), a.get("kisaOzet"),
+                                           a.get("kpssTuru"), a.get("ekSartlar"), a.get("_il"))))
+    il = a.get("_il") or ""
+    yer_html = (f'<div class="yer">{I("pin")}<b>{E(il)}</b></div>' if il
+                else f'<div class="yer yok">{I("pin")}Şehir ilanda belirtilmemiş</div>')
     link = E(a.get("link"))
     return f"""<article class="card" data-urg="{urg}" data-days="{gun}" data-new="{1 if a.get('_yeni') else 0}" data-warn="{1 if uyarilar else 0}" data-fit="{1 if guclu else 0}" data-q="{E(arama)}">
   <div class="top">
     <div class="main">{flags_html}<a class="ttl" href="{link}" target="_blank" rel="noopener">{E(baslik)}</a>
-    <div class="kurum">{I("building")}<span>{E(a.get('kurum'))}{kadro}</span></div></div>
+    <div class="kurum">{I("building")}<span>{E(a.get('kurum'))}{kadro}</span></div>
+    {yer_html}</div>
     {due}
   </div>
   <dl class="facts">
-    <div><dt>Kaynak</dt><dd>{E(a.get('_kaynak'))}</dd></div>
     {f'<div><dt>Başvuru</dt><dd>{I("calendar")} {tarih}</dd></div>' if tarih else ''}
     <div><dt>Değerlendirme</dt><dd>{E(a.get('degerlendirmeSekli')) or 'Belirtilmemiş'}</dd></div>
     <div><dt>KPSS · {E(a.get('kpssDurumu') or 'Belirtilmemiş')}</dt><dd>{E(a.get('kpssTuru') or 'belirtilmemiş')}</dd></div>
     <div><dt>Ek sınav</dt><dd>{E(ek_sinav)}</dd></div>
-    <div><dt>İkamet</dt><dd{' class="bad"' if ikamet_var else ''}>{I("pin")} {E(ikamet)}</dd></div>
+    <div><dt>İkamet</dt><dd{' class="bad"' if ikamet_var else ''}>{E(ikamet)}</dd></div>
   </dl>
   {f'<div class="meta-tags">{"".join(etiket)}</div>' if etiket else ''}
   {ek_html}{ozet}{kanit}
-  <div class="actions"><a class="btn" href="{link}" target="_blank" rel="noopener">İlana git {I("external")}</a>{diger}</div>
+  <div class="actions"><a class="btn" href="{link}" target="_blank" rel="noopener">İlana git {I("external")}</a>
+    <span class="note">Kaynak: {E(a.get('_kaynak'))}</span>{diger}</div>
 </article>"""
 
 
@@ -2809,7 +2847,9 @@ def p2_rapor(ads, bugun, state):
         bitis = tarih_ayrisir(an.get("basvuruBitis"))
         a = dict(an)
         a.update({"link": k.get("url_gercek") or key, "_kaynak": k.get("kaynak"), "_baslik": k.get("baslik"), "_p2": True,
-                  "_bitis": bitis, "_ilk": k.get("first_seen"), "_imza": imza(k.get("metin") or k.get("p2metin"))})
+                  "_bitis": bitis, "_ilk": k.get("first_seen"), "_imza": imza(k.get("metin") or k.get("p2metin")),
+                  "_il": il_bul(an.get("gorevYeri"), an.get("kurum"), k.get("baslik"), an.get("pozisyon"),
+                                (k.get("metin") or k.get("p2metin") or "")[:800])})
         neden = dogrula2(an, k.get("baslik", ""))
         p_neden, a["_puan_notu"], a["_puan_uyari"] = profil2_kontrol(an, PROFIL2)
         neden = neden or p_neden
@@ -3291,7 +3331,9 @@ def main():
         if ilgili:
             a = dict(an)
             a.update({"link": k.get("url_gercek") or key, "_kaynak": k.get("kaynak"), "_baslik": k.get("baslik"),
-                      "_yeni": yeni, "_bitis": bitis, "_ilk": k.get("first_seen"), "_imza": imza(k.get("metin"))})
+                      "_yeni": yeni, "_bitis": bitis, "_ilk": k.get("first_seen"), "_imza": imza(k.get("metin")),
+                      "_il": il_bul(an.get("gorevYeri"), an.get("kurum"), k.get("baslik"), an.get("pozisyon"),
+                                    (k.get("metin") or "")[:800])})
             if sure_doldu:
                 dolmus.append(a)
             else:

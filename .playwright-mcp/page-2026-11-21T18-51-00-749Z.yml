@@ -1,0 +1,148 @@
+- generic [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]: Kamu İlan Takip
+      - navigation "Sayfalar" [ref=e9]:
+        - link "Ana rapor" [ref=e10] [cursor=pointer]:
+          - /url: index.html
+        - link "Önlisans & Engelli" [ref=e13] [cursor=pointer]:
+          - /url: onlisans.html
+      - button "Tema değiştir" [ref=e16] [cursor=pointer]
+  - main [ref=e19]:
+    - generic [ref=e20]:
+      - heading "Günlük Kamu İlan Raporu" [level=1] [ref=e21]
+      - paragraph [ref=e22]: 21.11.2026 21:50 · 7 aktif ilan · 2 yeni · 2 tanesi 3 gün içinde bitiyor
+      - paragraph [ref=e23]: Groq ok
+    - search [ref=e24]:
+      - group "Bölüm" [ref=e25]:
+        - button "Tümü 7" [ref=e26] [cursor=pointer]:
+          - text: Tümü
+          - generic [ref=e27]: "7"
+        - button "Bilgisayar/Yazılım Mühendisliği 5" [ref=e28] [cursor=pointer]:
+          - text: Bilgisayar/Yazılım Mühendisliği
+          - generic [ref=e29]: "5"
+        - button "Tüm lisans mezunlarına açık 2" [active] [pressed] [ref=e30] [cursor=pointer]:
+          - text: Tüm lisans mezunlarına açık
+          - generic [ref=e31]: "2"
+      - generic [ref=e32]:
+        - searchbox "İlanlarda ara" [ref=e33]
+        - generic [ref=e34]: 2 ilan
+      - group "Filtre" [ref=e35]:
+        - button "Tümü 2" [pressed] [ref=e478] [cursor=pointer]:
+          - text: Tümü
+          - generic [ref=e37]: "2"
+        - button "Güçlü uyum 0" [ref=e479] [cursor=pointer]:
+          - text: Güçlü uyum
+          - generic [ref=e39]: "0"
+        - button "Bugün eklenen 1" [ref=e480] [cursor=pointer]:
+          - text: Bugün eklenen
+          - generic [ref=e41]: "1"
+        - button "7 gün içinde bitenler 0" [ref=e481] [cursor=pointer]:
+          - text: 7 gün içinde bitenler
+          - generic [ref=e43]: "0"
+        - button "Dikkat gerekenler 2" [ref=e482] [cursor=pointer]:
+          - text: Dikkat gerekenler
+          - generic [ref=e45]: "2"
+    - generic [ref=e331]:
+      - generic [ref=e332]:
+        - heading "V için tüm lisans mezunlarına açık" [level=2] [ref=e333]
+        - generic [ref=e336]: "2"
+      - article [ref=e337]:
+        - generic [ref=e338]:
+          - generic [ref=e339]:
+            - generic [ref=e340]: Bugün eklendi
+            - link "Mühendis (Bilişim) 6" [ref=e344] [cursor=pointer]:
+              - /url: https://example.test/ilan/6
+            - generic [ref=e345]: Adli Tıp Kurumu Başkanlığı · 3 kadro
+            - generic [ref=e349]: Şehir ilanda belirtilmemiş
+          - generic [ref=e352]:
+            - generic [ref=e353]: 9 gün kaldı
+            - generic [ref=e356]: "Son: 30.11.2026"
+        - generic [ref=e357]:
+          - generic [ref=e358]:
+            - term [ref=e359]: Başvuru
+            - definition [ref=e360]: 01.11.2026 → 30.11.2026
+          - generic [ref=e363]:
+            - term [ref=e364]: Değerlendirme
+            - definition [ref=e365]: KPSS + sözlü sınav
+          - generic [ref=e366]:
+            - term [ref=e367]: KPSS · Zorunlu
+            - definition [ref=e368]: KPSS-P3 en az 70 puan
+          - generic [ref=e369]:
+            - term [ref=e370]: Ek sınav
+            - definition [ref=e371]: Sözlü sınav
+          - generic [ref=e372]:
+            - term [ref=e373]: İkamet
+            - definition [ref=e374]: Yok
+        - generic [ref=e377]: "kanıt zayıf: ilanı elle kontrol et"
+        - generic [ref=e381]: "Ek şart: Türk vatandaşı, askerlik durumu"
+        - paragraph [ref=e385]: Adli Tıp Kurumu 181 sözleşmeli pozisyon için personel alıyor.
+        - group [ref=e386]:
+          - generic "Kanıt alıntısı" [ref=e387] [cursor=pointer]
+        - generic [ref=e388]:
+          - link "İlana git" [ref=e389] [cursor=pointer]:
+            - /url: https://example.test/ilan/6
+          - generic [ref=e392]: "Kaynak: Kariyer Kapısı"
+          - generic [ref=e393]:
+            - text: "Aynı ilan:"
+            - link "İlan.gov.tr" [ref=e396] [cursor=pointer]:
+              - /url: https://example.test/x
+      - article [ref=e397]:
+        - generic [ref=e398]:
+          - generic [ref=e399]:
+            - link "Mühendis (Bilişim) 7" [ref=e400] [cursor=pointer]:
+              - /url: https://example.test/ilan/7
+            - generic [ref=e401]: Adli Tıp Kurumu Başkanlığı · 3 kadro
+            - generic [ref=e405]: Şehir ilanda belirtilmemiş
+          - generic [ref=e408]:
+            - generic [ref=e409]: 30 gün kaldı
+            - generic [ref=e412]: "Son: 21.12.2026"
+        - generic [ref=e413]:
+          - generic [ref=e414]:
+            - term [ref=e415]: Başvuru
+            - definition [ref=e416]: 01.11.2026 → 21.12.2026
+          - generic [ref=e419]:
+            - term [ref=e420]: Değerlendirme
+            - definition [ref=e421]: KPSS + sözlü sınav
+          - generic [ref=e422]:
+            - term [ref=e423]: KPSS · Zorunlu
+            - definition [ref=e424]: KPSS-P3 en az 70 puan
+          - generic [ref=e425]:
+            - term [ref=e426]: Ek sınav
+            - definition [ref=e427]: Sözlü sınav
+          - generic [ref=e428]:
+            - term [ref=e429]: İkamet
+            - definition [ref=e430]: Yok
+        - generic [ref=e433]: "Ek şart: Türk vatandaşı, askerlik durumu"
+        - paragraph [ref=e437]: Adli Tıp Kurumu 181 sözleşmeli pozisyon için personel alıyor.
+        - group [ref=e438]:
+          - generic "Kanıt alıntısı" [ref=e439] [cursor=pointer]
+        - generic [ref=e440]:
+          - link "İlana git" [ref=e441] [cursor=pointer]:
+            - /url: https://example.test/ilan/7
+          - generic [ref=e444]: "Kaynak: Kariyer Kapısı"
+          - generic [ref=e445]:
+            - text: "Aynı ilan:"
+            - link "İlan.gov.tr" [ref=e448] [cursor=pointer]:
+              - /url: https://example.test/x
+    - group [ref=e449]:
+      - generic "Bu çalıştırma" [ref=e450] [cursor=pointer]
+    - group [ref=e454]:
+      - 'generic "Elle kontrol listesi 1 ilan: içeriği okunamadı ama başlığı ilgili görünüyor" [ref=e455] [cursor=pointer]':
+        - generic [ref=e458]: Elle kontrol listesi
+        - generic [ref=e459]: "1 ilan: içeriği okunamadı ama başlığı ilgili görünüyor"
+      - list [ref=e461]:
+        - listitem [ref=e462]:
+          - link "SBB ilanı" [ref=e463] [cursor=pointer]:
+            - /url: https://e.t
+          - generic [ref=e464]: SBB
+          - text: — içerik okunamadı
+    - group [ref=e465]:
+      - generic "Teknik ayrıntılar kaynak durumu, bütünlük ve denetim" [ref=e466] [cursor=pointer]:
+        - generic [ref=e469]: Teknik ayrıntılar
+        - generic [ref=e470]: kaynak durumu, bütünlük ve denetim
+    - group [ref=e471]:
+      - 'generic "Bugün listede görülen tüm ilanlar 1 ilan: okundu mu, sonuç ne?" [ref=e472] [cursor=pointer]':
+        - generic [ref=e475]: Bugün listede görülen tüm ilanlar
+        - generic [ref=e476]: "1 ilan: okundu mu, sonuç ne?"
+    - generic [ref=e477]: "Son güncelleme: 21.11.2026 21:50. Veriler resmî kaynaklardan otomatik toplanır; başvurmadan önce ilanın aslını doğrulayın."

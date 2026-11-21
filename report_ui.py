@@ -113,6 +113,7 @@ a:hover{text-decoration:underline}
 
 /* arama ve filtre */
 .toolbar{position:sticky;top:var(--top);z-index:10;background:var(--bg);padding:10px 0 10px}
+.toolbar .toc{margin:0 0 10px}
 .search{position:relative;display:flex;gap:10px;align-items:center}
 .search .ic{position:absolute;left:13px;top:50%;margin-top:-.5em;color:var(--muted);pointer-events:none}
 .search input{flex:1;min-width:0;padding:10px 14px 10px 38px;border-radius:12px;border:1px solid var(--line);
@@ -127,9 +128,12 @@ a:hover{text-decoration:underline}
 .chip .n{font-weight:500;color:var(--muted);font-variant-numeric:tabular-nums}
 .chip[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:var(--on-brand)}
 .chip[aria-pressed="true"] .n{color:inherit;opacity:.85}
-.toc{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 4px;font-size:13px}
-.toc a{padding:4px 10px;border-radius:8px;color:var(--muted);border:1px solid var(--line);background:var(--surface)}
-.toc a:hover{color:var(--brand-ink);text-decoration:none;border-color:var(--brand)}
+.toc{display:flex;gap:4px;flex-wrap:wrap;margin:0 0 10px;padding:4px;background:var(--surface2);border-radius:12px;width:fit-content;max-width:100%}
+.toc button{font:inherit;font-size:14px;font-weight:600;padding:0 14px;min-height:38px;border:0;border-radius:9px;background:transparent;
+ color:var(--muted);cursor:pointer;display:inline-flex;align-items:center;gap:7px}
+.toc button:hover{color:var(--text)}
+.toc button[aria-pressed="true"]{background:var(--surface);color:var(--brand-ink);box-shadow:0 1px 2px rgba(0,0,0,.12)}
+.toc .n{font-weight:500;font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
 
 /* bölümler */
 .sec{margin-top:28px}
@@ -153,20 +157,23 @@ p.note{max-width:62ch}
 .flag{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;border-radius:6px;padding:2px 8px}
 .flag.fit{background:var(--brand-soft);color:var(--brand-ink)}
 .flag.new{background:var(--ok-soft);color:var(--ok)}
-.ttl{display:block;font-weight:700;font-size:17px;line-height:1.35;letter-spacing:-.005em;color:var(--text);overflow-wrap:anywhere}
+.ttl{display:block;font-weight:700;font-size:18px;line-height:1.35;letter-spacing:-.005em;color:var(--text);overflow-wrap:anywhere}
 .ttl:hover{color:var(--brand);text-decoration:none}
-.kurum{color:var(--muted);margin-top:3px;font-size:14px;display:flex;gap:7px;align-items:baseline}
-.kurum .ic{transform:translateY(2px)}
+.kurum{color:var(--text);margin-top:4px;font-size:15px;display:flex;gap:7px;align-items:baseline}
+.kurum .ic,.yer .ic{transform:translateY(2px);color:var(--muted)}
+.yer{margin-top:3px;font-size:15px;display:flex;gap:7px;align-items:baseline;color:var(--brand-ink)}
+.yer b{font-weight:700;letter-spacing:.005em}
+.yer.yok{font-size:13px;color:var(--muted)}
 .due{flex-shrink:0;text-align:right;font-size:13px;color:var(--muted);line-height:1.35;white-space:nowrap}
 .due b{display:inline-flex;align-items:center;gap:5px;font-size:14px;color:var(--muted)}
 .due small{display:block;font-variant-numeric:tabular-nums}
 .due[data-urg="today"] b,.due[data-urg="soon"] b{color:var(--bad)}
 .due[data-urg="week"] b{color:var(--warn)}
 .due[data-urg="later"] b{color:var(--ok)}
-.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px 18px;margin:14px 0 2px}
+.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:12px 18px;margin:14px 0 2px;padding-top:12px;border-top:1px solid var(--line)}
 .facts div{min-width:0}
-.facts dt{font-size:12px;font-weight:600;color:var(--muted)}
-.facts dd{margin:1px 0 0;font-size:14px;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.facts dt{font-size:12.5px;font-weight:600;color:var(--muted)}
+.facts dd{margin:2px 0 0;font-size:14.5px;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
 .facts dd.bad{color:var(--bad);font-weight:600}
 .meta-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
 .tag{display:inline-flex;align-items:center;gap:5px;background:var(--surface2);border:1px solid var(--line);color:var(--muted);
@@ -175,11 +182,12 @@ p.note{max-width:62ch}
 .tag.src{background:var(--ok-soft);border-color:transparent;color:var(--ok)}
 .warn{display:flex;gap:8px;background:var(--warn-soft);color:var(--warn);padding:8px 12px;border-radius:10px;font-size:13.5px;margin-top:10px}
 .warn .ic{margin-top:3px}
-.card p.sum{margin:10px 0 0;font-size:14.5px;max-width:72ch}
+.card p.sum{margin:10px 0 0;font-size:15px;line-height:1.6;max-width:72ch}
 details.ev{margin-top:8px;font-size:13px;color:var(--muted)}
 details.ev summary{cursor:pointer;display:inline-block;color:var(--muted);font-weight:600}
 details.ev blockquote{margin:6px 0 0;padding:4px 12px;border-left:2px solid var(--line);font-style:italic;max-width:72ch}
 .actions{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-top:12px}
+.actions .note{margin:0}
 .btn{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--brand);color:var(--brand-ink);font-weight:700;
  font-size:13.5px;min-height:36px;padding:0 14px;border-radius:10px;background:transparent}
 .btn:hover{background:var(--brand);color:var(--on-brand);text-decoration:none}
@@ -234,6 +242,8 @@ footer{margin-top:36px;color:var(--muted);font-size:12.5px;max-width:60ch}
  .due small{display:inline}
  .brand span:not(.mark){display:none}
  .toolbar{position:static;padding-top:4px}
+ .toc{width:100%}
+ .toc button{flex:1;justify-content:center;padding:0 8px}
  .facts{grid-template-columns:1fr 1fr}
 }
 @media print{
@@ -261,8 +271,10 @@ SCRIPT = """
 
   var q=document.getElementById('q'),cards=[].slice.call(document.querySelectorAll('.card')),
       secs=[].slice.call(document.querySelectorAll('[data-sec]')),shown=document.getElementById('shown'),
-      chips=[].slice.call(document.querySelectorAll('.chip')),mode='all',
-      listed=cards.filter(function(c){return c.closest('[data-sec]')}),total=listed.length;
+      chips=[].slice.call(document.querySelectorAll('.chip')),mode='all',sel='all',
+      tabs=[].slice.call(document.querySelectorAll('[data-sec-btn]')),
+      listed=cards.filter(function(c){return c.closest('[data-sec]')});
+  function inSel(c){var s=c.closest('[data-sec]');return !!s&&(sel==='all'||s.id===sel)}
   function norm(s){return (s||'').toLocaleLowerCase('tr')}
   function match(c,m){
     var d=c.getAttribute('data-days'),days=d===''||d===null?null:+d;
@@ -275,17 +287,24 @@ SCRIPT = """
     if(!match(c,mode))return false;
     var t=norm(q&&q.value.trim());
     return !t||c.getAttribute('data-q').indexOf(t)>-1}
-  chips.forEach(function(b){var n=b.querySelector('.n'),m=b.getAttribute('data-mode');
-    if(n)n.textContent=listed.filter(function(c){return match(c,m)}).length});
+  function chipCounts(){chips.forEach(function(b){var n=b.querySelector('.n'),m=b.getAttribute('data-mode');
+    if(n)n.textContent=listed.filter(function(c){return inSel(c)&&match(c,m)}).length})}
+  tabs.forEach(function(b){var id=b.getAttribute('data-sec-btn'),n=b.querySelector('.n');
+    if(n)n.textContent=listed.filter(function(c){var s=c.closest('[data-sec]');return id==='all'||s.id===id}).length});
   function apply(){
-    var n=0,active=mode!=='all'||(q&&q.value.trim());
-    cards.forEach(function(c){var v=ok(c);c.classList.toggle('hide',!v);if(v&&c.closest('[data-sec]'))n++});
+    var n=0,total=0,active=mode!=='all'||(q&&q.value.trim());
+    cards.forEach(function(c){var v=ok(c);c.classList.toggle('hide',!v);
+      if(inSel(c)){total++;if(v)n++}});
     secs.forEach(function(s){
-      var all=s.querySelectorAll('.card').length;if(!all)return;
+      var all=s.querySelectorAll('.card').length,pick=sel==='all'||s.id===sel;
       var vis=s.querySelectorAll('.card:not(.hide)').length,k=s.querySelector('.count');
-      if(k)k.textContent=active?vis+' / '+all:all;
-      s.classList.toggle('hide',active&&!vis)});
+      if(k&&all)k.textContent=active?vis+' / '+all:all;
+      s.classList.toggle('hide',!pick||(all>0&&active&&!vis))});
+    chipCounts();
     if(shown)shown.textContent=active?n+' / '+total+' ilan':total+' ilan'}
+  tabs.forEach(function(b){b.addEventListener('click',function(){
+    sel=b.getAttribute('data-sec-btn');
+    tabs.forEach(function(x){x.setAttribute('aria-pressed',x===b?'true':'false')});apply()})});
   if(q)q.addEventListener('input',apply);
   chips.forEach(function(b){b.addEventListener('click',function(){
     mode=b.getAttribute('data-mode');
@@ -333,13 +352,16 @@ _CHIPS = (("all", "Tümü"), ("fit", "Güçlü uyum"), ("new", "Bugün eklenen")
 
 
 def toolbar(sections):
-    """Bölüm kısayolları (kaymaz) + arama ve filtre çubuğu (yapışkan). sections: [(id, etiket)]."""
-    toc = "".join(f'<a href="#{esc(i)}">{esc(t)}</a>' for i, t in sections)
+    """Bölüm sekmeleri (sayfa kaymaz, yalnız seçilen bölüm görünür) + arama ve filtre çubuğu. sections: [(id, etiket)]."""
+    toc = ('<button type="button" data-sec-btn="all" aria-pressed="true">Tümü <span class="n"></span></button>'
+           + "".join(f'<button type="button" data-sec-btn="{esc(i)}" aria-pressed="false">{esc(t)} <span class="n"></span></button>'
+                     for i, t in sections))
     chips = "".join(
         f'<button class="chip" data-mode="{m}" aria-pressed="{"true" if m == "all" else "false"}">{l} <span class="n"></span></button>'
         for m, l in _CHIPS)
-    return ((f'<nav class="toc" aria-label="Bölümler">{toc}</nav>' if len(sections) > 1 else "")
-            + '<div class="toolbar" role="search"><div class="search">' + ic("search")
+    return ('<div class="toolbar" role="search">'
+            + (f'<div class="toc" role="group" aria-label="Bölüm">{toc}</div>' if len(sections) > 1 else "")
+            + '<div class="search">' + ic("search")
             + '<input id="q" type="search" placeholder="Kurum, başlık veya şehir ara   ( / )" autocomplete="off" '
               'aria-label="İlanlarda ara"><span class="shown" id="shown" aria-live="polite"></span></div>'
             + f'<div class="chips" role="group" aria-label="Filtre">{chips}</div></div>')
