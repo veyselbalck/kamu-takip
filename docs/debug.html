@@ -1,25 +1,180 @@
-<!DOCTYPE html><html lang="tr"><head><meta charset="utf-8"><title>Tanı</title><style>
-body{font-family:system-ui,Arial,sans-serif;background:#f5f6fa;padding:24px;color:#1f2430;max-width:1000px;margin:auto}
-h1{font-size:22px} h2{font-size:18px;margin-top:32px}
-.card{background:#fff;border-radius:12px;padding:16px 20px;margin:12px 0;box-shadow:0 1px 4px rgba(0,0,0,.08)}
-.top a{color:#2a5bd7;text-decoration:none;font-weight:700;font-size:16px}
-.new{background:#16a34a;color:#fff;border-radius:6px;padding:2px 8px;font-size:12px;margin-left:8px}
-.kurum{color:#555;margin-top:2px}
-.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
-.tag{background:#eef1fb;color:#33418f;padding:3px 10px;border-radius:20px;font-size:12px}
-.tag.red{background:#fde8e8;color:#9b1c1c} .tag.src{background:#e8f5e9;color:#1b5e20}
-.warn{background:#fff3cd;color:#7a5b00;padding:4px 10px;border-radius:6px;font-size:12px;margin-top:8px}
-.kanit{font-size:11px;color:#777;font-style:italic;margin-top:4px}
-.btn{display:inline-block;margin-top:8px;font-size:12px;color:#2a5bd7}
-.box{font-size:12px;color:#444;margin-top:30px;overflow-x:auto}
-table{border-collapse:collapse;width:100%;font-size:12px}
-td,th{border:1px solid #ddd;padding:4px 8px;text-align:left;vertical-align:top}
-.bad{background:#fde8e8} img{max-width:100%;border:1px solid #ccc}
-pre{white-space:pre-wrap;background:#fff;padding:8px;border:1px solid #ddd;font-size:11px}
-</style></head><body><h1>🛠 Tanı sayfası — 21.11.2026 18:09</h1><p><a href="index.html">← Rapora dön</a></p><h2>İlan.gov.tr</h2>
-<p><b>Not:</b> sitede toplam: 124, okunan: 125, sayfalama: currentPage<br><b>Son URL:</b> https://www.ilan.gov.tr/ilan/tum-ilanlar/personel-alimi?ats=5&amp;currentPage=11<br><b>Başlık:</b> ilan.gov.tr - Türkiye&#x27;nin İlan Portalı</p>
-<img src="debug/s0.jpg" alt="ekran görüntüsü">
-<h3>Sayfa metni (ilk 1500 karakter)</h3><pre>Tüm İlanlar  
+<!DOCTYPE html><html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%277%27 fill=%27%233a56d4%27/%3E%3Cpath d=%27M9 10h14M9 16h14M9 22h9%27 stroke=%27white%27 stroke-width=%273%27 stroke-linecap=%27round%27/%3E%3C/svg%3E"><title>Tanı</title><style>
+:root{--bg:#f4f5fa;--surface:#ffffff;--surface2:#f6f7fc;--text:#171a2b;--muted:#586079;--line:#e1e5f0;--brand:#3a56d4;--brand-soft:#e8ecfd;--brand-ink:#2b43a8;--on-brand:#ffffff;--ok:#0e7a58;--ok-soft:#dcf4ea;--warn:#8a5a00;--warn-soft:#fff1cc;--bad:#b3202a;--bad-soft:#fde7e8;--shadow:0 1px 2px rgba(23,26,43,.05);color-scheme:light;--top:57px}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1120;--surface:#161a2e;--surface2:#1b2038;--text:#e9ecf8;--muted:#9ba4c2;--line:#272d4a;--brand:#8199ff;--brand-soft:#242c58;--brand-ink:#b4c0ff;--on-brand:#0e1120;--ok:#52d3a3;--ok-soft:#12342c;--warn:#f3c553;--warn-soft:#3a2f12;--bad:#ff8087;--bad-soft:#3e1b21;--shadow:0 1px 2px rgba(0,0,0,.35);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0e1120;--surface:#161a2e;--surface2:#1b2038;--text:#e9ecf8;--muted:#9ba4c2;--line:#272d4a;--brand:#8199ff;--brand-soft:#242c58;--brand-ink:#b4c0ff;--on-brand:#0e1120;--ok:#52d3a3;--ok-soft:#12342c;--warn:#f3c553;--warn-soft:#3a2f12;--bad:#ff8087;--bad-soft:#3e1b21;--shadow:0 1px 2px rgba(0,0,0,.35);color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:calc(var(--top) + 16px)}
+body{margin:0;background:var(--bg);color:var(--text);
+ font:15px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+ -webkit-font-smoothing:antialiased;accent-color:var(--brand);scrollbar-color:var(--line) transparent}
+h1,h2,h3{text-wrap:balance}
+a{color:var(--brand);text-decoration:none;text-underline-offset:3px}
+a:hover{text-decoration:underline}
+::selection{background:var(--brand-soft);color:var(--text)}
+:focus-visible{outline:2px solid var(--brand);outline-offset:2px;border-radius:6px}
+.ic{width:1.05em;height:1.05em;stroke:currentColor;fill:none;stroke-width:1.75;stroke-linecap:round;
+ stroke-linejoin:round;vertical-align:-.17em;flex:none}
+.wrap{max-width:1000px;margin:0 auto;padding:0 16px 64px}
+
+/* üst çubuk */
+.topbar{position:sticky;top:0;z-index:20;background:var(--surface);border-bottom:1px solid var(--line)}
+.topbar .in{max-width:1000px;margin:0 auto;padding:0 16px;height:var(--top);display:flex;align-items:center;gap:12px}
+.brand{display:flex;align-items:center;gap:9px;font-weight:700;letter-spacing:-.01em;white-space:nowrap;color:var(--text)}
+.brand .mark{width:26px;height:26px;border-radius:7px;background:var(--brand);color:var(--on-brand);display:grid;place-items:center}
+.brand .mark .ic{width:15px;height:15px;stroke-width:2.2;vertical-align:0}
+.tabs{display:flex;gap:2px;flex:1;overflow-x:auto;scrollbar-width:none;height:100%}
+.tabs::-webkit-scrollbar{display:none}
+.tabs a{display:flex;align-items:center;gap:7px;padding:0 12px;color:var(--muted);font-weight:600;font-size:14px;
+ white-space:nowrap;border-bottom:2px solid transparent;margin-bottom:-1px}
+.tabs a:hover{color:var(--text);text-decoration:none}
+.tabs a.on{color:var(--brand-ink);border-bottom-color:var(--brand)}
+.iconbtn{border:1px solid var(--line);background:var(--surface);color:var(--text);width:38px;height:38px;
+ border-radius:10px;cursor:pointer;display:grid;place-items:center}
+.iconbtn:hover{background:var(--brand-soft)}
+.iconbtn .ic{width:18px;height:18px;vertical-align:0}
+#tema .i-sun{display:none}
+#tema[data-dark="true"] .i-sun{display:inline}
+#tema[data-dark="true"] .i-moon{display:none}
+
+/* sayfa başlığı */
+.pagehead{padding:26px 0 14px}
+.pagehead h1{margin:0;font-size:clamp(22px,4vw,28px);letter-spacing:-.02em;line-height:1.2}
+.pagehead .meta{margin:6px 0 0;color:var(--muted);font-size:14px;font-variant-numeric:tabular-nums}
+.pagehead .alert{margin:10px 0 0;font-size:13.5px;color:var(--warn);background:var(--warn-soft);padding:8px 12px;border-radius:10px}
+
+/* arama ve filtre */
+.toolbar{position:sticky;top:var(--top);z-index:10;background:var(--bg);padding:10px 0 10px}
+.search{position:relative;display:flex;gap:10px;align-items:center}
+.search .ic{position:absolute;left:13px;top:50%;margin-top:-.5em;color:var(--muted);pointer-events:none}
+.search input{flex:1;min-width:0;padding:10px 14px 10px 38px;border-radius:12px;border:1px solid var(--line);
+ background:var(--surface);color:var(--text);font:inherit;min-height:42px}
+.search input::placeholder{color:var(--muted)}
+.search input:focus{outline:2px solid var(--brand);outline-offset:0;border-color:transparent}
+.shown{font-size:13px;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface);color:var(--text);
+ padding:0 12px;min-height:34px;border-radius:999px;font-family:inherit;font-weight:600;font-size:13px;cursor:pointer}
+.chip:hover{border-color:var(--brand)}
+.chip .n{font-weight:500;color:var(--muted);font-variant-numeric:tabular-nums}
+.chip[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:var(--on-brand)}
+.chip[aria-pressed="true"] .n{color:inherit;opacity:.85}
+.toc{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 4px;font-size:13px}
+.toc a{padding:4px 10px;border-radius:8px;color:var(--muted);border:1px solid var(--line);background:var(--surface)}
+.toc a:hover{color:var(--brand-ink);text-decoration:none;border-color:var(--brand)}
+
+/* bölümler */
+.sec{margin-top:28px}
+.sec-h{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.sec-h h2{margin:0;font-size:19px;letter-spacing:-.01em;display:flex;align-items:center;gap:9px}
+.sec-h h2 .ic{color:var(--muted)}
+.count{background:var(--brand-soft);color:var(--brand-ink);font-weight:700;font-size:12.5px;border-radius:999px;padding:1px 10px;
+ font-variant-numeric:tabular-nums}
+.empty{color:var(--muted);background:var(--surface);border:1px dashed var(--line);border-radius:14px;padding:18px;text-align:center}
+.note{font-size:13px;color:var(--muted)}
+p{text-wrap:pretty}
+p.note{max-width:62ch}
+
+/* ilan kartı */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px 14px;margin:10px 0;
+ box-shadow:var(--shadow)}
+.card[data-urg="today"],.card[data-urg="soon"]{border-color:color-mix(in srgb,var(--bad) 55%,var(--line))}
+.card .top{display:flex;gap:14px;align-items:flex-start;justify-content:space-between}
+.card .main{min-width:0}
+.flags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px}
+.flag{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;border-radius:6px;padding:2px 8px}
+.flag.fit{background:var(--brand-soft);color:var(--brand-ink)}
+.flag.new{background:var(--ok-soft);color:var(--ok)}
+.ttl{display:block;font-weight:700;font-size:17px;line-height:1.35;letter-spacing:-.005em;color:var(--text);overflow-wrap:anywhere}
+.ttl:hover{color:var(--brand);text-decoration:none}
+.kurum{color:var(--muted);margin-top:3px;font-size:14px;display:flex;gap:7px;align-items:baseline}
+.kurum .ic{transform:translateY(2px)}
+.due{flex-shrink:0;text-align:right;font-size:13px;color:var(--muted);line-height:1.35;white-space:nowrap}
+.due b{display:inline-flex;align-items:center;gap:5px;font-size:14px;color:var(--muted)}
+.due small{display:block;font-variant-numeric:tabular-nums}
+.due[data-urg="today"] b,.due[data-urg="soon"] b{color:var(--bad)}
+.due[data-urg="week"] b{color:var(--warn)}
+.due[data-urg="later"] b{color:var(--ok)}
+.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px 18px;margin:14px 0 2px}
+.facts div{min-width:0}
+.facts dt{font-size:12px;font-weight:600;color:var(--muted)}
+.facts dd{margin:1px 0 0;font-size:14px;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.facts dd.bad{color:var(--bad);font-weight:600}
+.meta-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.tag{display:inline-flex;align-items:center;gap:5px;background:var(--surface2);border:1px solid var(--line);color:var(--muted);
+ padding:2px 10px;border-radius:999px;font-size:12.5px}
+.tag.red{background:var(--bad-soft);border-color:transparent;color:var(--bad)}
+.tag.src{background:var(--ok-soft);border-color:transparent;color:var(--ok)}
+.warn{display:flex;gap:8px;background:var(--warn-soft);color:var(--warn);padding:8px 12px;border-radius:10px;font-size:13.5px;margin-top:10px}
+.warn .ic{margin-top:3px}
+.card p.sum{margin:10px 0 0;font-size:14.5px;max-width:72ch}
+details.ev{margin-top:8px;font-size:13px;color:var(--muted)}
+details.ev summary{cursor:pointer;display:inline-block;color:var(--muted);font-weight:600}
+details.ev blockquote{margin:6px 0 0;padding:4px 12px;border-left:2px solid var(--line);font-style:italic;max-width:72ch}
+.actions{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-top:12px}
+.btn{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--brand);color:var(--brand-ink);font-weight:700;
+ font-size:13.5px;min-height:36px;padding:0 14px;border-radius:10px;background:transparent}
+.btn:hover{background:var(--brand);color:var(--on-brand);text-decoration:none}
+
+/* katlanır paneller */
+details.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;margin-top:12px}
+details.panel>summary{cursor:pointer;padding:13px 16px;list-style:none;display:flex;gap:10px;align-items:center;min-height:48px}
+details.panel>summary::-webkit-details-marker{display:none}
+details.panel>summary::after{content:"";margin-left:auto;width:8px;height:8px;border-right:2px solid var(--muted);
+ border-bottom:2px solid var(--muted);transform:rotate(45deg) translateY(-2px);transition:transform .15s}
+details.panel[open]>summary::after{transform:rotate(-135deg) translateY(-2px)}
+details.panel>summary .ic{color:var(--muted)}
+details.panel>summary small{color:var(--muted);font-weight:400}
+.panel-b{padding:2px 16px 16px}
+.panel-b ul{margin:6px 0;padding-left:20px}
+.panel-b li{margin:6px 0}
+.panel-b h3{display:flex;align-items:center;gap:8px;font-size:15px;margin:20px 0 6px}
+.panel-b .card{border:0;border-top:1px solid var(--line);border-radius:0;box-shadow:none;background:transparent;margin:0;padding:14px 0}
+.panel-b .card[data-urg]{border-color:var(--line)}
+.runstats{display:flex;flex-wrap:wrap;gap:6px 22px;list-style:none;margin:0;padding:0;font-size:13.5px;color:var(--muted)}
+.runstats b{color:var(--text);font-size:15px;font-variant-numeric:tabular-nums}
+.runstats .bad b{color:var(--bad)} .runstats .ok b{color:var(--ok)}
+
+/* tablolar */
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:12px;margin:10px 0;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th{background:var(--surface2);color:var(--muted);text-align:left;font-size:12px;font-weight:600}
+td,th{padding:9px 14px;border-bottom:1px solid var(--line);vertical-align:top;font-variant-numeric:tabular-nums}
+tr:last-child td{border-bottom:0}
+tr.bad td{background:var(--bad-soft)}
+tbody tr:hover td{background:var(--surface2)}
+tr.bad:hover td{background:var(--bad-soft)}
+.pill{display:inline-block;font-size:12px;font-weight:700;border-radius:6px;padding:1px 8px;white-space:nowrap;
+ background:var(--brand-soft);color:var(--brand-ink)}
+.pill.red{background:var(--bad-soft);color:var(--bad)}
+.pill.green{background:var(--ok-soft);color:var(--ok)}
+.new{background:var(--ok-soft);color:var(--ok);border-radius:6px;padding:1px 7px;font-size:11.5px;margin-left:6px;font-weight:700}
+
+/* tanı sayfası */
+img{max-width:100%;border:1px solid var(--line);border-radius:10px}
+pre{white-space:pre-wrap;background:var(--surface2);padding:10px;border:1px solid var(--line);border-radius:10px;font-size:12px;overflow-x:auto}
+
+footer{margin-top:36px;color:var(--muted);font-size:12.5px;max-width:60ch}
+#up{position:fixed;right:16px;bottom:16px;display:none;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.hide{display:none!important}
+
+@media (max-width:640px){
+ .pagehead{padding-top:18px}
+ .card{padding:14px 14px 12px}
+ .card .top{flex-direction:column;gap:8px}
+ .due{text-align:left;display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+ .due small{display:inline}
+ .brand span:not(.mark){display:none}
+ .toolbar{position:static;padding-top:4px}
+ .facts{grid-template-columns:1fr 1fr}
+}
+@media print{
+ .topbar,.toolbar,#up,.actions{display:none!important}
+ body{background:#fff}
+ .card,.panel{box-shadow:none;break-inside:avoid}
+ details.panel:not([open])>.panel-b{display:block}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style></head><body><svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></symbol><symbol id="i-pin" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0z"/><circle cx="12" cy="10" r="3"/></symbol><symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol><symbol id="i-building" viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22v-4h6v4M8 6h.01M12 6h.01M16 6h.01M8 10h.01M12 10h.01M16 10h.01M8 14h.01M12 14h.01M16 14h.01"/></symbol><symbol id="i-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></symbol><symbol id="i-alert" viewBox="0 0 24 24"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/></symbol><symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol><symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol><symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></symbol><symbol id="i-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></symbol><symbol id="i-up" viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></symbol><symbol id="i-external" viewBox="0 0 24 24"><path d="M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></symbol><symbol id="i-star" viewBox="0 0 24 24"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></symbol><symbol id="i-zap" viewBox="0 0 24 24"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></symbol><symbol id="i-briefcase" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></symbol><symbol id="i-access" viewBox="0 0 24 24"><circle cx="12" cy="4.5" r="2"/><path d="M5 9h14M12 9v6M9 21l3-6 3 6"/></symbol><symbol id="i-heart" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></symbol><symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol><symbol id="i-cap" viewBox="0 0 24 24"><path d="m22 10-10-5-10 5 10 5 10-5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></symbol><symbol id="i-ban" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></symbol><symbol id="i-hourglass" viewBox="0 0 24 24"><path d="M5 22h14M5 2h14M17 22v-4.17a2 2 0 0 0-.59-1.42L12 12l-4.41 4.41A2 2 0 0 0 7 17.83V22M7 2v4.17a2 2 0 0 0 .59 1.42L12 12l4.41-4.41A2 2 0 0 0 17 6.17V2"/></symbol><symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol><symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></symbol><symbol id="i-activity" viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></symbol><symbol id="i-flask" viewBox="0 0 24 24"><path d="M10 2v7.31L4.5 18a2 2 0 0 0 1.7 3h11.6a2 2 0 0 0 1.7-3L14 9.31V2M8.5 2h7"/></symbol><symbol id="i-eye" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></symbol><symbol id="i-list" viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></symbol><symbol id="i-doc" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8"/></symbol><symbol id="i-wrench" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></symbol><symbol id="i-bot" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4M8 16h.01M16 16h.01"/></symbol></defs></svg><header class="topbar"><div class="in"><div class="brand"><span class="mark"><svg class="ic" aria-hidden="true"><use href="#i-list"/></svg></span><span>Kamu İlan Takip</span></div><nav class="tabs" aria-label="Sayfalar"><a href="index.html"><svg class="ic" aria-hidden="true"><use href="#i-target"/></svg>Ana rapor</a><a href="onlisans.html"><svg class="ic" aria-hidden="true"><use href="#i-access"/></svg>Önlisans &amp; Engelli</a><a href="debug.html" class=on aria-current=page><svg class="ic" aria-hidden="true"><use href="#i-wrench"/></svg>Tanı</a></nav><button class="iconbtn" id="tema" aria-label="Tema değiştir" title="Açık/koyu tema"><svg class="ic i-moon" aria-hidden="true"><use href="#i-moon"/></svg><svg class="ic i-sun" aria-hidden="true"><use href="#i-sun"/></svg></button></div></header><main class="wrap"><header class="pagehead"><h1>Tanı sayfası</h1><p class="meta">21.11.2026 20:42 · 9 adım</p></header><details class="panel"><summary><svg class="ic" aria-hidden="true"><use href="#i-wrench"/></svg><b>İlan.gov.tr</b> <small>sitede toplam: 124, okunan: 125, sayfalama: currentPage</small></summary><div class="panel-b"><p class="note"><b>Son URL:</b> https://www.ilan.gov.tr/ilan/tum-ilanlar/personel-alimi?ats=5&amp;currentPage=11<br><b>Başlık:</b> ilan.gov.tr - Türkiye&#x27;nin İlan Portalı</p><img src="debug/s0.jpg" alt="ekran görüntüsü" loading="lazy"><h3>Sayfa metni (ilk 1500 karakter)</h3><pre>Tüm İlanlar  
 Kurumsal
 Destek
 İletişim
@@ -92,8 +247,7 @@ sayfa
 Şu sayfadasınız
 11
 Sonraki 
-sayfa</pre>
-<h3>Bulunan linkler (ilk 40)</h3><pre>&#x27;&#x27; -&gt; /
+sayfa</pre><h3>Bulunan linkler (ilk 40)</h3><pre>&#x27;&#x27; -&gt; /
 &#x27;Tüm İlanlar&#x27; -&gt; /ilan/tum-ilanlar
 &#x27;İCRA&#x27; -&gt; /ilan/tum-ilanlar/icra?ats=2
 &#x27;İHALE&#x27; -&gt; /ilan/tum-ilanlar/ihale?ats=3
@@ -132,8 +286,7 @@ sayfa</pre>
 &#x27;TÜM İLANLAR&#x27; -&gt; /ilan/tum-ilanlar
 &#x27;İCRA&#x27; -&gt; /ilan/tum-ilanlar/icra?ats=2
 &#x27;İHALE&#x27; -&gt; /ilan/tum-ilanlar/ihale?ats=3
-&#x27;TEBLİGAT&#x27; -&gt; /ilan/tum-ilanlar/tebligat?ats=4</pre>
-<h3>Arka plan (XHR/fetch) istekleri</h3><pre>GET 200 https://www.ilan.gov.tr//assets/appconfig.production.json
+&#x27;TEBLİGAT&#x27; -&gt; /ilan/tum-ilanlar/tebligat?ats=4</pre><h3>Arka plan (XHR/fetch) istekleri</h3><pre>GET 200 https://www.ilan.gov.tr//assets/appconfig.production.json
    yanıt: {
   &quot;remoteServiceBaseUrl&quot;: &quot;https://www.ilan.gov.tr/api&quot;,
   &quot;appBaseUrl&quot;: &quot;https://www.ilan.gov.tr&quot;,
@@ -142,43 +295,40 @@ sayfa</pre>
 
 GET 200 https://www.ilan.gov.tr/api/AbpUserConfiguration/GetAll
    yanıt: {&quot;result&quot;:{&quot;multiTenancy&quot;:{&quot;isEnabled&quot;:false,&quot;ignoreFeatureCheckForHostUsers&quot;:false,&quot;sides&quot;:{&quot;host&quot;:&quot;Host&quot;,&quot;tenant&quot;:&quot;Tenant&quot;}},&quot;session&quot;:{&quot;userId&quot;:null,&quot;tenantId&quot;:1,&quot;impersonatorUserId&quot;:null,&quot;impersonatorTenantId&quot;:1,&quot;multiTenancySide&quot;:&quot;Tenant&quot;},&quot;localization&quot;:{&quot;currentCulture&quot;:{&quot;name&quot;:&quot;tr&quot;,&quot;displayN
-POST 200 https://www.google-analytics.com/j/collect?v=1&amp;_v=j102&amp;a=58271893&amp;t=pageview&amp;_s=1&amp;dl=https%3A%2F%2Fwww.ilan.gov.tr%2Filan%2Ftum-ilanlar%2Fpersonel-alimi%3Fats%3D5&amp;ul=tr-tr&amp;dt=ilan.gov.tr%20-%20T%C3%BC
 GET 200 https://www.ilan.gov.tr/api/api/services/app/Session/GetCurrentLoginInformations
    yanıt: {&quot;result&quot;:{&quot;application&quot;:{&quot;version&quot;:&quot;5.0.0.0&quot;,&quot;releaseDate&quot;:&quot;2026-09-24T04:22:04Z&quot;,&quot;features&quot;:{}},&quot;user&quot;:null,&quot;tenant&quot;:{&quot;tenancyName&quot;:&quot;Default&quot;,&quot;name&quot;:&quot;Default&quot;,&quot;id&quot;:1}},&quot;targetUrl&quot;:null,&quot;success&quot;:true,&quot;error&quot;:null,&quot;unAuthorizedRequest&quot;:false,&quot;__abp&quot;:true}
+GET 200 https://www.ilan.gov.tr/api/api/services/app/Banner/GetDetailUniversal?bannerPositionEnum=Genel_Ust
+   yanıt: {&quot;result&quot;:{&quot;name&quot;:&quot;Geyikli Belediyesi arsa satış1&quot;,&quot;imageName&quot;:&quot;Geyikli%20Belediyesi%20(3).png&quot;,&quot;imagePath&quot;:&quot;Dosyalar/resim&quot;,&quot;orderNo&quot;:null,&quot;attributeSetId&quot;:null,&quot;isActive&quot;:true,&quot;bannerPositionId&quot;:1,&quot;publishStartDate&quot;:&quot;2026-11-17T21:00:00Z&quot;,&quot;publishEndDate&quot;:&quot;2026-11-22T21:02:00Z&quot;,&quot;bannerType&quot;:&quot;UTM&quot;,
 GET 200 https://www.ilan.gov.tr/api/api/services/app/AdHomePage/GetRichMenuStats
    yanıt: {&quot;result&quot;:[{&quot;id&quot;:2,&quot;key&quot;:&quot;İCRA&quot;,&quot;displayName&quot;:null,&quot;slug&quot;:&quot;İCRA&quot;,&quot;plateNumber&quot;:null,&quot;count&quot;:0,&quot;stats&quot;:[{&quot;id&quot;:1,&quot;key&quot;:&quot;Emlak&quot;,&quot;displayName&quot;:null,&quot;slug&quot;:&quot;Emlak&quot;,&quot;plateNumber&quot;:null,&quot;count&quot;:8875,&quot;stats&quot;:null,&quot;orderNo&quot;:25,&quot;statType&quot;:&quot;Category&quot;,&quot;logoPath&quot;:null,&quot;iconFullPath&quot;:null},{&quot;id&quot;:2,&quot;key&quot;:&quot;Vasıta&quot;,&quot;
 GET 200 https://www.ilan.gov.tr/api/api/services/app/Banner/GetDetailUniversal?bannerPositionEnum=Mobil_Genel_Ust
    yanıt: {&quot;result&quot;:{&quot;name&quot;:&quot;Geyikli Belediyesi arsa satış mobil &quot;,&quot;imageName&quot;:&quot;Geyikli%20Belediyesi%20(3).png&quot;,&quot;imagePath&quot;:&quot;Dosyalar/resim&quot;,&quot;orderNo&quot;:null,&quot;attributeSetId&quot;:null,&quot;isActive&quot;:true,&quot;bannerPositionId&quot;:24,&quot;publishStartDate&quot;:&quot;2026-11-17T21:00:00Z&quot;,&quot;publishEndDate&quot;:&quot;2026-11-22T21:02:00Z&quot;,&quot;bannerType&quot;
 GET 200 https://www.ilan.gov.tr/api/api/services/app/Banner/GetDetailUniversal?bannerPositionEnum=Popup_Genel
    yanıt: {&quot;result&quot;:null,&quot;targetUrl&quot;:null,&quot;success&quot;:true,&quot;error&quot;:null,&quot;unAuthorizedRequest&quot;:false,&quot;__abp&quot;:true}
-GET 200 https://www.ilan.gov.tr/api/api/services/app/Banner/GetDetailUniversal?bannerPositionEnum=Genel_Sag
-   yanıt: {&quot;result&quot;:null,&quot;targetUrl&quot;:null,&quot;success&quot;:true,&quot;error&quot;:null,&quot;unAuthorizedRequest&quot;:false,&quot;__abp&quot;:true}
-GET 200 https://www.ilan.gov.tr/api/api/services/app/Banner/GetDetailUniversal?bannerPositionEnum=Mobil_Genel_Sol
-   yanıt: {&quot;result&quot;:null,&quot;targetUrl&quot;:null,&quot;success&quot;:true,&quot;error&quot;:null,&quot;unAuthorizedRequest&quot;:false,&quot;__abp&quot;:true}
 GET 200 https://www.ilan.gov.tr/api/api/services/app/Banner/GetDetailUniversal?bannerPositionEnum=Genel_Sol
+   yanıt: {&quot;result&quot;:null,&quot;targetUrl&quot;:null,&quot;success&quot;:true,&quot;error&quot;:null,&quot;unAuthorizedRequest&quot;:false,&quot;__abp&quot;:true}
+POST 200 https://www.google-analytics.com/j/collect?v=1&amp;_v=j102&amp;a=1118114939&amp;t=pageview&amp;_s=1&amp;dl=https%3A%2F%2Fwww.ilan.gov.tr%2Filan%2Ftum-ilanlar%2Fpersonel-alimi%3Fats%3D5&amp;ul=tr-tr&amp;dt=ilan.gov.tr%20-%20T%C3%
+GET 200 https://www.ilan.gov.tr/api/api/services/app/Banner/GetDetailUniversal?bannerPositionEnum=Mobil_Genel_Sol
    yanıt: {&quot;result&quot;:null,&quot;targetUrl&quot;:null,&quot;success&quot;:true,&quot;error&quot;:null,&quot;unAuthorizedRequest&quot;:false,&quot;__abp&quot;:true}
 GET 200 https://www.ilan.gov.tr/api/api/services/app/Banner/GetDetailUniversal?bannerPositionEnum=Mobil_Genel_Sag
    yanıt: {&quot;result&quot;:null,&quot;targetUrl&quot;:null,&quot;success&quot;:true,&quot;error&quot;:null,&quot;unAuthorizedRequest&quot;:false,&quot;__abp&quot;:true}
-GET 200 https://www.ilan.gov.tr/api/api/services/app/Banner/GetDetailUniversal?bannerPositionEnum=Genel_Ust
-   yanıt: {&quot;result&quot;:{&quot;name&quot;:&quot;Geyikli Belediyesi arsa satış1&quot;,&quot;imageName&quot;:&quot;Geyikli%20Belediyesi%20(3).png&quot;,&quot;imagePath&quot;:&quot;Dosyalar/resim&quot;,&quot;orderNo&quot;:null,&quot;attributeSetId&quot;:null,&quot;isActive&quot;:true,&quot;bannerPositionId&quot;:1,&quot;publishStartDate&quot;:&quot;2026-11-17T21:00:00Z&quot;,&quot;publishEndDate&quot;:&quot;2026-11-22T21:02:00Z&quot;,&quot;bannerType&quot;:&quot;UTM&quot;,
+GET 200 https://www.ilan.gov.tr/api/api/services/app/Banner/GetDetailUniversal?bannerPositionEnum=Genel_Sag
+   yanıt: {&quot;result&quot;:null,&quot;targetUrl&quot;:null,&quot;success&quot;:true,&quot;error&quot;:null,&quot;unAuthorizedRequest&quot;:false,&quot;__abp&quot;:true}
 GET 200 https://www.ilan.gov.tr/api/api/services/app/Menu/GetBottomMenu
    yanıt: {&quot;result&quot;:[{&quot;id&quot;:81,&quot;parentId&quot;:null,&quot;url&quot;:null,&quot;title&quot;:&quot;KURUMSAL&quot;,&quot;children&quot;:[{&quot;id&quot;:86,&quot;parentId&quot;:81,&quot;url&quot;:&quot;/kurumsal-basin-ilan-kurumu&quot;,&quot;title&quot;:&quot;Basın İlan Kurumu&quot;,&quot;children&quot;:null,&quot;isSelected&quot;:false,&quot;contentTitle&quot;:&quot;-&quot;,&quot;contentSlug&quot;:&quot;-&quot;,&quot;contentDetail&quot;:&quot;-&quot;},{&quot;id&quot;:170,&quot;parentId&quot;:81,&quot;url&quot;:&quot;/kurumsal-t
-POST 204 https://www.google-analytics.com/g/collect?v=2&amp;tid=G-E5HGE1NKEK&amp;gtm=45je6bh1v9116736288za20ozb9119647798zd9119647798xf1&amp;_p=1795273950484&amp;gcd=13l3l3l3l1l1&amp;npa=0&amp;dma=0&amp;are=1&amp;cid=552674146.1795273951&amp;frm
-POST 204 https://www.google-analytics.com/g/collect?v=2&amp;tid=G-E5HGE1NKEK&amp;gtm=45je6bh1v9116736288za20gzb9119647798zd9119647798xf1&amp;_p=1795273950484&amp;gcd=13l3l3l3l1l1&amp;npa=0&amp;dma=0&amp;_eu=AEAAAAQ&amp;ae=a&amp;are=1&amp;cid=5526741
-GET 200 https://www.ilan.gov.tr/api/api/services/app/Banner/GetDetailUniversal?bannerPositionEnum=Mobil_Icsayfa_Ust
+POST 204 https://www.google-analytics.com/g/collect?v=2&amp;tid=G-E5HGE1NKEK&amp;gtm=45je6bh1v9116736288za20ozb9119647798zd9119647798xf1&amp;_p=1795283025883&amp;gcd=13l3l3l3l1l1&amp;npa=0&amp;dma=0&amp;are=1&amp;cid=98110025.1795283027&amp;frm=
+POST 204 https://www.google-analytics.com/g/collect?v=2&amp;tid=G-E5HGE1NKEK&amp;gtm=45je6bh1v9116736288za20gzb9119647798zd9119647798xf1&amp;_p=1795283025883&amp;gcd=13l3l3l3l1l1&amp;npa=0&amp;dma=0&amp;_eu=AEAAAAQ&amp;ae=a&amp;are=1&amp;cid=9811002
 GET 200 https://www.ilan.gov.tr/api/api/services/app/Banner/GetDetailUniversal?bannerPositionEnum=Icsayfa_Ust
-GET 200 https://www.ilan.gov.tr/api/api/services/app/Banner/GetDetailUniversal?bannerPositionEnum=Mobil_Icsayfa_Sol
+GET 200 https://www.ilan.gov.tr/api/api/services/app/Banner/GetDetailUniversal?bannerPositionEnum=Mobil_Icsayfa_Ust
 GET 200 https://www.ilan.gov.tr/api/api/services/app/Banner/GetDetailUniversal?bannerPositionEnum=Icsayfa_Sag
+GET 200 https://www.ilan.gov.tr/api/api/services/app/Banner/GetDetailUniversal?bannerPositionEnum=Mobil_Icsayfa_Sol
 GET 200 https://www.ilan.gov.tr/api/api/services/app/Banner/GetDetailUniversal?bannerPositionEnum=Icsayfa_Sol
-GET 200 https://www.ilan.gov.tr/api/api/services/app/Banner/GetDetailUniversal?bannerPositionEnum=Mobil_Icsayfa_Sag
 GET 200 https://www.ilan.gov.tr/api/api/services/app/Filter/GetAllFiltersOfSet?setIdAdType=5
+GET 200 https://www.ilan.gov.tr/api/api/services/app/Banner/GetDetailUniversal?bannerPositionEnum=Mobil_Icsayfa_Sag
 GET 200 https://www.ilan.gov.tr/api/api/services/app/AdHomePage/GetAdStatsByExternalInstitutions
 POST 200 https://www.ilan.gov.tr/api/api/services/app/Ad/AdsByFilter
    gövde: {&quot;keys&quot;:{&quot;ats&quot;:[5]},&quot;skipCount&quot;:0,&quot;maxResultCount&quot;:12}
-GET 200 https://www.ilan.gov.tr/api/api/services/app/Banner/GetDetailUniversal?bannerPositionEnum=Mobil_Icsayfa_Orta</pre><hr><h2>Resmî Gazete</h2>
-<p><b>Not:</b> sitede toplam: 10, okunan: 10, personel ilanı: 2, PDF bulma: dizin linkleri — taranmış PDF Gemini ile okundu: 1<br><b>Son URL:</b> https://www.resmigazete.gov.tr/ilanlar/eskiilanlar/2026/11/20261121-4.htm<br><b>Başlık:</b> ÇEŞİTLİ İLANLAR</p>
-<img src="debug/s1.jpg" alt="ekran görüntüsü">
-<h3>Sayfa metni (ilk 1500 karakter)</h3><pre>21 Kasım 2026 CUMARTESİ
+GET 200 https://www.ilan.gov.tr/api/api/services/app/Banner/GetDetailUniversal?bannerPositionEnum=Icsayfa_Orta</pre></div></details><details class="panel"><summary><svg class="ic" aria-hidden="true"><use href="#i-wrench"/></svg><b>Resmî Gazete</b> <small>sitede toplam: 10, okunan: 10, personel ilanı: 2, PDF bulma: dizin linkleri — taranmış PDF Gemini ile okundu: 1 — veritabanından tekrar kullanılan: 2</small></summary><div class="panel-b"><p class="note"><b>Son URL:</b> https://www.resmigazete.gov.tr/ilanlar/eskiilanlar/2026/11/20261121-4.htm<br><b>Başlık:</b> ÇEŞİTLİ İLANLAR</p><img src="debug/s1.jpg" alt="ekran görüntüsü" loading="lazy"><h3>Sayfa metni (ilk 1500 karakter)</h3><pre>21 Kasım 2026 CUMARTESİ
 
 	
 
@@ -238,8 +388,7 @@ Kültür ve Turizm Bakanlığından:
 
  
 
- </pre>
-<h3>Bulunan linkler (ilk 40)</h3><pre>&#x27;Kültür ve Turizm Bakanlığı Vakıflar Genel Müdürlüğünden:&#x27; -&gt; 20261121-4-1.pdf
+ </pre><h3>Bulunan linkler (ilk 40)</h3><pre>&#x27;Kültür ve Turizm Bakanlığı Vakıflar Genel Müdürlüğünden:&#x27; -&gt; 20261121-4-1.pdf
 &#x27;Sağlık Bakanlığı Kamu Hastaneleri Genel Müdürlüğünden:&#x27; -&gt; 20261121-4-2.pdf
 &#x27;Adalet Bakanlığı Ceza İnfaz Kurumları ile Tutukevleri İşyurtları Kurum&#x27; -&gt; 20261121-4-3.pdf
 &#x27;Milli Savunma Bakanlığı Askeri Fabrikalar Genel Müdürlüğünden:&#x27; -&gt; 20261121-4-4.pdf
@@ -248,12 +397,8 @@ Kültür ve Turizm Bakanlığından:
 &#x27;Tarım ve Orman Bakanlığı Doğa Koruma ve Milli Parklar Genel Müdürlüğün&#x27; -&gt; 20261121-4-7.pdf
 &#x27;Sanayi ve Teknoloji Bakanlığından:&#x27; -&gt; 20261121-4-8.pdf
 &#x27;İstanbul Medeniyet Üniversitesi Rektörlüğünden:&#x27; -&gt; 20261121-4-9.pdf
-&#x27;Kültür ve Turizm Bakanlığından:&#x27; -&gt; 20261121-4-10.pdf</pre>
-<h3>Arka plan (XHR/fetch) istekleri</h3><pre>POST 200 https://v2-ping-ns01-4878e6a4-2a79-41cc-93d6-0ffc5a9b6c2d.collector.p.analitik.bik.gov.tr/api/collect/check
-   gövde: {&quot;website&quot;:&quot;4878e6a4-2a79-41cc-93d6-0ffc5a9b6c2d&quot;,&quot;hostname&quot;:&quot;www.ilan.gov.tr&quot;,&quot;eventId&quot;:&quot;61e0281c-3a8d-4590-9c62-ef37ea400e2a&quot;,&quot;isBot&quot;:false,&quot;td&quot;:0,&quot;ts&quot;:1794474551000,&quot;timestamp&quot;:1795273990833,&quot;activ</pre><hr><h2>Kariyer Kapısı</h2>
-<p><b>Not:</b> IlanDetay linkleri doğrudan bulundu; sitede toplam: 22, okunan: 22, harici siteye giden (İlana Git): 1<br><b>Son URL:</b> https://kariyerkapisi.gov.tr/isealim<br><b>Başlık:</b> Kariyer Kapısı - Anasayfa</p>
-<img src="debug/s2.jpg" alt="ekran görüntüsü">
-<h3>Sayfa metni (ilk 1500 karakter)</h3><pre>e-Devlet ile Giriş Sıkça Sorulan Sorular
+&#x27;Kültür ve Turizm Bakanlığından:&#x27; -&gt; 20261121-4-10.pdf</pre><h3>Arka plan (XHR/fetch) istekleri</h3><pre>POST 200 https://v2-ping-ns01-4878e6a4-2a79-41cc-93d6-0ffc5a9b6c2d.collector.p.analitik.bik.gov.tr/api/collect/check
+   gövde: {&quot;website&quot;:&quot;4878e6a4-2a79-41cc-93d6-0ffc5a9b6c2d&quot;,&quot;hostname&quot;:&quot;www.ilan.gov.tr&quot;,&quot;eventId&quot;:&quot;fad0a02a-1fda-4cb9-ab0a-329db50a2f8e&quot;,&quot;isBot&quot;:false,&quot;td&quot;:0,&quot;ts&quot;:1794474551000,&quot;timestamp&quot;:1795283064401,&quot;activ</pre></div></details><details class="panel"><summary><svg class="ic" aria-hidden="true"><use href="#i-wrench"/></svg><b>Kariyer Kapısı</b> <small>IlanDetay linkleri doğrudan bulundu; sitede toplam: 22, okunan: 22, harici siteye giden (İlana Git): 1</small></summary><div class="panel-b"><p class="note"><b>Son URL:</b> https://kariyerkapisi.gov.tr/isealim<br><b>Başlık:</b> Kariyer Kapısı - Anasayfa</p><img src="debug/s2.jpg" alt="ekran görüntüsü" loading="lazy"><h3>Sayfa metni (ilk 1500 karakter)</h3><pre>e-Devlet ile Giriş Sıkça Sorulan Sorular
 
 
 
@@ -320,8 +465,7 @@ AYDIN
 BALIKESİR
 BARTIN
 BATMAN
-BAY</pre>
-<h3>Bulunan linkler (ilk 40)</h3><pre>&#x27;&#x27; -&gt;  #
+BAY</pre><h3>Bulunan linkler (ilk 40)</h3><pre>&#x27;&#x27; -&gt;  #
 &#x27;&#x27; -&gt; #
 &#x27;e-Devlet ile Giriş&#x27; -&gt; https://giris.turkiye.gov.tr/OAuth2AuthorizationServer/AuthorizationController?response_type=code&amp;client_id=88
 &#x27;Sıkça Sorulan Sorular&#x27; -&gt; sss
@@ -358,15 +502,11 @@ BAY</pre>
 &#x27;&#x27; -&gt; https://www.linkedin.com/showcase/kariyerkapisi
 &#x27;&#x27; -&gt; https://www.facebook.com/kariyerkapisi/
 &#x27;&#x27; -&gt; https://twitter.com/kariyerkapisi
-&#x27;&#x27; -&gt; https://instagram.com/kariyerkapisi?igshid=sj6wm9vis9se</pre>
-<h3>Arka plan (XHR/fetch) istekleri</h3><pre>POST 200 https://api.kariyerkapisi.gov.tr/api/ilan/GetIseAlimPage
+&#x27;&#x27; -&gt; https://instagram.com/kariyerkapisi?igshid=sj6wm9vis9se</pre><h3>Arka plan (XHR/fetch) istekleri</h3><pre>POST 200 https://api.kariyerkapisi.gov.tr/api/ilan/GetIseAlimPage
    gövde: {&quot;krM_ID&quot;:0,&quot;searchText&quot;:&quot;&quot;,&quot;il&quot;:&quot;0&quot;,&quot;ilanTuru&quot;:&quot;0&quot;}
    yanıt: {&quot;ilanCountForKurum&quot;:[{&quot;krM_ID&quot;:45,&quot;adi&quot;:&quot;ADLİ TIP KURUMU BAŞKANLIĞI&quot;,&quot;ilanCount&quot;:1},{&quot;krM_ID&quot;:68,&quot;adi&quot;:&quot;AFET VE ACİL DURUM YÖNETİMİ BAŞKANLIĞI (AFAD)&quot;,&quot;ilanCount&quot;:2},{&quot;krM_ID&quot;:97,&quot;adi&quot;:&quot;ANADOLU ÜNİVERSİTESİ REKTÖRLÜĞÜ&quot;,&quot;ilanCount&quot;:1},{&quot;krM_ID&quot;:77,&quot;adi&quot;:&quot;BARTIN ÜNİVERSİTESİ REKTÖRLÜĞÜ&quot;,&quot;ilanCount&quot;:1
-POST 204 https://www.google-analytics.com/g/collect?v=2&amp;tid=G-756JYX7QPN&amp;gtm=45je6bh1v9228915839za208zd9228915839xf1&amp;_p=1795274004168&amp;gcd=13l3l3l3l1l1&amp;npa=0&amp;dma=0&amp;are=1&amp;cid=1228358690.1795274005&amp;frm=0&amp;ngs=1&amp;ps
-POST 204 https://www.google-analytics.com/g/collect?v=2&amp;tid=G-756JYX7QPN&amp;gtm=45je6bh1v9228915839za200zd9228915839xf1&amp;_p=1795274004168&amp;gcd=13l3l3l3l1l1&amp;npa=0&amp;dma=0&amp;_eu=AEAAAAQ&amp;ae=a&amp;are=1&amp;cid=1228358690.17952740</pre><hr><h2>SBB Kamu İlan</h2>
-<p><b>Not:</b> sitede toplam: 93, okunan: 119 (ham bağlantı: 119, tekrarlar elendi) — detay metni okunan: 0/103 — veritabanından tekrar kullanılan: 103 (+16 ilgisiz başlık atlandı)<br><b>Son URL:</b> https://kamuilan.sbb.gov.tr/<br><b>Başlık:</b> Kamu Personeli Alım İlanları</p>
-<img src="debug/s3.jpg" alt="ekran görüntüsü">
-<h3>Sayfa metni (ilk 1500 karakter)</h3><pre> KAMU PERSONELİ ALIM İLANLARI 
+POST 204 https://www.google-analytics.com/g/collect?v=2&amp;tid=G-756JYX7QPN&amp;gtm=45je6bh1v9228915839za208zd9228915839xf1&amp;_p=1795283148770&amp;gcd=13l3l3l3l1l1&amp;npa=0&amp;dma=0&amp;are=1&amp;cid=889163529.1795283149&amp;frm=0&amp;ngs=1&amp;psc
+POST 204 https://www.google-analytics.com/g/collect?v=2&amp;tid=G-756JYX7QPN&amp;gtm=45je6bh1v9228915839za200zd9228915839xf1&amp;_p=1795283148770&amp;gcd=13l3l3l3l1l1&amp;npa=0&amp;dma=0&amp;_eu=AEAAAAQ&amp;ae=a&amp;are=1&amp;cid=889163529.179528314</pre></div></details><details class="panel"><summary><svg class="ic" aria-hidden="true"><use href="#i-wrench"/></svg><b>SBB Kamu İlan</b> <small>sitede toplam: 93, okunan: 119 (ham bağlantı: 119, tekrarlar elendi) — detay metni okunan: 0/103 — veritabanından tekrar kullanılan: 103 (+16 ilgisiz başlık atlandı)</small></summary><div class="panel-b"><p class="note"><b>Son URL:</b> https://kamuilan.sbb.gov.tr/<br><b>Başlık:</b> Kamu Personeli Alım İlanları</p><img src="debug/s3.jpg" alt="ekran görüntüsü" loading="lazy"><h3>Sayfa metni (ilk 1500 karakter)</h3><pre> KAMU PERSONELİ ALIM İLANLARI 
 MANŞET
 KATEGORİLER
 ARŞİV
@@ -422,53 +562,48 @@ SAYIŞTAY BAŞKANLIĞI
 KAMU DENETÇİLİĞİ KURUMU
 10 KAMU DENETÇİLİĞİ UZMAN YARDIMCISI ALACAK
 9 Kasım - 22 Kasım
-SOSYAL GÜVENLİK KURUMU BAŞKAN</pre>
-<h3>Bulunan linkler (ilk 40)</h3><pre>&#x27;&#x27; -&gt; http://www.sbb.gov.tr
+SOSYAL GÜVENLİK KURUMU BAŞKAN</pre><h3>Bulunan linkler (ilk 40)</h3><pre>&#x27;&#x27; -&gt; http://www.sbb.gov.tr
 &#x27;MANŞET&#x27; -&gt; #top
 &#x27;KATEGORİLER&#x27; -&gt; #
 &#x27;ARŞİV&#x27; -&gt; #
 &#x27;&#x27; -&gt; #
-&#x27;İSTANBUL KALKINMA AJANSI\n5 UZMAN ALACAK\n2 Kasım - 22 Kasım&#x27; -&gt; ilanDetay.aspx?kod=66ZWPkCff2BoCm2gXPOTHQ0p3R8Xs2P4xN2%2fVoR%2fAoMcwnUDfjdVkOoyXGUYw5ZOGHrzc92b1PJ6XHFyIN3CYrL
-&#x27;ADLİ TIP KURUMU BAŞKANLIĞI\n181 SÖZLEŞMELİ PERSONEL ALACAK\n30 Kasım - 6&#x27; -&gt; ilanDetay.aspx?kod=ha52D2go96d4y%2b0jNWu1GN6oLW5Y4xP%2brxTFi1HI3HLOlBRYmMjetCyvF%2bmLw0k7CnrYflli5clYkKulM1hWZ
-&#x27;BARTIN ÜNİVERSİTESİ\n1 SÖZLEŞMELİ PERSONEL ALACAK\n20 Kasım - 5 Aralık&#x27; -&gt; ilanDetay.aspx?kod=h%2bTrm9b2ggFYmVO17IoeldJ4IqIXGVDcSnVb%2b4GpXTJN5zQSYnaWoo9PbFlxnKFqz7JYm4IccrpBSIIulAk%2bV
-&#x27;İÇİŞLERİ BAKANLIĞI\n60 KAYMAKAM ADAYI ALACAK\n1 Aralık - 7 Aralık&#x27; -&gt; ilanDetay.aspx?kod=BZVLyuDzU40Y9nVfd5H%2b%2fjPtTRY1%2fUeZ2pGd1F7SPqnY57p6NqrLL4o6rpXZ9OKS8mqQ6XcN42GhrOzmWVMfH
-&#x27;SOSYAL GÜVENLİK KURUMU BAŞKANLIĞI\n50 MÜFETTİŞ YARDIMCISI ALACAK\n7 Aral&#x27; -&gt; ilanDetay.aspx?kod=UfyQw57cbtGmKNj%2bjStGKXEud4Dk%2fI1F6SkG0hkq02ZhowP20odocnkfUutywFb%2fh95VNqQNi1uUq9XJi3CcJ
-&#x27;HAZİNE VE MALİYE BAKANLIĞI\n10 STAJYER HAZİNE KONTROLÖRÜ ALACAK - DÜZEL&#x27; -&gt; ilanDetay.aspx?kod=I6JtW6hENMo2v3OhwRqPFICZ16Gn6CnUSpGzRnw%2bHCmAbFcf9RXpW97nRcUH58BX58fTOjc532sMqcxIHJYbO8XRF
-&#x27;AFET VE ACİL DURUM YÖNETİMİ BAŞKANLIĞI\n7 AFET VE ACİL DURUM YÖNETİMİ D&#x27; -&gt; ilanDetay.aspx?kod=3sMdRMGae5b3Mp9VO7wShxGRGamslsfwq%2fQoHxd%2bfYCABUMM3xOYFjmBNr7v672vWGdDx3dmaCK3auGLG1JD%2b
-&#x27;AFET VE ACİL DURUM YÖNETİMİ BAŞKANLIĞI\n13 AFET VE ACİL DURUM YÖNETİMİ &#x27; -&gt; ilanDetay.aspx?kod=fSKcoHXysyfml3rGB6mCtihho1%2bry%2fbExMiIP%2fFvS8iAHK1LMjIOGTHvKyMuBHwVmdNC7FiRCq6FCHRGtvHwT
-&#x27;ANADOLU ÜNİVERSİTESİ\n1 SÖZLEŞMELİ PERSONEL ALACAK\n16 Kasım - 30 Kasım&#x27; -&gt; ilanDetay.aspx?kod=e1O97uwk4EBtWS7vVcMH4JXO%2fu1QKlWcU0OJq2wYnCxllFfJCbCrf7DmrtIHekdIXInfIX6Tg7lXNxz%2fea8vIJ9
-&#x27;DİCLE KALKINMA AJANSI\n4 SÖZLEŞMELİ UZMAN PERSONEL ALACAK\n4 Aralık - 18&#x27; -&gt; ilanDetay.aspx?kod=vieT%2bwSE7gc1rdAExQt03XZc2t08x1XOEcelO9WsXixzPHhH8aAALWN2PzK0BESl845RHtnPTqNra4LG9reMACOvt
-&#x27;HAZİNE VE MALİYE BAKANLIĞI\n10 STAJYER HAZİNE KONTROLÖRÜ ALACAK\n23 Kası&#x27; -&gt; ilanDetay.aspx?kod=o5hWHGQhaukVwPq1tpz4bLGW0JosJsI94ytNsD2RyOcudqZro7Z5bCvYZ6%2fE3CRctO%2f5GkZZq%2bjBv5vy4tIYM
-&#x27;YÜKSEKÖĞRETİM KALİTE KURULU\n5 UZMAN YARDIMCISI ALACAK\n1 Aralık - 14 Ar&#x27; -&gt; ilanDetay.aspx?kod=55jxcF6bB0whxVrwjFZV1NqpcaffW2Hp5JgPGB4RY3JSZ8gaE58xLEfq3RjUoY0qZtshY3KbbxR1ZYLWJsqia1Dddju
-&#x27;BURSA TEKNİK ÜNİVERSİTESİ\n1 SÖZLEŞMELİ PSİKOLOG ALACAK\n13 Kasım - 27 K&#x27; -&gt; ilanDetay.aspx?kod=iQAeM8wepSiuhQtzRHD5o2pumT4lRldqVmylFcri1lHiVby35y4Rj23NH%2bTOthfbVCDUyLRFDLpkNcAu26dsIsEN%
-&#x27;SAHİL GÜVENLİK KOMUTANLIĞI\n10 MEMUR ALACAK\n16 Kasım - 27 Kasım&#x27; -&gt; ilanDetay.aspx?kod=bjxQTfwObVCO58IkJMW0mccCV9cK%2f7kueKi%2b6LfnSnleisj0ORCMIzYbnhD%2bYghII8nxx1pj3m%2fkv%2fGxx
-&#x27;SAVUNMA SANAYİİ BAŞKANLIĞI\n26 PROJE BAZLI SÖZLEŞMELİ PERSONEL ALACAK\n2&#x27; -&gt; ilanDetay.aspx?kod=ZkPSlYhcqpCiCCo%2fF%2bPXbBaBaWAY0%2bqCPzQ%2bLa5yxp%2fe600%2f74AKsIquCkQjsS3q8PShRKK0Xb0zsQc
-&#x27;SAYIŞTAY BAŞKANLIĞI\n16 SÖZLEŞMELİ PERSONEL ALACAK\n11 Kasım - 25 Kasım&#x27; -&gt; ilanDetay.aspx?kod=Hbn4lf8dS2NSifhqzkjRCNLPXnbXlef8inYR%2bhFThJiG%2bccJs4A36%2b01N4zA%2bRfHr%2bJybE%2bSWY63NPB
-&#x27;KAMU DENETÇİLİĞİ KURUMU\n10 KAMU DENETÇİLİĞİ UZMAN YARDIMCISI ALACAK\n9 &#x27; -&gt; ilanDetay.aspx?kod=aX6QNE5YiPqI%2bAe7d65GVhKIuTo5wola6RK0dvbNKuQMdAPvmKabz8yfHZtIK35%2fjzwlNoOPn%2bYf6Ya%2baDc
-&#x27;SOSYAL GÜVENLİK KURUMU BAŞKANLIĞI\n100 SOSYAL GÜVENLİK DENETMEN YARDIMC&#x27; -&gt; ilanDetay.aspx?kod=jfuKWh%2baZ4U2Ji0KgfojooReBdqwugL1EH4zn3FHfV6ziPoz%2f00OzoPcgymcoH%2fiVjE7Dr9qdVifPuV3Gkoki
-&#x27;ZAFER KALKINMA AJANSI\n2 SÖZLEŞMELİ PERSONEL ALACAK\n25 Kasım - 14 Aralı&#x27; -&gt; ilanDetay.aspx?kod=vNhI4cfRtV78tKzHKDrU6VZ%2fsRgK%2f8s6kbWJD6LX7yk%2fOFlsV3vixR%2fQ3E528CnyCsAp4gayoTLTWWd5S6i
-&#x27;YILDIZ TEKNİK ÜNİVERSİTESİ\n2 BİLİŞİM PERSONELİ ALACAK\n2 Kasım - 1 Aral&#x27; -&gt; ilanDetay.aspx?kod=U1uiPZkBe890CSp6gedpyD08je8L3%2bs1pb24VH8uPUOtHdgP9wmhuVVn3dLY8veQpJdczltHxlIMvpqVM8k3BZWk2
-&#x27;MİLLİ SAVUNMA BAKANLIĞI\nTÜRK SİLAHLI KUVVETLERİNE FAKÜLTE VEYA YÜKSEKO&#x27; -&gt; ilanDetay.aspx?kod=wKhOZbwMdmKVfVgdyhHiAJ3Rt1DORA%2bZh9QGcWZ0%2bXIzz%2bpOpqESre%2b7fItK8Y8%2bfgLxP4yPMup5HCK%2
-&#x27;MİLLİ SAVUNMA BAKANLIĞI\nTÜRK SİLAHLI KUVVETLERİNE EN AZ DÖRT YIL SÜREL&#x27; -&gt; ilanDetay.aspx?kod=BHuS8kJ24OF54Jqoyyy3OiOfdwHYqsLazcvvH7qPsVlzpU%2flF5sx7zxNtH32USTVePxmqUfxwwWCvhPRDt1GXz4h5
-&#x27;DOĞU KARADENİZ KALKINMA AJANSI\n1 UZMAN ALACAK\n23 Kasım - 6 Aralık&#x27; -&gt; ilanDetay.aspx?kod=hB7UX2AZCMc%2bygwrJN0g7EbB8qtQLGJeyJOLyt2DhN73yOiN2vl9RsPuT5FsELUaM4RgiGRr3K5MyNZdpI9AaJtdC
-&#x27;NÜKLEER DÜZENLEME KURUMU\n8 SÖZLEŞMELİ BİLİŞİM PERSONELİ ALACAK\n9 Kasım&#x27; -&gt; ilanDetay.aspx?kod=hneysxyymm5FKUn1PehJwxdeNbE%2f4mKCGIwkIkFosSqNhaoPd2UmhPK3qizfoQ3UGWKOuWw9FMUUIoTPAmHaKM2Ie
-&#x27;ORTA ANADOLU KALKINMA AJANSI\n6 UZMAN, 1 DESTEK PERSONELİ ALACAK\n9 Kası&#x27; -&gt; ilanDetay.aspx?kod=zgl1GJ3%2br3TjRzDhtEzXO5NaKUKNxyy8uyr%2bhfxNclMBz%2bjFCqWgrnfYbdAwV4ce6FDJRmH%2by8F%2bqAuc0
-&#x27;ORTA KARADENİZ KALKINMA AJANSI\n5 ALACAK\n2 Kasım - 22 Kasım&#x27; -&gt; ilanDetay.aspx?kod=cYhnrr2pL6SQyEne1KkQbq1ufRDyIbFfpK%2fi5Yir84kV%2bzd9U718sit6lpla2RwPttHDQO1MpFUV1PxWAtqsDHq
-&#x27;İSTANBUL KALKINMA AJANSI\n5 UZMAN ALACAK\n2 Kasım - 22 Kasım&#x27; -&gt; ilanDetay.aspx?kod=66ZWPkCff2BoCm2gXPOTHQ0p3R8Xs2P4xN2%2fVoR%2fAoMcwnUDfjdVkOoyXGUYw5ZOGHrzc92b1PJ6XHFyIN3CYrL
-&#x27;ADLİ TIP KURUMU BAŞKANLIĞI\n181 SÖZLEŞMELİ PERSONEL ALACAK\n30 Kasım - 6&#x27; -&gt; ilanDetay.aspx?kod=ha52D2go96d4y%2b0jNWu1GN6oLW5Y4xP%2brxTFi1HI3HLOlBRYmMjetCyvF%2bmLw0k7CnrYflli5clYkKulM1hWZ
+&#x27;İSTANBUL KALKINMA AJANSI\n5 UZMAN ALACAK\n2 Kasım - 22 Kasım&#x27; -&gt; ilanDetay.aspx?kod=byql7ykNhZy7MS0fNlpEjeydZbdF%2bOOzKfDVF2UvkpEfXS0Y4yQ6M5Zh0hBna09H8RObPg2PdhO%2fzQqZgHGAPcd
+&#x27;ADLİ TIP KURUMU BAŞKANLIĞI\n181 SÖZLEŞMELİ PERSONEL ALACAK\n30 Kasım - 6&#x27; -&gt; ilanDetay.aspx?kod=7rVDab3kpWcBNtPi2zEZahFfVkZw6jcJN%2fvYISW6bOM9nK9BtB%2f92csSZT5JyHWUJ4QDodGUVOrdZTTpCdbH6hO
+&#x27;BARTIN ÜNİVERSİTESİ\n1 SÖZLEŞMELİ PERSONEL ALACAK\n20 Kasım - 5 Aralık&#x27; -&gt; ilanDetay.aspx?kod=Q15npURiKIml%2fMogxYcWWjVoRBQsSGPkfa15T2HmpEet7l73l2v%2bRJqUfh2%2bW4l%2fWVxy2UdLjRJK8ACr9g%
+&#x27;İÇİŞLERİ BAKANLIĞI\n60 KAYMAKAM ADAYI ALACAK\n1 Aralık - 7 Aralık&#x27; -&gt; ilanDetay.aspx?kod=nYzAwoIpFW3bzf16D2BaB3sHsek3ai1oq9HlFHtDTrRk4ktYY2lbYmU0HTNiNK%2bwi0HEDhcwYOXsMx0haTF8nmvTj
+&#x27;SOSYAL GÜVENLİK KURUMU BAŞKANLIĞI\n50 MÜFETTİŞ YARDIMCISI ALACAK\n7 Aral&#x27; -&gt; ilanDetay.aspx?kod=paBq7E42vdLbRXoP1FGx0dmDyXBH%2bGXIQoe4DYWreqHd65yv6Xjky3K%2fR4S43oPLCDt3d2CfiZRQ9eB28r%2fZz
+&#x27;HAZİNE VE MALİYE BAKANLIĞI\n10 STAJYER HAZİNE KONTROLÖRÜ ALACAK - DÜZEL&#x27; -&gt; ilanDetay.aspx?kod=EgbMqYPYPXV5K00drs2BVfUKMjlXWQBORSnDFPHlhnOxNF1rdIQUU2OEfs1GQ98GQ9OPK7uw0l2poj8cX22F1%2fOl%
+&#x27;AFET VE ACİL DURUM YÖNETİMİ BAŞKANLIĞI\n7 AFET VE ACİL DURUM YÖNETİMİ D&#x27; -&gt; ilanDetay.aspx?kod=GAenhMAEsXDVHq3UlFHgdyDMI%2bMTQTx3K%2bvBNxdJ3TD4d%2fnUs1dxrv0pWQ4j8ByBjHkMoNIGXW%2bAK0Md%2b
+&#x27;AFET VE ACİL DURUM YÖNETİMİ BAŞKANLIĞI\n13 AFET VE ACİL DURUM YÖNETİMİ &#x27; -&gt; ilanDetay.aspx?kod=lG5fUnS3PfNX3%2fddF15F7FixCixFdgOKQeZLYltdLzd44%2f1BDOIBYNdt8J4YwawsZSQe5eOZje%2bLVeAisRZgA
+&#x27;ANADOLU ÜNİVERSİTESİ\n1 SÖZLEŞMELİ PERSONEL ALACAK\n16 Kasım - 30 Kasım&#x27; -&gt; ilanDetay.aspx?kod=l7H58oyczR2O6eZ%2ba7fxGoAPzR8jSgdSZOTSAtEMxbQ12iKH%2bPub%2f76EjuNre%2bMN5RgjF32FF5kus6WldDm
+&#x27;DİCLE KALKINMA AJANSI\n4 SÖZLEŞMELİ UZMAN PERSONEL ALACAK\n4 Aralık - 18&#x27; -&gt; ilanDetay.aspx?kod=8IEiKIh%2f7wqbzzKbzygakh2ceHBMnADFx0DELzI1w1YzCEtiFW5X98XXMSdoPGi2mKEYS5v%2f5Y%2b2qjUPDWJF4
+&#x27;HAZİNE VE MALİYE BAKANLIĞI\n10 STAJYER HAZİNE KONTROLÖRÜ ALACAK\n23 Kası&#x27; -&gt; ilanDetay.aspx?kod=HohYhxkRBnkSmDmRpNllkDpKYMG9QHY7rQgLSufGAYKAkPtLpzLGGkFmWYUYxh9aFCoslkUQ%2fLFVxEO2lgt96voso
+&#x27;YÜKSEKÖĞRETİM KALİTE KURULU\n5 UZMAN YARDIMCISI ALACAK\n1 Aralık - 14 Ar&#x27; -&gt; ilanDetay.aspx?kod=lReRSIWxP%2ffTaSnXVaP%2be6%2bQdP%2fXP4BLgn%2f7MTI8dtn3XWAo5fdU6SBwRMuYaQpifZpGeHFXW%2f%2fWd
+&#x27;BURSA TEKNİK ÜNİVERSİTESİ\n1 SÖZLEŞMELİ PSİKOLOG ALACAK\n13 Kasım - 27 K&#x27; -&gt; ilanDetay.aspx?kod=wNRh6%2fR1aFTLsutx6s37keiiw%2fMQddpOYNvpJPanR2Drn%2bYsVnmz0rDk5CHcurO9a%2b8A%2fb45gMDKlCZoe
+&#x27;SAHİL GÜVENLİK KOMUTANLIĞI\n10 MEMUR ALACAK\n16 Kasım - 27 Kasım&#x27; -&gt; ilanDetay.aspx?kod=gr3F9YklMRjfMZHMK%2fwx9CFJ7V9DlW2W7KxcgxPeseas%2fSp1Rv62%2bLqPXgY%2bUIXurRKCnl%2fM%2bQIiFi9
+&#x27;SAVUNMA SANAYİİ BAŞKANLIĞI\n26 PROJE BAZLI SÖZLEŞMELİ PERSONEL ALACAK\n2&#x27; -&gt; ilanDetay.aspx?kod=2z49HZQ4j%2bumyrzU%2fwNXsuZxh4s1fHRjcqYcu8MFbiKdYeMK6ao5BHXyH2n5vFSwAST1wkJJlHgIJ8tjaRwqL9L
+&#x27;SAYIŞTAY BAŞKANLIĞI\n16 SÖZLEŞMELİ PERSONEL ALACAK\n11 Kasım - 25 Kasım&#x27; -&gt; ilanDetay.aspx?kod=QefeHuWnVtsjYALywdzQMRLNupGthq8FKHy%2fsMZDRhmG1CYFlZi4jUyLJ8H2%2bZoZnHiUYI40ufFvWz3S4i6NfCL
+&#x27;KAMU DENETÇİLİĞİ KURUMU\n10 KAMU DENETÇİLİĞİ UZMAN YARDIMCISI ALACAK\n9 &#x27; -&gt; ilanDetay.aspx?kod=Mczh6S9bfqFJUKbkB%2f0eghDUulHBQPaFwNj1zPofVUq5URvWnkPK%2bn0llzTQeEksR8GtU5wgcSY%2f1Gu%2bPRJ
+&#x27;SOSYAL GÜVENLİK KURUMU BAŞKANLIĞI\n100 SOSYAL GÜVENLİK DENETMEN YARDIMC&#x27; -&gt; ilanDetay.aspx?kod=BEESbwuJyvibWKRNCM%2bu8YYWfrq2gv1%2fxZiX7a%2b7S%2fL9SBZYOw64Wz6DTDLI9UEV0838%2bPNIbgKS%2bLC
+&#x27;ZAFER KALKINMA AJANSI\n2 SÖZLEŞMELİ PERSONEL ALACAK\n25 Kasım - 14 Aralı&#x27; -&gt; ilanDetay.aspx?kod=ycVEiVJL%2bRhCm8e3V3CGdefu4PigtNJZsR9NXPe7yNIw1nt%2fbz38031AvlZ8mpWAdPYeAuPrU3ol3S7C9EgYIKj
+&#x27;YILDIZ TEKNİK ÜNİVERSİTESİ\n2 BİLİŞİM PERSONELİ ALACAK\n2 Kasım - 1 Aral&#x27; -&gt; ilanDetay.aspx?kod=i3PzsJzcZ7cqsGrO6WUVnrkQE1wsgS%2fjjJz3MqOQfo5Ej0HJ6rGnxr8wUoLnKhFUnfjHRuMP0mk7mvBLMzFW8Zw3r
+&#x27;MİLLİ SAVUNMA BAKANLIĞI\nTÜRK SİLAHLI KUVVETLERİNE FAKÜLTE VEYA YÜKSEKO&#x27; -&gt; ilanDetay.aspx?kod=BCt3S4zVAnJCxjMyGfC%2fxInq%2bLljUSoMwy5o%2fc2wszteqvTTI%2bsAG36AdHpF731aj%2fWMHHhzNXY6Pr1HM
+&#x27;MİLLİ SAVUNMA BAKANLIĞI\nTÜRK SİLAHLI KUVVETLERİNE EN AZ DÖRT YIL SÜREL&#x27; -&gt; ilanDetay.aspx?kod=p59gCYt99w7OjMR2N9C9%2bbouzX1CbYPpeMwp5ckPRerd%2fgx9rKnZLT93Yz%2fXl2qbY%2bgn488cq4%2b3bPEvp
+&#x27;DOĞU KARADENİZ KALKINMA AJANSI\n1 UZMAN ALACAK\n23 Kasım - 6 Aralık&#x27; -&gt; ilanDetay.aspx?kod=VzNkEqOZ1KIeKiXwrL9CPwhUvQPk2a3eCyFW9IpjjCCeJa%2fmgEC5u1IDmKOT1akhC0Je1iyuma1CFMfYBTNXVJf%2
+&#x27;NÜKLEER DÜZENLEME KURUMU\n8 SÖZLEŞMELİ BİLİŞİM PERSONELİ ALACAK\n9 Kasım&#x27; -&gt; ilanDetay.aspx?kod=5MzokV%2b9pQI4AgWRDifNd3FvUFui0GgWWq7bavhVLIhYihZ%2beMKiUzoTck6xZuJ%2fukN%2f5YxYmu%2byWWywL
+&#x27;ORTA ANADOLU KALKINMA AJANSI\n6 UZMAN, 1 DESTEK PERSONELİ ALACAK\n9 Kası&#x27; -&gt; ilanDetay.aspx?kod=Sh18pAjvY0U8ew%2ffqMdxBMZK8SUu2rKk0wruMEmptv5THj5%2fqK%2ffDaVmIPtPvnvdv8a2XMKULWtEtWfVNXl0y
+&#x27;ORTA KARADENİZ KALKINMA AJANSI\n5 ALACAK\n2 Kasım - 22 Kasım&#x27; -&gt; ilanDetay.aspx?kod=7%2brx3DSKvAXlN2Kkj5XgiXY6sQZf38kCj0Q76u3f5nrqwjGrqhR5HrKBz2oh8PDA%2fzHi3ZJyOhmH6YhTphzQiK6
+&#x27;İSTANBUL KALKINMA AJANSI\n5 UZMAN ALACAK\n2 Kasım - 22 Kasım&#x27; -&gt; ilanDetay.aspx?kod=byql7ykNhZy7MS0fNlpEjeydZbdF%2bOOzKfDVF2UvkpEfXS0Y4yQ6M5Zh0hBna09H8RObPg2PdhO%2fzQqZgHGAPcd
+&#x27;ADLİ TIP KURUMU BAŞKANLIĞI\n181 SÖZLEŞMELİ PERSONEL ALACAK\n30 Kasım - 6&#x27; -&gt; ilanDetay.aspx?kod=7rVDab3kpWcBNtPi2zEZahFfVkZw6jcJN%2fvYISW6bOM9nK9BtB%2f92csSZT5JyHWUJ4QDodGUVOrdZTTpCdbH6hO
 &#x27;1&#x27; -&gt; 
 &#x27;2&#x27; -&gt; 
 &#x27;3&#x27; -&gt; 
 &#x27;4&#x27; -&gt; 
 &#x27;5&#x27; -&gt; 
 &#x27;6&#x27; -&gt; 
-&#x27;7&#x27; -&gt; </pre>
-<h3>Arka plan (XHR/fetch) istekleri</h3><pre>POST 204 https://www.google-analytics.com/g/collect?v=2&amp;tid=G-T9RHQ0436E&amp;gtm=45je6bi0h2v869145278za208zd869145278xf1&amp;_p=1795274013962&amp;gcd=13l3l3l3l1l1&amp;npa=0&amp;dma=0&amp;are=1&amp;cid=944077612.1795274014&amp;frm=0&amp;pscdl=noa
-GET 200 https://syndication.twitter.com/settings?session_id=61be513d2d62ed33acbc5d6b89954d2e47c41ca8
-   yanıt: {&quot;should_obtain_cookie_consent&quot;:false,&quot;features&quot;:{&quot;tfw_timeline_list&quot;:{&quot;bucket&quot;:[],&quot;version&quot;:null},&quot;tfw_follower_count_sunset&quot;:{&quot;bucket&quot;:true,&quot;version&quot;:null},&quot;tfw_tweet_edit_backend&quot;:{&quot;bucket&quot;:&quot;on&quot;,&quot;version&quot;:null},&quot;tfw_refsrc_session&quot;:{&quot;bucket&quot;:&quot;on&quot;,&quot;version&quot;:null},&quot;tfw_fosnr_soft_interventions_enab</pre><hr><h2>ÇŞB Yerel Yönetimler</h2>
-<p><b>Not:</b> sitede toplam: 42, okunan: 42 (yalnız ilan/alım başlıklı duyurular; 4 sayfa gezildi)<br><b>Son URL:</b> https://yerelyonetimler.csb.gov.tr/duyurular/4<br><b>Başlık:</b> Duyurular</p>
-<img src="debug/s4.jpg" alt="ekran görüntüsü">
-<h3>Sayfa metni (ilk 1500 karakter)</h3><pre>Çerez Tercihiniz
+&#x27;7&#x27; -&gt; </pre><h3>Arka plan (XHR/fetch) istekleri</h3><pre>POST 204 https://www.google-analytics.com/g/collect?v=2&amp;tid=G-T9RHQ0436E&amp;gtm=45je6bh1v869145278za208zd869145278xf1&amp;_p=1795283157946&amp;gcd=13l3l3l3l1l1&amp;npa=0&amp;dma=0&amp;are=1&amp;cid=20622344.1795283158&amp;frm=0&amp;pscdl=noapi&amp;
+GET 200 https://syndication.twitter.com/settings?session_id=f75869fabf50bea0222d938b63a56e5bda5517e0
+   yanıt: {&quot;should_obtain_cookie_consent&quot;:false,&quot;features&quot;:{&quot;tfw_timeline_list&quot;:{&quot;bucket&quot;:[],&quot;version&quot;:null},&quot;tfw_follower_count_sunset&quot;:{&quot;bucket&quot;:true,&quot;version&quot;:null},&quot;tfw_tweet_edit_backend&quot;:{&quot;bucket&quot;:&quot;on&quot;,&quot;version&quot;:null},&quot;tfw_refsrc_session&quot;:{&quot;bucket&quot;:&quot;on&quot;,&quot;version&quot;:null},&quot;tfw_fosnr_soft_interventions_enab</pre></div></details><details class="panel"><summary><svg class="ic" aria-hidden="true"><use href="#i-wrench"/></svg><b>ÇŞB Yerel Yönetimler</b> <small>sitede toplam: 42, okunan: 42 (yalnız ilan/alım başlıklı duyurular; 4 sayfa gezildi)</small></summary><div class="panel-b"><p class="note"><b>Son URL:</b> https://yerelyonetimler.csb.gov.tr/duyurular/4<br><b>Başlık:</b> Duyurular</p><img src="debug/s4.jpg" alt="ekran görüntüsü" loading="lazy"><h3>Sayfa metni (ilk 1500 karakter)</h3><pre>Çerez Tercihiniz
 
 Bu site, çalışması için gereken zorunlu çerezleri kullanır. Onay verirseniz analitik ve pazarlama çerezleri de kullanılır. Hangi kategorilere izin vereceğinizi &quot;Özelleştir&quot; düğmesiyle seçebilirsiniz. Gizlilik ve Çerez Politikası
 
@@ -580,8 +715,7 @@ Kasım 2026
 
 Çarşamba
 
-MUĞLA İLİ ULA BELEDİYE BAŞKANLIĞINA İLK DEFA ATANMAK ÜZERE ZABITA MEMURU ALIM</pre>
-<h3>Bulunan linkler (ilk 40)</h3><pre>&#x27;Gizlilik ve Çerez Politikası&#x27; -&gt; https://csb.gov.tr/gizlilik-ve-cerez-politikasi-113655
+MUĞLA İLİ ULA BELEDİYE BAŞKANLIĞINA İLK DEFA ATANMAK ÜZERE ZABITA MEMURU ALIM</pre><h3>Bulunan linkler (ilk 40)</h3><pre>&#x27;Gizlilik ve Çerez Politikası&#x27; -&gt; https://csb.gov.tr/gizlilik-ve-cerez-politikasi-113655
 &#x27;Gizlilik ve Çerez Politikası&#x27; -&gt; https://csb.gov.tr/gizlilik-ve-cerez-politikasi-113655
 &#x27;&#x27; -&gt; /
 &#x27;Birimler&#x27; -&gt; https://yerelyonetimler.csb.gov.tr/birimler
@@ -620,11 +754,7 @@ MUĞLA İLİ ULA BELEDİYE BAŞKANLIĞINA İLK DEFA ATANMAK ÜZERE ZABITA MEMURU
 &#x27;Belediye Meclisi, Toplantı ve Çalışmasına İlişkin Rehber&#x27; -&gt; https://webdosya.csb.gov.tr/db/yerelyonetimler/dokumanlar/belediye-meclisi--8230-86782-20240415152737.pdf
 &#x27;Elektrikli Araç Şarj İstasyonları Ruhsatlandırma Rehberi&#x27; -&gt; https://yerelyonetimler.csb.gov.tr/elektrikli-arac-sarj-istasyonlari-ruhsatlandirma-rehberi-i-106818
 &#x27;İncinebilir Yol Kullanıcısı Uygulama Kılavuzu&#x27; -&gt; https://yerelyonetimler.csb.gov.tr/incinebilir-yol-kullanicisi-uygulama-kilavuzu-i-110966
-&#x27;Faaliyet Raporları&#x27; -&gt; https://yerelyonetimler.csb.gov.tr/faaliyet-raporlari-i-88463</pre>
-<h3>Arka plan (XHR/fetch) istekleri</h3><pre>(yok)</pre><hr><h2>İŞKUR (e-şube)</h2>
-<p><b>Not:</b> sitede toplam: 2, okunan: 2 (Kamu seçilerek arandı; 1 sayfa gezildi, sonraki sayfa yok)<br><b>Son URL:</b> https://esube.iskur.gov.tr/Istihdam/AcikIsIlanAra.aspx<br><b>Başlık:</b> Türkiye İş Kurumu - Açık İş İlanları</p>
-<img src="debug/s5.jpg" alt="ekran görüntüsü">
-<h3>Sayfa metni (ilk 1500 karakter)</h3><pre>İŞKUR E-ŞUBE
+&#x27;Faaliyet Raporları&#x27; -&gt; https://yerelyonetimler.csb.gov.tr/faaliyet-raporlari-i-88463</pre><h3>Arka plan (XHR/fetch) istekleri</h3><pre>(yok)</pre></div></details><details class="panel"><summary><svg class="ic" aria-hidden="true"><use href="#i-wrench"/></svg><b>İŞKUR (e-şube)</b> <small>sitede toplam: 2, okunan: 2 (Kamu seçilerek arandı; 1 sayfa gezildi, sonraki sayfa yok)</small></summary><div class="panel-b"><p class="note"><b>Son URL:</b> https://esube.iskur.gov.tr/Istihdam/AcikIsIlanAra.aspx<br><b>Başlık:</b> Türkiye İş Kurumu - Açık İş İlanları</p><img src="debug/s5.jpg" alt="ekran görüntüsü" loading="lazy"><h3>Sayfa metni (ilk 1500 karakter)</h3><pre>İŞKUR E-ŞUBE
  Anasayfa
  Online İşlemler 
  Kısayollar 
@@ -792,8 +922,7 @@ DOMİNİK CUMHURİYETİ
 DOMİNİKA
 EKVATOR
 EKVATOR GİNESİ
-EL SALVA</pre>
-<h3>Bulunan linkler (ilk 40)</h3><pre>&#x27;İŞKUR E-ŞUBE&#x27; -&gt; 
+EL SALVA</pre><h3>Bulunan linkler (ilk 40)</h3><pre>&#x27;İŞKUR E-ŞUBE&#x27; -&gt; 
 &#x27;Anasayfa&#x27; -&gt; /
 &#x27;Online İşlemler&#x27; -&gt; #
 &#x27;İş Arayan&#x27; -&gt; #
@@ -832,22 +961,18 @@ EL SALVA</pre>
 &#x27;Normal&#x27; -&gt; #
 &#x27;Geniş&#x27; -&gt; #
 &#x27;Hızlı Arama&#x27; -&gt; #
-&#x27;&#x27; -&gt; /</pre>
-<h3>Arka plan (XHR/fetch) istekleri</h3><pre>POST 200 https://www.google-analytics.com/j/collect?v=1&amp;_v=j102&amp;a=215573832&amp;t=pageview&amp;_s=1&amp;dl=https%3A%2F%2Fesube.iskur.gov.tr%2FIstihdam%2FAcikIsIlanAra.aspx&amp;ul=tr-tr&amp;dt=T%C3%BCrkiye%20%C4%B0%C5%9F%20Kurumu%
+&#x27;&#x27; -&gt; /</pre><h3>Arka plan (XHR/fetch) istekleri</h3><pre>POST 200 https://www.google-analytics.com/j/collect?v=1&amp;_v=j102&amp;a=623863938&amp;t=pageview&amp;_s=1&amp;dl=https%3A%2F%2Fesube.iskur.gov.tr%2FIstihdam%2FAcikIsIlanAra.aspx&amp;ul=tr-tr&amp;dt=T%C3%BCrkiye%20%C4%B0%C5%9F%20Kurumu%
 GET 200 https://esube.iskur.gov.tr/api/menuapi/createmenu/?ShowHomePage=False&amp;UseDefaultImage=True&amp;AraBirimKodu=&amp;MenuHtmlText=&amp;DefaultIconCss=fa-solid+fa-folder-plus&amp;DefaultSubIconCss=fa-regular+fa-rectangle-
-POST 204 https://www.google-analytics.com/g/collect?v=2&amp;tid=G-BMJ4Q7LL92&amp;gtm=45je6bh1v9123180781za20gxf1&amp;_p=1795274040101&amp;gcd=13l3l3l3l2l1&amp;npa=0&amp;dma=0&amp;_eu=EBAI&amp;are=1&amp;cid=1431417506.1795274040&amp;frm=0&amp;ir=1&amp;ngs=1&amp;
+POST 204 https://www.google-analytics.com/g/collect?v=2&amp;tid=G-BMJ4Q7LL92&amp;gtm=45je6bh1v9123180781za20gxf1&amp;_p=1795283183654&amp;gcd=13l3l3l3l2l1&amp;npa=0&amp;dma=0&amp;_eu=EBAI&amp;are=1&amp;cid=442792661.1795283184&amp;frm=0&amp;ir=1&amp;ngs=1&amp;p
 GET 302 https://mc.yandex.com/watch/92907703?wmode=7&amp;page-url=https%3A%2F%2Fesube.iskur.gov.tr%2FIstihdam%2FAcikIsIlanAra.aspx&amp;charset=utf-8&amp;uah=chu%0A%22Chromium%22%3Bv%3D%22130%22%2C%22HeadlessChrome%22%3Bv
 GET 200 https://mc.yandex.com/watch/92907703/1?wmode=7&amp;page-url=https%3A%2F%2Fesube.iskur.gov.tr%2FIstihdam%2FAcikIsIlanAra.aspx&amp;charset=utf-8&amp;uah=chu%0A%22Chromium%22%3Bv%3D%22130%22%2C%22HeadlessChrome%22%3
-   yanıt: {&quot;settings&quot;:{&quot;auto_goals&quot;:1,&quot;button_goals&quot;:0,&quot;c_recp&quot;:&quot;1.00000&quot;,&quot;form_goals&quot;:1,&quot;pcs&quot;:&quot;1&quot;,&quot;webvisor&quot;:{&quot;ad_recp&quot;:&quot;0&quot;,&quot;arch_type&quot;:&quot;none&quot;,&quot;date&quot;:&quot;2026-11-19 20:22:55&quot;,&quot;forms&quot;:1,&quot;recp&quot;:&quot;0&quot;},&quot;sbp&quot;: {&quot;a&quot;:&quot;UDHOOzBFvTGezJNJOdobkT8VdnAVeOXDv3LW9atB2iV/KOrM1preQVPGSIyjx/8L&quot;, &quot;b&quot;:&quot;xb+N831v43v4KDvARkh7EYLCeMhLy9
-GET 200 https://mc.yandex.com/clmap/92907703?page-url=https%3A%2F%2Fesube.iskur.gov.tr%2FIstihdam%2FAcikIsIlanAra.aspx&amp;pointer-click=rn%3A62039645%3Ax%3A30246%3Ay%3A30246%3At%3A54%3Ap%3APs1A1AAAA1AAAAAAAAA4F%
-GET 200 https://mc.yandex.com/clmap/92907703?page-url=https%3A%2F%2Fesube.iskur.gov.tr%2FIstihdam%2FAcikIsIlanAra.aspx&amp;pointer-click=rn%3A927897186%3Ax%3A32513%3Ay%3A32767%3At%3A55%3Ap%3AW%3BA%5Db%5C%5B%5Db%5
-POST 200 https://www.google-analytics.com/j/collect?v=1&amp;_v=j102&amp;a=1254356130&amp;t=pageview&amp;_s=1&amp;dl=https%3A%2F%2Fesube.iskur.gov.tr%2FIstihdam%2FAcikIsIlanAra.aspx&amp;ul=tr-tr&amp;dt=T%C3%BCrkiye%20%C4%B0%C5%9F%20Kurumu
+   yanıt: {&quot;settings&quot;:{&quot;auto_goals&quot;:1,&quot;button_goals&quot;:0,&quot;c_recp&quot;:&quot;1.00000&quot;,&quot;form_goals&quot;:1,&quot;pcs&quot;:&quot;1&quot;,&quot;webvisor&quot;:{&quot;ad_recp&quot;:&quot;0&quot;,&quot;arch_type&quot;:&quot;none&quot;,&quot;date&quot;:&quot;2026-11-19 20:22:55&quot;,&quot;forms&quot;:1,&quot;recp&quot;:&quot;0&quot;},&quot;sbp&quot;: {&quot;a&quot;:&quot;eZ5rFSQopaj8XrLyDEXw4pn4TZE8tx3Hh6Ou1mfx7LH6x1wYVtvPcoPy8nuqZh2l&quot;, &quot;b&quot;:&quot;Relpto4eUE4cck64ej+zk0wb6lr/zQ
+GET 200 https://mc.yandex.com/clmap/92907703?page-url=https%3A%2F%2Fesube.iskur.gov.tr%2FIstihdam%2FAcikIsIlanAra.aspx&amp;pointer-click=rn%3A614284107%3Ax%3A30246%3Ay%3A30246%3At%3A53%3Ap%3APs1A1AAAA1AAAAAAAAA4F
+GET 200 https://mc.yandex.com/clmap/92907703?page-url=https%3A%2F%2Fesube.iskur.gov.tr%2FIstihdam%2FAcikIsIlanAra.aspx&amp;pointer-click=rn%3A629673828%3Ax%3A32513%3Ay%3A32767%3At%3A54%3Ap%3AW%3BA%5Db%5C%5B%5Db%5
+POST 200 https://www.google-analytics.com/j/collect?v=1&amp;_v=j102&amp;a=2046463910&amp;t=pageview&amp;_s=1&amp;dl=https%3A%2F%2Fesube.iskur.gov.tr%2FIstihdam%2FAcikIsIlanAra.aspx&amp;ul=tr-tr&amp;dt=T%C3%BCrkiye%20%C4%B0%C5%9F%20Kurumu
 GET 200 https://esube.iskur.gov.tr/api/menuapi/createmenu/?ShowHomePage=False&amp;UseDefaultImage=True&amp;AraBirimKodu=&amp;MenuHtmlText=&amp;DefaultIconCss=fa-solid+fa-folder-plus&amp;DefaultSubIconCss=fa-regular+fa-rectangle-
 GET 200 https://mc.yandex.com/watch/92907703?wmode=7&amp;page-url=https%3A%2F%2Fesube.iskur.gov.tr%2FIstihdam%2FAcikIsIlanAra.aspx&amp;charset=utf-8&amp;uah=chu%0A%22Chromium%22%3Bv%3D%22130%22%2C%22HeadlessChrome%22%3Bv
-   yanıt: {&quot;settings&quot;:{&quot;auto_goals&quot;:1,&quot;button_goals&quot;:0,&quot;c_recp&quot;:&quot;1.00000&quot;,&quot;form_goals&quot;:1,&quot;pcs&quot;:&quot;1&quot;,&quot;webvisor&quot;:{&quot;ad_recp&quot;:&quot;0&quot;,&quot;arch_type&quot;:&quot;none&quot;,&quot;date&quot;:&quot;2026-11-19 20:22:55&quot;,&quot;forms&quot;:1,&quot;recp&quot;:&quot;0&quot;},&quot;sbp&quot;: {&quot;a&quot;:&quot;EHabmS/YX1odv5xL4dj8Pv/bDb8pzVpdKhGsg35l+D8inGzWYebUfC1WIzVw6VsQ&quot;, &quot;b&quot;:&quot;oxjkA6yFRI+bzc1KTeCLR8AcTtGdjy</pre><hr><h2>İŞKUR Kamu Memur Alım İlanları</h2>
-<p><b>Not:</b> sitede toplam: 35, okunan: 35 (haritada ilan bulunan il: 19, tekil PDF: 35)<br><b>Son URL:</b> https://www.iskur.gov.tr/ilanlar/kamu-memur-alim-ilanlari/?idId=sanliurfa&amp;il=%C5%9Eanl%C4%B1urfa<br><b>Başlık:</b> Kamu Memur Alım İlanları - Türkiye İş Kurumu (İŞKUR)</p>
-<img src="debug/s6.jpg" alt="ekran görüntüsü">
-<h3>Sayfa metni (ilk 1500 karakter)</h3><pre>    
+   yanıt: {&quot;settings&quot;:{&quot;auto_goals&quot;:1,&quot;button_goals&quot;:0,&quot;c_recp&quot;:&quot;1.00000&quot;,&quot;form_goals&quot;:1,&quot;pcs&quot;:&quot;1&quot;,&quot;webvisor&quot;:{&quot;ad_recp&quot;:&quot;0&quot;,&quot;arch_type&quot;:&quot;none&quot;,&quot;date&quot;:&quot;2026-11-19 20:22:55&quot;,&quot;forms&quot;:1,&quot;recp&quot;:&quot;0&quot;},&quot;sbp&quot;: {&quot;a&quot;:&quot;iT+b0vck97Ll0F9bdkq6QYnefyJ7Zr9FpkDBrPg1caEiZf3h28449vz816n8JWjs&quot;, &quot;b&quot;:&quot;SCzimhYHkWs5kCO5gD5XZ5i2HLTK18</pre></div></details><details class="panel"><summary><svg class="ic" aria-hidden="true"><use href="#i-wrench"/></svg><b>İŞKUR Kamu Memur Alım İlanları</b> <small>sitede toplam: 35, okunan: 35 (haritada ilan bulunan il: 19, tekil PDF: 35)</small></summary><div class="panel-b"><p class="note"><b>Son URL:</b> https://www.iskur.gov.tr/ilanlar/kamu-memur-alim-ilanlari/?idId=sanliurfa&amp;il=%C5%9Eanl%C4%B1urfa<br><b>Başlık:</b> Kamu Memur Alım İlanları - Türkiye İş Kurumu (İŞKUR)</p><img src="debug/s6.jpg" alt="ekran görüntüsü" loading="lazy"><h3>Sayfa metni (ilk 1500 karakter)</h3><pre>    
 TR EN
 KURUMSAL 
 İŞ ARAYAN 
@@ -930,8 +1055,7 @@ Google Play&#x27;den
 İndir
 Sosyal Medya
 
-© 2026 Türkiye İş Kurumu (İŞKUR) | Bu sitede bulunan yazı, görsel ve video gibi hiçbir içerik izinsiz olarak kullanılamaz.</pre>
-<h3>Bulunan linkler (ilk 40)</h3><pre>&#x27;&#x27; -&gt; /kurumsal/bilgi-sayfalari/turkiye-is-kurumu-cerez-politikasi/
+© 2026 Türkiye İş Kurumu (İŞKUR) | Bu sitede bulunan yazı, görsel ve video gibi hiçbir içerik izinsiz olarak kullanılamaz.</pre><h3>Bulunan linkler (ilk 40)</h3><pre>&#x27;&#x27; -&gt; /kurumsal/bilgi-sayfalari/turkiye-is-kurumu-cerez-politikasi/
 &#x27;&#x27; -&gt; https://www.facebook.com/TurkiyeIsKurumu
 &#x27;&#x27; -&gt; https://www.instagram.com/turkiyeiskurumu
 &#x27;&#x27; -&gt; https://sosyal.teknofest.app/@turkiyeiskurumu
@@ -970,11 +1094,7 @@ Sosyal Medya
 &#x27;Bilgi Edinme&#x27; -&gt; /kurumsal-bilgi/bilgi-edinme/
 &#x27;Türkiye İş Kurumu Çerez Politikası&#x27; -&gt; /kurumsal/bilgi-sayfalari/turkiye-is-kurumu-cerez-politikasi/
 &#x27;Sıkça Sorulan Sorular&#x27; -&gt; /sikca-sorulan-sorular/
-&#x27;Görüş &amp; Öneri&#x27; -&gt; https://forms.iskur.gov.tr/gorus-oneri/</pre>
-<h3>Arka plan (XHR/fetch) istekleri</h3><pre>(yok)</pre><hr><h2>İŞKUR Kurumdışı Kamu İşçi Alım İlanları</h2>
-<p><b>Not:</b> sitede toplam: 75, okunan: 75 (haritada ilan bulunan il: 26, tekil PDF: 75)<br><b>Son URL:</b> https://www.iskur.gov.tr/ilanlar/kurumdisi-kamu-isci-alim-ilanlari/?idId=batman&amp;il=Batman<br><b>Başlık:</b> Kurumdışı Kamu İşçi Alım İlanları - Türkiye İş Kurumu (İŞKUR)</p>
-<img src="debug/s7.jpg" alt="ekran görüntüsü">
-<h3>Sayfa metni (ilk 1500 karakter)</h3><pre>    
+&#x27;Görüş &amp; Öneri&#x27; -&gt; https://forms.iskur.gov.tr/gorus-oneri/</pre><h3>Arka plan (XHR/fetch) istekleri</h3><pre>(yok)</pre></div></details><details class="panel"><summary><svg class="ic" aria-hidden="true"><use href="#i-wrench"/></svg><b>İŞKUR Kurumdışı Kamu İşçi Alım İlanları</b> <small>sitede toplam: 75, okunan: 75 (haritada ilan bulunan il: 26, tekil PDF: 75)</small></summary><div class="panel-b"><p class="note"><b>Son URL:</b> https://www.iskur.gov.tr/ilanlar/kurumdisi-kamu-isci-alim-ilanlari/?idId=batman&amp;il=Batman<br><b>Başlık:</b> Kurumdışı Kamu İşçi Alım İlanları - Türkiye İş Kurumu (İŞKUR)</p><img src="debug/s7.jpg" alt="ekran görüntüsü" loading="lazy"><h3>Sayfa metni (ilk 1500 karakter)</h3><pre>    
 TR EN
 KURUMSAL 
 İŞ ARAYAN 
@@ -1047,8 +1167,7 @@ Aktif İşgücü Programları
 İş ve Meslek Danışmanlığı
 İŞVEREN
 Kayıt
-İşveren Dan</pre>
-<h3>Bulunan linkler (ilk 40)</h3><pre>&#x27;&#x27; -&gt; /kurumsal/bilgi-sayfalari/turkiye-is-kurumu-cerez-politikasi/
+İşveren Dan</pre><h3>Bulunan linkler (ilk 40)</h3><pre>&#x27;&#x27; -&gt; /kurumsal/bilgi-sayfalari/turkiye-is-kurumu-cerez-politikasi/
 &#x27;&#x27; -&gt; https://www.facebook.com/TurkiyeIsKurumu
 &#x27;&#x27; -&gt; https://www.instagram.com/turkiyeiskurumu
 &#x27;&#x27; -&gt; https://sosyal.teknofest.app/@turkiyeiskurumu
@@ -1087,11 +1206,7 @@ Kayıt
 &#x27;Bilgi Edinme&#x27; -&gt; /kurumsal-bilgi/bilgi-edinme/
 &#x27;Türkiye İş Kurumu Çerez Politikası&#x27; -&gt; /kurumsal/bilgi-sayfalari/turkiye-is-kurumu-cerez-politikasi/
 &#x27;Sıkça Sorulan Sorular&#x27; -&gt; /sikca-sorulan-sorular/
-&#x27;Görüş &amp; Öneri&#x27; -&gt; https://forms.iskur.gov.tr/gorus-oneri/</pre>
-<h3>Arka plan (XHR/fetch) istekleri</h3><pre>(yok)</pre><hr><h2>Memurlar.net İlan</h2>
-<p><b>Not:</b> 8/8 kategori sayfası gezildi (tam ilan metni); sitede toplam sayısı bilinmiyor (yapı doğrulanmadı)<br><b>Son URL:</b> https://ilan.memurlar.net/kategori/daimi-isci-ilanlari/?Expire=false<br><b>Başlık:</b> Daimi İşçi İlanları - Memurlar.Net</p>
-<img src="debug/s8.jpg" alt="ekran görüntüsü">
-<h3>Sayfa metni (ilk 1500 karakter)</h3><pre>HABER
+&#x27;Görüş &amp; Öneri&#x27; -&gt; https://forms.iskur.gov.tr/gorus-oneri/</pre><h3>Arka plan (XHR/fetch) istekleri</h3><pre>(yok)</pre></div></details><details class="panel"><summary><svg class="ic" aria-hidden="true"><use href="#i-wrench"/></svg><b>Memurlar.net İlan</b> <small>8/8 kategori sayfası gezildi (tam ilan metni); sitede toplam sayısı bilinmiyor (yapı doğrulanmadı)</small></summary><div class="panel-b"><p class="note"><b>Son URL:</b> https://ilan.memurlar.net/kategori/daimi-isci-ilanlari/?Expire=false<br><b>Başlık:</b> Daimi İşçi İlanları - Memurlar.Net</p><img src="debug/s8.jpg" alt="ekran görüntüsü" loading="lazy"><h3>Sayfa metni (ilk 1500 karakter)</h3><pre>HABER
 FORUM
 İLAN
 KPSS
@@ -1112,7 +1227,7 @@ Euro : 55.51 %-0.03
 Altın : 5731.95 %-3.48 
 BIST : 11131.32 %-2.36 
 Brent : 92.49 %0.55 
-BTC: 59811 %-1.17 
+BTC: 60083 %1.7 
 Anasayfa \ Daimi İşçi İlanları
 Daimi İşçi İlanları
 İlanları filtrele
@@ -1165,8 +1280,7 @@ Mahalli İlanlar
 Öğrenci Alım İlanları
 Özel Okul İlanları
 SYDV İlanları
-Terörle Mücade</pre>
-<h3>Bulunan linkler (ilk 40)</h3><pre>&#x27;&#x27; -&gt; //www.memurlar.net/
+Terörle Mücadele</pre><h3>Bulunan linkler (ilk 40)</h3><pre>&#x27;&#x27; -&gt; //www.memurlar.net/
 &#x27;HABER&#x27; -&gt; //www.memurlar.net/default.aspx
 &#x27;FORUM&#x27; -&gt; //forum.memurlar.net/default.aspx
 &#x27;İLAN&#x27; -&gt; //ilan.memurlar.net/default.aspx
@@ -1205,42 +1319,94 @@ Terörle Mücade</pre>
 &#x27;3 Haziran 2022\nKonya Şehir Hizmetleri 194 İşçi Alacak&#x27; -&gt; /ilan/66164/konya-sehir-hizmetleri-194-isci-alacak.html
 &#x27;19 Nisan 2022\nİstanbul Bilişim ve Akıllı Kent Teknolojileri 2 İşçi Ala&#x27; -&gt; /ilan/65311/istanbul-bilisim-ve-akilli-kent-teknolojileri-2-isci-alacak.html
 &#x27;10 Ocak 2022\nİstanbul Personel Yönetim Aş. 79 İşçi Alacak&#x27; -&gt; /ilan/63464/istanbul-personel-yonetim-as-79-isci-alacak.html
-&#x27;25 Aralık 2020\nBursa Harmancık Belediyesi 3 İşçi Alacak&#x27; -&gt; /ilan/55225/bursa-harmancik-belediyesi-3-isci-alacak.html</pre>
-<h3>Arka plan (XHR/fetch) istekleri</h3><pre>GET 200 https://ilan.memurlar.net/global/v2/js/external/para.aspx
-POST 200 https://ilan.memurlar.net/cdn-cgi/challenge-platform/h/b/jsd/oneshot/f8df4d4a0cd6/0.6705227882203484:1795271121:I4vA-wp2WhXQa_F2x_n3cqeuLIVLy_Z1eliYfaRGowg/a5e0a77e5bfb2474
-   gövde: b9shZJzMzYKy7kuGAoW5dPPPr-im7b$ai1BcFW2IOpz-fV2tPRoFIEioeDF+z0CgiBfNB58KFZkNNTsEg5+n-DQMHyDwpsNKwlpAhP8tJ9IUiC+4IZnY$6enllrnUF+fwAHxjO0XpsGULZJVCcyYZbZFFcZnog$LBFQ8t5AUza-GKiVPDDszVAj1zklPPBgzCY6yMeiY
+&#x27;25 Aralık 2020\nBursa Harmancık Belediyesi 3 İşçi Alacak&#x27; -&gt; /ilan/55225/bursa-harmancik-belediyesi-3-isci-alacak.html</pre><h3>Arka plan (XHR/fetch) istekleri</h3><pre>GET 200 https://ilan.memurlar.net/global/v2/js/external/para.aspx
+POST 200 https://ilan.memurlar.net/cdn-cgi/challenge-platform/h/b/jsd/oneshot/f8df4d4a0cd6/0.8623987300209661:1795281922:rqcjIol8R0QCzcRDWQk2WBWRtfLE6pn_8xKR5P6r87c/a5e1869c1cfb245f
+   gövde: A3CggNdRMmCCfkzYHbbE0ZHKxGjQQ2R1kJ5jKY5HzCLpxWw4pqZqixIQs$eYuxaHAqwI4nVPi4FaL6ZuXUu-tCmHeh9hiO5iVGMcHa1eAxHIDirXUnyUtuT-zra0KfnVUmPVz4TrBsgTjBvbmKY1VfsPqfAA59yYSE10Mx0SDJJSWbjDswhIAz6414KMfuXbrH4F2m-v
 GET 200 https://notifpush.com/script_parameters/p_b8e72b05be557f1a.json
    yanıt: {&quot;nadz&quot;:[{&quot;setPk&quot;:&quot;BC-DmRgxa1ZyioyLcfTjZRNgHD8RjF9fuyiHvE-H6L8eSpmlKbrLPmTZbMP-EmCrr9DoGWHnD6QlIqIkr2f9Qc8&quot;},{&quot;setDomain&quot;:&quot;notifpush.com&quot;},{&quot;setNativDomain&quot;:true},{&quot;setSubscriptionNotif&quot;:false},{&quot;setAdvertiserId&quot;:3344},{&quot;setTestPublicKey&quot;:true},{&quot;setAllowedWebsite&quot;:&quot;memurlar.net&quot;},{&quot;setEventsTrackin
-POST 204 https://analytics.google.com/g/collect?v=2&amp;tid=G-N3X12CCW34&amp;gtm=45je6bi0h2v874625949za208zd874625949xf1&amp;_p=1795274174964&amp;_gaz=1&amp;gcd=13l3l3l3l1l1&amp;npa=0&amp;dma=0&amp;_eu=AAAAAGAC&amp;_prs=ok&amp;are=1&amp;cid=1957543331.1
-POST 200 https://www.google.com/measurement/conversion?random=1795274175533&amp;cv=11&amp;tid=G-N3X12CCW34&amp;fst=1795274175533&amp;fmt=8&amp;en=page_view&amp;gtm=45je6bi0h2v874625949za208zd874625949xecxf1&amp;gcd=13l3l3l3l1l1&amp;dma=0&amp;tag
-POST 200 https://www.google.com/measurement/conversion?random=1795274175533&amp;cv=11&amp;tid=G-N3X12CCW34&amp;fst=1795274175533&amp;fmt=8&amp;en=first_visit&amp;gtm=45je6bi0h2v874625949za208zd874625949xecxf1&amp;gcd=13l3l3l3l1l1&amp;dma=0&amp;t
-POST 200 https://www.google.com/measurement/conversion?random=1795274175533&amp;cv=11&amp;tid=G-N3X12CCW34&amp;fst=1795274175533&amp;fmt=8&amp;en=session_start&amp;gtm=45je6bi0h2v874625949za208zd874625949xecxf1&amp;gcd=13l3l3l3l1l1&amp;dma=0
-GET 200 https://mc.yandex.com/watch/99592041?wmode=7&amp;page-url=https%3A%2F%2Filan.memurlar.net%2F&amp;charset=utf-8&amp;uah=chu%0A%22Chromium%22%3Bv%3D%22130%22%2C%22HeadlessChrome%22%3Bv%3D%22130%22%2C%22Not%3FA_Bran
-   yanıt: {&quot;settings&quot;:{&quot;auto_goals&quot;:1,&quot;button_goals&quot;:0,&quot;c_recp&quot;:&quot;1.00000&quot;,&quot;form_goals&quot;:1,&quot;pcs&quot;:&quot;1&quot;,&quot;publisher&quot;:{&quot;schema&quot;:&quot;microdata&quot;},&quot;webvisor&quot;:{&quot;ad_recp&quot;:&quot;0&quot;,&quot;arch_type&quot;:&quot;none&quot;,&quot;date&quot;:&quot;2026-10-20 16:53:10&quot;,&quot;forms&quot;:1,&quot;recp&quot;:&quot;0&quot;},&quot;sbp&quot;: {&quot;a&quot;:&quot;BtmamZCvBDujBklsBJR1f49G9o26Dn9zAKYlBZFwQts5GL4QP7XksT2ldf2xLROI&quot;, 
-GET 200 https://mc.yandex.com/watch/103595238?wmode=7&amp;page-url=https%3A%2F%2Filan.memurlar.net%2F&amp;charset=utf-8&amp;uah=chu%0A%22Chromium%22%3Bv%3D%22130%22%2C%22HeadlessChrome%22%3Bv%3D%22130%22%2C%22Not%3FA_Bra
-   yanıt: {&quot;settings&quot;:{&quot;auto_goals&quot;:0,&quot;button_goals&quot;:0,&quot;c_recp&quot;:&quot;1.00000&quot;,&quot;form_goals&quot;:1,&quot;pcs&quot;:&quot;1&quot;,&quot;publisher&quot;:{&quot;schema&quot;:&quot;json_ld&quot;},&quot;webvisor&quot;:{&quot;ad_recp&quot;:&quot;0&quot;,&quot;arch_type&quot;:&quot;none&quot;,&quot;date&quot;:&quot;2026-09-05 00:08:31&quot;,&quot;forms&quot;:0,&quot;recp&quot;:&quot;0&quot;},&quot;sbp&quot;: {&quot;a&quot;:&quot;AGz6xVG55JCSfkHFptKqIVs5u0/0UDhTpwap0SqHQyAPXTQTVI0DOEBWSCR2e9HD&quot;, &quot;b
 GET 499 https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js
+GET 200 https://mc.yandex.com/watch/99592041?wmode=7&amp;page-url=https%3A%2F%2Filan.memurlar.net%2F&amp;charset=utf-8&amp;uah=chu%0A%22Chromium%22%3Bv%3D%22130%22%2C%22HeadlessChrome%22%3Bv%3D%22130%22%2C%22Not%3FA_Bran
+   yanıt: {&quot;settings&quot;:{&quot;auto_goals&quot;:1,&quot;button_goals&quot;:0,&quot;c_recp&quot;:&quot;1.00000&quot;,&quot;form_goals&quot;:1,&quot;pcs&quot;:&quot;1&quot;,&quot;publisher&quot;:{&quot;schema&quot;:&quot;microdata&quot;},&quot;webvisor&quot;:{&quot;ad_recp&quot;:&quot;0&quot;,&quot;arch_type&quot;:&quot;none&quot;,&quot;date&quot;:&quot;2026-10-20 16:53:10&quot;,&quot;forms&quot;:1,&quot;recp&quot;:&quot;0&quot;},&quot;sbp&quot;: {&quot;a&quot;:&quot;tVzANm0PfqQUvAmGygKNMeYsKtrZxgOb8wK+rlZe2zkI6Pm/IFNQSoCY1dIViqAW&quot;, 
 POST 200 https://events.newsroom.bi/ingest.php
    yanıt: {&quot;strategy&quot;:[{&quot;tick&quot;:200,&quot;delay&quot;:20000}],&quot;ads&quot;:-1,&quot;mirror&quot;:{&quot;active&quot;:false,&quot;replicas&quot;:1}}
+GET 200 https://mc.yandex.com/watch/103595238?wmode=7&amp;page-url=https%3A%2F%2Filan.memurlar.net%2F&amp;charset=utf-8&amp;uah=chu%0A%22Chromium%22%3Bv%3D%22130%22%2C%22HeadlessChrome%22%3Bv%3D%22130%22%2C%22Not%3FA_Bra
+   yanıt: {&quot;settings&quot;:{&quot;auto_goals&quot;:0,&quot;button_goals&quot;:0,&quot;c_recp&quot;:&quot;1.00000&quot;,&quot;form_goals&quot;:1,&quot;pcs&quot;:&quot;1&quot;,&quot;publisher&quot;:{&quot;schema&quot;:&quot;json_ld&quot;},&quot;webvisor&quot;:{&quot;ad_recp&quot;:&quot;0&quot;,&quot;arch_type&quot;:&quot;none&quot;,&quot;date&quot;:&quot;2026-09-05 00:08:31&quot;,&quot;forms&quot;:0,&quot;recp&quot;:&quot;0&quot;},&quot;sbp&quot;: {&quot;a&quot;:&quot;25dRw1yCxg6UHET2Hl08VBM4sdejG3o6MzgallxRnTbfB1ZUAAy1LHrkdvsu2s2h&quot;, &quot;b
 POST 200 https://events.newsroom.bi/data/rfv.php
    yanıt: {&quot;rfv&quot;:1,&quot;r&quot;:0,&quot;f&quot;:0,&quot;v&quot;:0}
+POST 200 https://www.google.com/measurement/conversion?random=1795283313042&amp;cv=11&amp;tid=G-N3X12CCW34&amp;fst=1795283313042&amp;fmt=8&amp;en=session_start&amp;gtm=45je6bh1v874625949za208xecxf1&amp;gcd=13l3l3l3l1l1&amp;dma=0&amp;tag_exp=1156
+POST 200 https://www.google.com/measurement/conversion?random=1795283313042&amp;cv=11&amp;tid=G-N3X12CCW34&amp;fst=1795283313042&amp;fmt=8&amp;en=first_visit&amp;gtm=45je6bh1v874625949za208xecxf1&amp;gcd=13l3l3l3l1l1&amp;dma=0&amp;tag_exp=115616
+POST 200 https://www.google.com/measurement/conversion?random=1795283313042&amp;cv=11&amp;tid=G-N3X12CCW34&amp;fst=1795283313042&amp;fmt=8&amp;en=page_view&amp;gtm=45je6bh1v874625949za208xecxf1&amp;gcd=13l3l3l3l1l1&amp;dma=0&amp;tag_exp=11561698
+POST 204 https://analytics.google.com/g/collect?v=2&amp;tid=G-N3X12CCW34&amp;gtm=45je6bh1v874625949za208xf1&amp;_p=1795283312261&amp;_gaz=1&amp;gcd=13l3l3l3l1l1&amp;npa=0&amp;dma=0&amp;_eu=AAAAAGAC&amp;_prs=ok&amp;are=1&amp;cid=353732619.1795283313&amp;frm=
 POST 200 https://events.newsroom.bi/ingest.php
    yanıt: {}
 GET 200 https://ilan.memurlar.net/global/v2/js/external/para.aspx
+POST 204 https://analytics.google.com/g/collect?v=2&amp;tid=G-N3X12CCW34&amp;gtm=45je6bh1v874625949za208zd874625949xf1&amp;_p=1795283335077&amp;gcd=13l3l3l3l1l1&amp;npa=0&amp;dma=0&amp;_eu=AAAAAGQC&amp;_prs=ok&amp;are=1&amp;cid=353732619.1795283313&amp;
+POST 200 https://www.google.com/measurement/conversion?random=1795283335166&amp;cv=11&amp;tid=G-N3X12CCW34&amp;fst=1795283335166&amp;fmt=8&amp;en=page_view&amp;gtm=45je6bh1v874625949za208zd874625949xecxf1&amp;gcd=13l3l3l3l1l1&amp;dma=0&amp;tag_e
 GET 200 https://notifpush.com/script_parameters/p_b8e72b05be557f1a.json
    yanıt: {&quot;nadz&quot;:[{&quot;setPk&quot;:&quot;BC-DmRgxa1ZyioyLcfTjZRNgHD8RjF9fuyiHvE-H6L8eSpmlKbrLPmTZbMP-EmCrr9DoGWHnD6QlIqIkr2f9Qc8&quot;},{&quot;setDomain&quot;:&quot;notifpush.com&quot;},{&quot;setNativDomain&quot;:true},{&quot;setSubscriptionNotif&quot;:false},{&quot;setAdvertiserId&quot;:3344},{&quot;setTestPublicKey&quot;:true},{&quot;setAllowedWebsite&quot;:&quot;memurlar.net&quot;},{&quot;setEventsTrackin
-POST 200 https://www.google.com/measurement/conversion?random=1795274197532&amp;cv=11&amp;tid=G-N3X12CCW34&amp;fst=1795274197532&amp;fmt=8&amp;en=page_view&amp;gtm=45je6bi0h2v874625949za208zd874625949xecxf1&amp;gcd=13l3l3l3l1l1&amp;dma=0&amp;tag
-POST 204 https://analytics.google.com/g/collect?v=2&amp;tid=G-N3X12CCW34&amp;gtm=45je6bi0h2v874625949za208zd874625949xf1&amp;_p=1795274197435&amp;gcd=13l3l3l3l1l1&amp;npa=0&amp;dma=0&amp;_eu=AAAAAGQC&amp;_prs=ok&amp;are=1&amp;cid=1957543331.17952741
 GET 200 https://mc.yandex.com/watch/99592041?wmode=7&amp;page-url=https%3A%2F%2Filan.memurlar.net%2Fkategori%2Fengelli-ilanlari%2F%3FExpire%3Dfalse&amp;charset=utf-8&amp;uah=chu%0A%22Chromium%22%3Bv%3D%22130%22%2C%22Head
-   yanıt: {&quot;settings&quot;:{&quot;auto_goals&quot;:1,&quot;button_goals&quot;:0,&quot;c_recp&quot;:&quot;1.00000&quot;,&quot;form_goals&quot;:1,&quot;pcs&quot;:&quot;1&quot;,&quot;publisher&quot;:{&quot;schema&quot;:&quot;microdata&quot;},&quot;webvisor&quot;:{&quot;ad_recp&quot;:&quot;0&quot;,&quot;arch_type&quot;:&quot;none&quot;,&quot;date&quot;:&quot;2026-10-20 16:53:10&quot;,&quot;forms&quot;:1,&quot;recp&quot;:&quot;0&quot;},&quot;sbp&quot;: {&quot;a&quot;:&quot;N0kSMMgrjx2BSoCLWXGML4kQK91+TaAzmqsc/Zvx16p4X6MC5tylrh/TdZ7y7KIE&quot;, 
+   yanıt: {&quot;settings&quot;:{&quot;auto_goals&quot;:1,&quot;button_goals&quot;:0,&quot;c_recp&quot;:&quot;1.00000&quot;,&quot;form_goals&quot;:1,&quot;pcs&quot;:&quot;1&quot;,&quot;publisher&quot;:{&quot;schema&quot;:&quot;microdata&quot;},&quot;webvisor&quot;:{&quot;ad_recp&quot;:&quot;0&quot;,&quot;arch_type&quot;:&quot;none&quot;,&quot;date&quot;:&quot;2026-10-20 16:53:10&quot;,&quot;forms&quot;:1,&quot;recp&quot;:&quot;0&quot;},&quot;sbp&quot;: {&quot;a&quot;:&quot;TbXmkvMBwuvaVaxKr+/hxku8moyakKzDNhWNaisDdOrBF4h1CpBzuGaIGZMzJpxB&quot;, 
 POST 200 https://events.newsroom.bi/ingest.php
    yanıt: {&quot;strategy&quot;:[{&quot;tick&quot;:200,&quot;delay&quot;:20000}],&quot;ads&quot;:-1,&quot;mirror&quot;:{&quot;active&quot;:false,&quot;replicas&quot;:1}}
 GET 200 https://mc.yandex.com/watch/103595238?wmode=7&amp;page-url=https%3A%2F%2Filan.memurlar.net%2Fkategori%2Fengelli-ilanlari%2F%3FExpire%3Dfalse&amp;charset=utf-8&amp;uah=chu%0A%22Chromium%22%3Bv%3D%22130%22%2C%22Hea
-   yanıt: {&quot;settings&quot;:{&quot;auto_goals&quot;:0,&quot;button_goals&quot;:0,&quot;c_recp&quot;:&quot;1.00000&quot;,&quot;form_goals&quot;:1,&quot;pcs&quot;:&quot;1&quot;,&quot;publisher&quot;:{&quot;schema&quot;:&quot;json_ld&quot;},&quot;webvisor&quot;:{&quot;ad_recp&quot;:&quot;0&quot;,&quot;arch_type&quot;:&quot;none&quot;,&quot;date&quot;:&quot;2026-09-05 00:08:31&quot;,&quot;forms&quot;:0,&quot;recp&quot;:&quot;0&quot;},&quot;sbp&quot;: {&quot;a&quot;:&quot;cYvO0AxgyYZi9kT7MUrWBrWRx6x1ZBAFGO5YIHEGtLLHfYjCsdBEg4WOVUMQ59bW&quot;, &quot;b
+   yanıt: {&quot;settings&quot;:{&quot;auto_goals&quot;:0,&quot;button_goals&quot;:0,&quot;c_recp&quot;:&quot;1.00000&quot;,&quot;form_goals&quot;:1,&quot;pcs&quot;:&quot;1&quot;,&quot;publisher&quot;:{&quot;schema&quot;:&quot;json_ld&quot;},&quot;webvisor&quot;:{&quot;ad_recp&quot;:&quot;0&quot;,&quot;arch_type&quot;:&quot;none&quot;,&quot;date&quot;:&quot;2026-09-05 00:08:31&quot;,&quot;forms&quot;:0,&quot;recp&quot;:&quot;0&quot;},&quot;sbp&quot;: {&quot;a&quot;:&quot;WeNJYIMJJO/TgzEZnGbxQM3MDOCW61s4m2ISi2cqzbQ4QdVDxrWg73MLZe5jgLJC&quot;, &quot;b
 POST 200 https://events.newsroom.bi/ingest.php
    yanıt: {}
 GET 200 https://ilan.memurlar.net/global/v2/js/external/para.aspx
+POST 204 https://analytics.google.com/g/collect?v=2&amp;tid=G-N3X12CCW34&amp;gtm=45je6bh1v874625949za208zd874625949xf1&amp;_p=1795283356741&amp;gcd=13l3l3l3l1l1&amp;npa=0&amp;dma=0&amp;_eu=AAAAAGQC&amp;_prs=ok&amp;are=1&amp;cid=353732619.1795283313&amp;
+POST 200 https://www.google.com/measurement/conversion?random=1795283356806&amp;cv=11&amp;tid=G-N3X12CCW34&amp;fst=1795283356806&amp;fmt=8&amp;en=page_view&amp;gtm=45je6bh1v874625949za208zd874625949xecxf1&amp;gcd=13l3l3l3l1l1&amp;dma=0&amp;tag_e
 GET 200 https://notifpush.com/script_parameters/p_b8e72b05be557f1a.json
-   yanıt: {&quot;nadz&quot;:[{&quot;setPk&quot;:&quot;BC-DmRgxa1ZyioyLcfTjZRNgHD8RjF9fuyiHvE-H6L8eSpmlKbrLPmTZbMP-EmCrr9DoGWHnD6QlIqIkr2f9Qc8&quot;},{&quot;setDomain&quot;:&quot;notifpush.com&quot;},{&quot;setNativDomain&quot;:true},{&quot;setSubscriptionNotif&quot;:false},{&quot;setAdvertiserId&quot;:3344},{&quot;setTestPublicKey&quot;:true},{&quot;setAllowedWebsite&quot;:&quot;memurlar.net&quot;},{&quot;setEventsTrackin
-POST 204 https://analytics.google.com/g/collect?v=2&amp;tid=G-N3X12CCW34&amp;gtm=45je6bi0h2v874625949za208zd874625949xf1&amp;_p=1795274219098&amp;gcd=13l3l3l3l1l1&amp;npa=0&amp;dma=0&amp;_eu=AAAAAGQC&amp;_prs=ok&amp;are=1&amp;cid=1957543331.17952741
-POST 200 https://www.google.com/measurement/conversion?random=1795274219162&amp;cv=11&amp;tid=G-N3X12CCW34&amp;fst=1795274219162&amp;fmt=8&amp;en=page_view&amp;gtm=45je6bi0h2v874625949za208zd874625949xecxf1&amp;gcd=13l3l3l3l1l1&amp;dma=0&amp;tag</pre><hr></body></html>
+   yanıt: {&quot;nadz&quot;:[{&quot;setPk&quot;:&quot;BC-DmRgxa1ZyioyLcfTjZRNgHD8RjF9fuyiHvE-H6L8eSpmlKbrLPmTZbMP-EmCrr9DoGWHnD6QlIqIkr2f9Qc8&quot;},{&quot;setDomain&quot;:&quot;notifpush.com&quot;},{&quot;setNativDomain&quot;:true},{&quot;setSubscriptionNotif&quot;:false},{&quot;setAdvertiserId&quot;:3344},{&quot;setTestPublicKey&quot;:true},{&quot;setAllowedWebsite&quot;:&quot;memurlar.net&quot;},{&quot;setEventsTrackin</pre></div></details><footer>Son güncelleme: 21.11.2026 20:42. Veriler resmî kaynaklardan otomatik toplanır; başvurmadan önce ilanın aslını doğrulayın.</footer></main><button class="iconbtn" id="up" aria-label="Yukarı çık" title="Yukarı"><svg class="ic" aria-hidden="true"><use href="#i-up"/></svg></button><script>
+(function(){
+  var root=document.documentElement;
+  function store(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){return null}}
+  var saved=store('tema');
+  if(saved){root.setAttribute('data-theme',saved)}
+  var tb=document.getElementById('tema');
+  function isDark(){var t=root.getAttribute('data-theme');
+    return t?t==='dark':window.matchMedia('(prefers-color-scheme: dark)').matches}
+  function paint(){if(tb)tb.setAttribute('data-dark',isDark()?'true':'false')}
+  if(tb)tb.addEventListener('click',function(){var n=isDark()?'light':'dark';root.setAttribute('data-theme',n);store('tema',n);paint()});
+  paint();
+
+  var q=document.getElementById('q'),cards=[].slice.call(document.querySelectorAll('.card')),
+      secs=[].slice.call(document.querySelectorAll('[data-sec]')),shown=document.getElementById('shown'),
+      chips=[].slice.call(document.querySelectorAll('.chip')),mode='all',
+      listed=cards.filter(function(c){return c.closest('[data-sec]')}),total=listed.length;
+  function norm(s){return (s||'').toLocaleLowerCase('tr')}
+  function match(c,m){
+    var d=c.getAttribute('data-days'),days=d===''||d===null?null:+d;
+    if(m==='new')return c.getAttribute('data-new')==='1';
+    if(m==='fit')return c.getAttribute('data-fit')==='1';
+    if(m==='soon')return days!==null&&days<=7;
+    if(m==='warn')return c.getAttribute('data-warn')==='1';
+    return true}
+  function ok(c){
+    if(!match(c,mode))return false;
+    var t=norm(q&&q.value.trim());
+    return !t||c.getAttribute('data-q').indexOf(t)>-1}
+  chips.forEach(function(b){var n=b.querySelector('.n'),m=b.getAttribute('data-mode');
+    if(n)n.textContent=listed.filter(function(c){return match(c,m)}).length});
+  function apply(){
+    var n=0,active=mode!=='all'||(q&&q.value.trim());
+    cards.forEach(function(c){var v=ok(c);c.classList.toggle('hide',!v);if(v&&c.closest('[data-sec]'))n++});
+    secs.forEach(function(s){
+      var all=s.querySelectorAll('.card').length;if(!all)return;
+      var vis=s.querySelectorAll('.card:not(.hide)').length,k=s.querySelector('.count');
+      if(k)k.textContent=active?vis+' / '+all:all;
+      s.classList.toggle('hide',active&&!vis)});
+    if(shown)shown.textContent=active?n+' / '+total+' ilan':total+' ilan'}
+  if(q)q.addEventListener('input',apply);
+  chips.forEach(function(b){b.addEventListener('click',function(){
+    mode=b.getAttribute('data-mode');
+    chips.forEach(function(x){x.setAttribute('aria-pressed',x===b?'true':'false')});apply()})});
+  document.addEventListener('keydown',function(e){
+    if(e.key==='/'&&q&&document.activeElement!==q&&!/input|textarea/i.test(document.activeElement.tagName)){e.preventDefault();q.focus()}
+    if(e.key==='Escape'&&q&&document.activeElement===q){q.value='';apply();q.blur()}});
+  apply();
+
+  var up=document.getElementById('up');
+  if(up){window.addEventListener('scroll',function(){up.style.display=window.scrollY>600?'grid':'none'},{passive:true});
+    up.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'})})}
+})();
+</script></body></html>
