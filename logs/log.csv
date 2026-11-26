@@ -899,3 +899,14 @@ navigating to ""https://www.resmigaz — önceki günlerden 9 ilan taşındı (k
 2026-11-25,20:54:06,İŞKUR Kamu Memur Alım İlanları,34,34,6,OK,"sitede toplam: 34, okunan: 34 (haritada ilan bulunan il: 18, tekil PDF: 34)"
 2026-11-25,20:54:30,İŞKUR Kurumdışı Kamu İşçi Alım İlanları,114,113,8,ŞÜPHELİ (eksik okundu),"sitede toplam: 114, okunan: 113 (haritada ilan bulunan il: 37, tekil PDF: 113) — EKSİK: Kocaeli: haritada 3, PDF 2"
 2026-11-25,20:56:27,Memurlar.net İlan,59,38,18,KISMİ (tamlık doğrulanmadı),8/8 kategori sayfası gezildi (tam ilan metni); sitede toplam sayısı bilinmiyor (yapı doğrulanmadı)
+2026-11-26,14:23:15,İlan.gov.tr,128,119,11,OK,"sitede toplam: 127, okunan: 128, sayfalama: currentPage"
+2026-11-26,14:23:55,Resmî Gazete,18,10,2,OK,"sitede toplam: 18, okunan: 18, personel ilanı: 10, PDF bulma: dizin linkleri — taranmış PDF Gemini ile okundu: 1"
+2026-11-26,14:24:11,Kariyer Kapısı,0,0,0,HATA,"HATA: alan adı çözülemedi (ağ/DNS) — 3 deneme başarısız. Ayrıntı: Page.goto: net::ERR_NAME_NOT_RESOLVED at https://kariyerkapisi.gov.tr/isealim
+Call log:
+navigating to ""https://kariyerkapisi.gov.tr/isealim"", waiting until ""dom"
+2026-11-26,14:25:44,SBB Kamu İlan,124,98,24,OK,"sitede toplam: 96, okunan: 124 (ham bağlantı: 124, tekrarlar elendi) — detay metni okunan: 7/113 — veritabanından tekrar kullanılan: 106 (+11 ilgisiz başlık atlandı)"
+2026-11-26,14:26:00,ÇŞB Yerel Yönetimler,41,9,0,OK,"sitede toplam: 41, okunan: 41 (yalnız ilan/alım başlıklı duyurular; 4 sayfa gezildi)"
+2026-11-26,14:26:17,İŞKUR (e-şube),15,15,0,OK,"sitede toplam: 15, okunan: 15 (Kamu seçilerek arandı; 1 sayfa gezildi, sonraki sayfa yok)"
+2026-11-26,14:26:28,İŞKUR Kamu Memur Alım İlanları,34,34,6,OK,"sitede toplam: 34, okunan: 34 (haritada ilan bulunan il: 18, tekil PDF: 34)"
+2026-11-26,14:26:59,İŞKUR Kurumdışı Kamu İşçi Alım İlanları,121,119,9,ŞÜPHELİ (eksik okundu),"sitede toplam: 121, okunan: 119 (haritada ilan bulunan il: 40, tekil PDF: 119) — EKSİK: Kocaeli: haritada 2, PDF 1; Yozgat: haritada 1, PDF 0"
+2026-11-26,14:29:28,Memurlar.net İlan,64,43,19,KISMİ (tamlık doğrulanmadı),8/8 kategori sayfası gezildi (tam ilan metni); sitede toplam sayısı bilinmiyor (yapı doğrulanmadı)
