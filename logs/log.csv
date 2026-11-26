@@ -910,3 +910,12 @@ navigating to ""https://kariyerkapisi.gov.tr/isealim"", waiting until ""dom"
 2026-11-26,14:26:28,İŞKUR Kamu Memur Alım İlanları,34,34,6,OK,"sitede toplam: 34, okunan: 34 (haritada ilan bulunan il: 18, tekil PDF: 34)"
 2026-11-26,14:26:59,İŞKUR Kurumdışı Kamu İşçi Alım İlanları,121,119,9,ŞÜPHELİ (eksik okundu),"sitede toplam: 121, okunan: 119 (haritada ilan bulunan il: 40, tekil PDF: 119) — EKSİK: Kocaeli: haritada 2, PDF 1; Yozgat: haritada 1, PDF 0"
 2026-11-26,14:29:28,Memurlar.net İlan,64,43,19,KISMİ (tamlık doğrulanmadı),8/8 kategori sayfası gezildi (tam ilan metni); sitede toplam sayısı bilinmiyor (yapı doğrulanmadı)
+2026-11-26,20:36:53,İlan.gov.tr,128,119,10,OK,"sitede toplam: 127, okunan: 128, sayfalama: currentPage"
+2026-11-26,20:37:45,Resmî Gazete,18,10,2,OK,"sitede toplam: 18, okunan: 18, personel ilanı: 10, PDF bulma: dizin linkleri — taranmış PDF Gemini ile okundu: 1 — veritabanından tekrar kullanılan: 10"
+2026-11-26,20:38:04,Kariyer Kapısı,0,0,0,ŞÜPHELİ (0 ham kayıt),ilan/tablo bulunamadı — tanı sayfasına bak
+2026-11-26,20:38:57,SBB Kamu İlan,0,0,0,HATA,HATA: SBB sitesi bu çalıştırma ortamını coğrafi erişim kuralıyla engelledi — 3 deneme başarısız. Ayrıntı: SBB sitesi bu çalıştırma ortamını coğrafi erişim kuralıyla engelledi
+2026-11-26,20:40:43,ÇŞB Yerel Yönetimler,41,9,0,OK,"sitede toplam: 41, okunan: 41 (yalnız ilan/alım başlıklı duyurular; 4 sayfa gezildi)"
+2026-11-26,20:41:02,İŞKUR (e-şube),15,15,0,OK,"sitede toplam: 15, okunan: 15 (Kamu seçilerek arandı; 1 sayfa gezildi, sonraki sayfa yok)"
+2026-11-26,20:41:17,İŞKUR Kamu Memur Alım İlanları,34,34,6,OK,"sitede toplam: 34, okunan: 34 (haritada ilan bulunan il: 18, tekil PDF: 34)"
+2026-11-26,20:42:04,İŞKUR Kurumdışı Kamu İşçi Alım İlanları,121,119,8,ŞÜPHELİ (eksik okundu),"sitede toplam: 121, okunan: 119 (haritada ilan bulunan il: 38, tekil PDF: 119) — EKSİK: Kocaeli: haritada 2, PDF 1; Yozgat: haritada 1, PDF 0"
+2026-11-26,20:45:00,Memurlar.net İlan,64,43,19,KISMİ (tamlık doğrulanmadı),8/8 kategori sayfası gezildi (tam ilan metni); sitede toplam sayısı bilinmiyor (yapı doğrulanmadı)

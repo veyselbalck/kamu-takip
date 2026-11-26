@@ -46614,7 +46614,7 @@
    "kaynak": "Memurlar.net İlan",
    "baslik": "00:01 | Öğretmen maaşına başarı ayarı",
    "kurum": "",
-   "last_seen": "2026-11-25",
+   "last_seen": "2026-11-26",
    "detail_level": "İlan detay sayfası",
    "detail_checked": true,
    "metin_len": 634,
@@ -159019,8 +159019,8 @@
    "last_seen": "2026-11-26",
    "detail_level": "İlan detay sayfası",
    "detail_checked": true,
-   "metin_len": 9199,
-   "metin_hash": "476aa75a54afeae5c7b62ee16b4ae2258a737f1a33fdf8bb4aae5cd546c74d90",
+   "metin_len": 8000,
+   "metin_hash": "09c1d866d7fec03f070c20ce14f2a88d76adfb4f1c555175365a08ad3d33c97d",
    "p2": {
     "v": 2,
     "aday": false
@@ -159040,8 +159040,8 @@
     "ekSinavDetay": "Yazılı ve/veya sözlü sınav; KPSS puanına göre sıralama",
     "gorevYeri": "Belirtilmemiş",
     "ikametSarti": "Yok",
-    "ekSartlar": "YDS/e-YDS en az 60 puan, 18 yaş, Türk vatandaşı, askerlik durumu, sabıka kaydı olmama",
-    "kisaOzet": "Bilgisayar Mühendisliği lisans mezunu adaylar için 1 kadrolu sözleşmeli mühendis pozisyonu, KPSS-P3 en az 70 puan ve YDS 60 puan şartıyla değerlendirilir.",
+    "ekSartlar": "YDS/e-YDS en az 60 puan, 18 yaş, Türk vatandaşı, askerlik tecilli, kamu haklarından mahrum olmama",
+    "kisaOzet": "Bilgisayar Mühendisliği lisans mezunu adaylar için 1 adet sözleşmeli mühendis kadrosu açılmıştır. Başvuru için KPSS‑P3’den en az 70 puan ve YDS‑eYDS’den en az 60 puan gerekmektedir.",
     "_model": "openai/gpt-oss-120b",
     "_pv": 2,
     "_kanit_ok": true
@@ -159073,8 +159073,8 @@
    "last_seen": "2026-11-26",
    "detail_level": "İlan detay sayfası",
    "detail_checked": true,
-   "metin_len": 13139,
-   "metin_hash": "a655bf8fda2df11dbfa5cb54c1040aa7e76e9eb4e941ad2d772193c06d4d4edb",
+   "metin_len": 8000,
+   "metin_hash": "d2584d0b308fb0de970eaea55ddf471652785e2f2a751c8302501acf4b8b333f",
    "p2": {
     "v": 2,
     "aday": false
@@ -159090,15 +159090,15 @@
    "last_seen": "2026-11-26",
    "detail_level": "İlan detay sayfası",
    "detail_checked": true,
-   "metin_len": 13523,
-   "metin_hash": "44c7eace0a68559c74eb4e8be9bd1060d65cab34055135649a700b74ac8b86ba",
+   "metin_len": 8000,
+   "metin_hash": "165e9907ab5d4304d732d7ea9d73679074c9885ae4e3939e1d8e60f0118c7580",
    "p2": {
     "v": 2,
     "aday": false
    },
    "analiz": {
-    "kategori": "BOLUM",
-    "kanit": "Sözleşmeli Bilişim Personeli pozisyonunda ... adaylarda; 6 ncı maddesinin (b) fıkrasında sayılan bölümlerden mezun olmak",
+    "kategori": "ILGISIZ",
+    "kanit": "6 ncı maddesinin (b) fıkrasında sayılan bölümlerden mezun olmak",
     "kurum": "Mersin Üniversitesi Rektörlüğü",
     "pozisyon": "Sistem Yöneticisi",
     "kadroSayisi": 1,
@@ -159108,11 +159108,11 @@
     "kpssDurumu": "Zorunlu",
     "kpssTuru": "KPSS P3 puan türünden alınan puanın %70'i",
     "ekSinav": true,
-    "ekSinavDetay": "YDS/e-YDS puanının %30'u",
+    "ekSinavDetay": "Yazılı sınav %30, uygulamalı sınav %70, toplam 70 puan geçmesi",
     "gorevYeri": "Belirtilmemiş",
     "ikametSarti": "Yok",
-    "ekSartlar": "45 yaşından küçük, en az 5 yıl mesleki tecrübe",
-    "kisaOzet": "Mersin Üniversitesi Rektörlüğü, sözleşmeli bilişim personeli olarak Sistem Yöneticisi kadrosu için 1 adet alım yapmaktadır. Başvuru için KPSS P3 puanı (%70) ve YDS puanı (%30) ağırlıklı değerlendirme, yazılı ve uygulamalı sınavlar yapılacaktır.",
+    "ekSartlar": "45 yaşından küçük, Sistem Yöneticisi pozisyonu için en az 5 yıl mesleki tecrübe",
+    "kisaOzet": "Mersin Üniversitesi Rektörlüğü, sözleşmeli bilişim personeli kapsamında Sistem Yöneticisi kadrosu açmıştır. Başvuru için KPSS P3 puanı, YDS puanı ve yazılı‑uygulamalı sınav şartları bulunmaktadır.",
     "_model": "openai/gpt-oss-120b",
     "_pv": 2,
     "_kanit_ok": true
@@ -159127,8 +159127,8 @@
    "last_seen": "2026-11-26",
    "detail_level": "İlan detay sayfası",
    "detail_checked": true,
-   "metin_len": 19300,
-   "metin_hash": "fe863fea9d8f3c318d7aa1a3975073339c2a8a10f38a97de928ca5f38bd9cc27",
+   "metin_len": 8000,
+   "metin_hash": "aaff037bc108797fe5c001d0f4b93937883560e5884f5240a051b257e3924169",
    "p2": {
     "v": 2,
     "aday": false
@@ -159161,8 +159161,8 @@
    "last_seen": "2026-11-26",
    "detail_level": "İlan detay sayfası",
    "detail_checked": true,
-   "metin_len": 8466,
-   "metin_hash": "3ef8e5f5a93ea7cb558ef00c90ad6cfb732a79c4a03ac51550f668356343985b",
+   "metin_len": 8000,
+   "metin_hash": "44af21a80ef7fed6ee301897afdbf897072dad72cef1c5b007b674669189cff5",
    "p2": {
     "v": 2,
     "aday": false
@@ -159937,8 +159937,8 @@
    "last_seen": "2026-11-26",
    "detail_level": "İlan detay sayfası",
    "detail_checked": true,
-   "metin_len": 11020,
-   "metin_hash": "70c99ae06adf9fa57074d38edabcfc0c32987469fb58c888ca53928aec5300fc",
+   "metin_len": 8000,
+   "metin_hash": "d56af88e081387ed1c00e4b65187e173a089e670bc542b6020fe7acbe78fbe22",
    "p2": {
     "v": 2,
     "aday": false
@@ -159954,8 +159954,8 @@
    "last_seen": "2026-11-26",
    "detail_level": "İlan detay sayfası",
    "detail_checked": true,
-   "metin_len": 10676,
-   "metin_hash": "fd3995eed13ee6353ae504a67da4f11f1c5dcc39b5c3e25b8705eeef315d6f35",
+   "metin_len": 8000,
+   "metin_hash": "c74f87ef0736f35e2de3acd089d6b1da63a4442541061c2f11c896223b1186f6",
    "p2": {
     "v": 2,
     "aday": false
@@ -159971,8 +159971,8 @@
    "last_seen": "2026-11-26",
    "detail_level": "İŞKUR ilan PDF'si",
    "detail_checked": true,
-   "metin_len": 8753,
-   "metin_hash": "b81a6106d1f5842296b4d204d1e43423353046ce9d66a23e3fb5e0ad46c79e5a",
+   "metin_len": 8000,
+   "metin_hash": "242e1c8fb6abda5709391490af19bce1ca6eba42c0b73921b2d3b7399f5a3c00",
    "p2": {
     "v": 2,
     "aday": false
@@ -159989,11 +159989,11 @@
     "kpssDurumu": "Zorunlu",
     "kpssTuru": "KPSS-P3 en az 70 puan",
     "ekSinav": true,
-    "ekSinavDetay": "Yazılı ve sözlü sınav; KPSS puanına göre en yüksek puandan başlanarak sıralanır, pozisyon sayısının 10 katı kadar aday çağrılır.",
+    "ekSinavDetay": "Yazılı/sözlü sınav; KPSS puanına göre en yüksekten sıralanıp giriş sınavına çağrılır",
     "gorevYeri": "Belirtilmemiş",
     "ikametSarti": "Yok",
-    "ekSartlar": "18 yaş, Türk vatandaşı, YDS/E-YDS en az 60 puan, askerlik durumu, denklik belgesi (yurt dışı mezunları)",
-    "kisaOzet": "Türkiye Su Enstitüsü Başkanlığı, Bilgisayar Mühendisi mezunu bir mühendis kadrosu için sözleşmeli personel alımı yapmaktadır. Başvuru için KPSS‑P3 en az 70 puan ve YDS/E‑YDS en az 60 puan gerekmektedir.",
+    "ekSartlar": "İngilizce YDS/e-YDS veya denk sınavdan en az 60 puan; 18 yaş; askerlik durumu; Türkiye Cumhuriyeti vatandaşı",
+    "kisaOzet": "Türkiye Su Enstitüsü Başkanlığı, Bilgisayar Mühendisi pozisyonu için bir sözleşmeli personel alımı yapmaktadır. Başvuru için KPSS-P3’den en az 70 puan ve YDS’den 60 puan gerekmektedir.",
     "_model": "openai/gpt-oss-120b",
     "_pv": 2,
     "_kanit_ok": true
@@ -160493,8 +160493,8 @@
    "last_seen": "2026-11-26",
    "detail_level": "İlan detay sayfası",
    "detail_checked": true,
-   "metin_len": 12125,
-   "metin_hash": "f95e6caf6d3dac9bba21393ef71d5e308719453a07be32c704af815518518b6e",
+   "metin_len": 8000,
+   "metin_hash": "ca47f9ade81d701a7cfdeb9f34fefcff21a1efd92ba5634de39eb224961b571e",
    "p2": {
     "v": 2,
     "aday": false
@@ -160510,29 +160510,29 @@
    "last_seen": "2026-11-26",
    "detail_level": "İlan detay sayfası",
    "detail_checked": true,
-   "metin_len": 8980,
-   "metin_hash": "f7f5206d705a01c00190f9ddce11b4bd5e5ef2bf13dccf24bb4e63a57ce6fd0a",
+   "metin_len": 8000,
+   "metin_hash": "7da648a03917f5d12b6c815120a885af8f4f56eaea5f6060b84f71e72371b859",
    "p2": {
     "v": 2,
     "aday": false
    },
    "analiz": {
     "kategori": "BOLUM",
-    "kanit": "1 (Bir) Mühendis (Bilgisayar Mühendisi) pozisyonuna sözleşmeli personel alımı yapılacaktır.",
+    "kanit": "1) Üniversitelerin Bilgisayar Mühendisliği lisans programından mezun olmak.",
     "kurum": "Türkiye Su Enstitüsü Başkanlığı",
     "pozisyon": "Mühendis (Bilgisayar Mühendisi)",
     "kadroSayisi": 1,
     "basvuruBaslangic": "26 Kasım 2026",
     "basvuruBitis": "29 Aralık 2026",
-    "degerlendirmeSekli": "KPSS + giriş sınavı",
+    "degerlendirmeSekli": "KPSS + yazılı/sözlü sınav",
     "kpssDurumu": "Zorunlu",
-    "kpssTuru": "KPSS-P3 en az 70 puan",
+    "kpssTuru": "KPSS (P3) en az 70 puan",
     "ekSinav": true,
-    "ekSinavDetay": "Yazılı/sözlü sınav; belirtilmemiş",
+    "ekSinavDetay": "Yazılı ve sözlü giriş sınavı; KPSS puanına göre sıralama sonrası çağrılır, puan şartı belirtilmemiş",
     "gorevYeri": "Belirtilmemiş",
     "ikametSarti": "Yok",
-    "ekSartlar": "YDS/e-YDS en az 60 puan, 18 yaşını doldurmuş olmak, askerlik durumu, Türkiye Cumhuriyeti vatandaşı, sabıka kaydı olmamak",
-    "kisaOzet": "Türkiye Su Enstitüsü Başkanlığı, Bilgisayar Mühendisi pozisyonu için 1 sözleşmeli personel alımı yapmaktadır. Başvuru 26 Kasım 2026 – 29 Aralık 2026 arasında, KPSS-P3 en az 70 puan ve YDS 60 puan şartıyla değerlendirilir, ardından giriş sınavı uygulanır.",
+    "ekSartlar": "YDS/e-YDS en az 60 puan, 18 yaşını doldurmuş olmak, Türk vatandaşı, sabıka kaydı olmamak, askerlik tecilli/bitmiş olmak",
+    "kisaOzet": "Türkiye Su Enstitüsü Başkanlığı, 1 sözleşmeli Bilgisayar Mühendisi kadrosu için başvuru alıyor. Başvuru için KPSS (P3) en az 70 puan ve YDS en az 60 puan şartı aranıyor.",
     "_model": "openai/gpt-oss-120b",
     "_pv": 2,
     "_kanit_ok": true
@@ -160617,6 +160617,273 @@
    "detail_checked": true,
    "metin_len": 1060,
    "metin_hash": "9d8662730375f95f80030e751107aaa8059a0e17e19665d15f1959d6574d2085",
+   "p2": {
+    "v": 2,
+    "aday": false
+   },
+   "bitti": true,
+   "sonuc": "ADAY DEĞİL (anahtar kelime yok)"
+  },
+  "https://www.iskur.gov.tr/medya/0hkjb3zl/afyonkarahisar-oez-nuribey-petrol-ve-petrol-ueruenleri-ta%C5%9F%C4%B1mac%C4%B1l%C4%B1k-temizlik-in%C5%9F-g%C4%B1da-taah-san-ve-tic-ltd-%C5%9Fti-30112026.pdf": {
+   "first_seen": "2026-11-26",
+   "kaynak": "İŞKUR Kurumdışı Kamu İşçi Alım İlanları",
+   "baslik": "Afyonkarahisar Öz Nuribey Petrol ve Petrol Ürünleri Taşımacılık Temizlik İnş. Gıda Taah. San ve Tic. Ltd. Şti 30.11.2026",
+   "kurum": "",
+   "last_seen": "2026-11-26",
+   "detail_level": "İŞKUR ilan PDF'si",
+   "detail_checked": true,
+   "metin_len": 2098,
+   "metin_hash": "20c86310ff8b7560a77bdb3e583e3d9adeda49830b936f081b90f4c2e04d9267",
+   "p2": {
+    "v": 2,
+    "aday": false
+   },
+   "bitti": true,
+   "sonuc": "ADAY DEĞİL (anahtar kelime yok)"
+  },
+  "https://www.iskur.gov.tr/medya/sihjt24z/pera%C5%9F-denizli-bueyuek%C5%9Fehir-belediyesi-tica%C5%9F-30112026.pdf": {
+   "first_seen": "2026-11-26",
+   "kaynak": "İŞKUR Kurumdışı Kamu İşçi Alım İlanları",
+   "baslik": "PERAŞ DENİZLİ BÜYÜKŞEHİR BELEDİYESİ TİC.A.Ş. 30.11.2026",
+   "kurum": "",
+   "last_seen": "2026-11-26",
+   "detail_level": "İŞKUR ilan PDF'si",
+   "detail_checked": true,
+   "metin_len": 2498,
+   "metin_hash": "1b096387fb8fe171c5d6bb3586c4c04dfa6d194f493e5954f15fa8194788a65a",
+   "p2": {
+    "v": 2,
+    "aday": false
+   },
+   "bitti": true,
+   "sonuc": "ADAY DEĞİL (anahtar kelime yok)"
+  },
+  "https://www.iskur.gov.tr/medya/x4ipglyj/denizli-bueyuek%C5%9Fehir-belediyesi-ula%C5%9Fim-a%C5%9F-31122026.pdf": {
+   "first_seen": "2026-11-26",
+   "kaynak": "İŞKUR Kurumdışı Kamu İşçi Alım İlanları",
+   "baslik": "DENİZLİ BÜYÜKŞEHİR BELEDİYESİ ULAŞIM A.Ş. 31.12.2026",
+   "kurum": "",
+   "last_seen": "2026-11-26",
+   "detail_level": "İŞKUR ilan PDF'si",
+   "detail_checked": true,
+   "metin_len": 3107,
+   "metin_hash": "a78d4ab68abb9ae6fbeca281441fe2e1cf14f4b0f983d09e6788afd0f7c17f20",
+   "p2": {
+    "v": 2,
+    "aday": false
+   },
+   "bitti": true,
+   "sonuc": "ADAY DEĞİL (anahtar kelime yok)"
+  },
+  "https://www.iskur.gov.tr/medya/0lajffbv/ejder-koruma.pdf": {
+   "first_seen": "2026-11-26",
+   "kaynak": "İŞKUR Kurumdışı Kamu İşçi Alım İlanları",
+   "baslik": "EJDER KAYAK MERKEZLERİ TURİZM İNŞAAT TAAHHÜT HAYVANCILIK DANIŞMANLIK ORGANİZASYON SANAYİ VE TİCARET ANONİM ŞİRKETİ (KAYAK KİRALAMA GÖREVLİSİ)",
+   "kurum": "",
+   "last_seen": "2026-11-26",
+   "detail_level": "İŞKUR ilan PDF'si",
+   "detail_checked": true,
+   "metin_len": 2166,
+   "metin_hash": "c8ae9543beab3abab141499dc7ac93de1b9001c8915fd935809c307976856156",
+   "p2": {
+    "v": 2,
+    "aday": false
+   },
+   "bitti": true,
+   "sonuc": "ADAY DEĞİL (anahtar kelime yok)"
+  },
+  "https://www.iskur.gov.tr/medya/wpmp2ubv/ejder-arama-kurtarma.pdf": {
+   "first_seen": "2026-11-26",
+   "kaynak": "İŞKUR Kurumdışı Kamu İşçi Alım İlanları",
+   "baslik": "EJDER KAYAK MERKEZLERİ TURİZM İNŞAAT TAAHHÜT HAYVANCILIK DANIŞMANLIK ORGANİZASYON SANAYİ VE TİCARET ANONİM ŞİRKETİ (ARAMA KURTARMA GÖREVLİSİ)",
+   "kurum": "",
+   "last_seen": "2026-11-26",
+   "detail_level": "İŞKUR ilan PDF'si",
+   "detail_checked": true,
+   "metin_len": 1477,
+   "metin_hash": "e22d1567a6eaa6a40ea379f54849ffc1e52927a64666600e5e306bb28eb44c45",
+   "p2": {
+    "v": 2,
+    "aday": false
+   },
+   "bitti": true,
+   "sonuc": "ADAY DEĞİL (anahtar kelime yok)"
+  },
+  "https://www.iskur.gov.tr/medya/e1ddirzo/kurum-d%C4%B1%C5%9F%C4%B1-personel-talep-ilan%C4%B1-mata%C5%9F-a%C5%9F_ek_mata%C5%9F.pdf": {
+   "first_seen": "2026-11-26",
+   "kaynak": "İŞKUR Kurumdışı Kamu İşçi Alım İlanları",
+   "baslik": "Mataş Maltepe Sağ.Turz. Eğit. Otopark Temz.İnş. San.Tic. A.Ş.",
+   "kurum": "",
+   "last_seen": "2026-11-26",
+   "detail_level": "İŞKUR ilan PDF'si",
+   "detail_checked": true,
+   "metin_len": 2129,
+   "metin_hash": "f2e34a62dc64d42d004fdfc0d35caba66b27cceb09ad3d1bc073996776fe75db",
+   "p2": {
+    "v": 2,
+    "aday": false
+   },
+   "bitti": true,
+   "sonuc": "ADAY DEĞİL (anahtar kelime yok)"
+  },
+  "https://www.iskur.gov.tr/medya/galdnza1/kurum-d%C4%B1%C5%9F%C4%B1-kamu-i%C5%9F%C3%A7i-al%C4%B1m%C4%B1_ek_kurum-d%C4%B1%C5%9F%C4%B1-kamu-i%C5%9F%C3%A7i-al%C4%B1m-ilan-formu.pdf": {
+   "first_seen": "2026-11-26",
+   "kaynak": "İŞKUR Kurumdışı Kamu İşçi Alım İlanları",
+   "baslik": "Sarbel Organizasyon Temizlik Spor Hizmetleri İnşaat Gıda Sanayi ve Ticaret A.Ş.",
+   "kurum": "",
+   "last_seen": "2026-11-26",
+   "detail_level": "İŞKUR ilan PDF'si",
+   "detail_checked": true,
+   "metin_len": 1632,
+   "metin_hash": "d639ccd662ff905df6389e1363ae1b370fddd974cbcaba9c2b70789d451fd75a",
+   "p2": {
+    "v": 2,
+    "aday": false
+   },
+   "analiz": {
+    "kategori": "ILGISIZ",
+    "kanit": "Meslek Adı: Matematik Olimpiyatları; Yüksek lisans mezunu,",
+    "kurum": "SARBEL ORGANİZASYON TEMİZLİK SPOR HİZMETLERİ İNŞAAT GIDA SAN. VE TİC. A.Ş.",
+    "pozisyon": "Matematik Olimpiyatları",
+    "kadroSayisi": 1,
+    "basvuruBaslangic": "27.11.2026",
+    "basvuruBitis": "28.11.2026",
+    "degerlendirmeSekli": "belirtilmemiş",
+    "kpssDurumu": "Belirtilmemiş",
+    "kpssTuru": "Belirtilmemiş",
+    "ekSinav": false,
+    "ekSinavDetay": "Yok",
+    "gorevYeri": "Sarıyer/İstanbul",
+    "ikametSarti": "Belirtilmemiş",
+    "ekSartlar": "25-50 yaş, erkek adaylar için askerlik tamamlamış, yüksek lisans mezunu, kamu haklarından mahrum olmamak",
+    "kisaOzet": "Matematik Olimpiyatları kadrosu için 1 adet geçici/daimi pozisyon açılmıştır; başvuru için yüksek lisans mezunu olmak ve 25‑50 yaş gibi ek koşullar aranıyor.",
+    "_model": "openai/gpt-oss-120b",
+    "_pv": 2,
+    "_kanit_ok": false
+   },
+   "bitti": true
+  },
+  "https://www.iskur.gov.tr/medya/1stbb0dv/29-kas%C4%B1m-isper-istanbul-personel-yoenetim-a%C5%9F.pdf": {
+   "first_seen": "2026-11-26",
+   "kaynak": "İŞKUR Kurumdışı Kamu İşçi Alım İlanları",
+   "baslik": "İsper İstanbul Personel Yönetim A.Ş.",
+   "kurum": "",
+   "last_seen": "2026-11-26",
+   "detail_level": "İŞKUR ilan PDF'si",
+   "detail_checked": true,
+   "metin_len": 3821,
+   "metin_hash": "2b7860b292250cfec5b15576bab3497b0209024eb65f9d60e79c1f85dd4c130c",
+   "p2": {
+    "v": 2,
+    "aday": false
+   },
+   "bitti": true,
+   "sonuc": "ADAY DEĞİL (anahtar kelime yok)"
+  },
+  "https://www.iskur.gov.tr/medya/nlbar5mu/30-kas%C4%B1m-isper-istanbul-personel-yoenetim-a%C5%9F.pdf": {
+   "first_seen": "2026-11-26",
+   "kaynak": "İŞKUR Kurumdışı Kamu İşçi Alım İlanları",
+   "baslik": "İsper İstanbul Personel Yönetim A.Ş.",
+   "kurum": "",
+   "last_seen": "2026-11-26",
+   "detail_level": "İŞKUR ilan PDF'si",
+   "detail_checked": true,
+   "metin_len": 8235,
+   "metin_hash": "a464570a4401984ff589ddc9dec8b557a5ae93f0e5583556088cfdf089b728fd",
+   "p2": {
+    "v": 2,
+    "aday": true,
+    "analiz": {
+     "kategori": "ILGISIZ",
+     "kanit": "Meslek Adı: ARŞİV PERSONELİ ... Rehber ... Sayaç Okuma Personeli ... Teknisyen ... USTA",
+     "kurum": "İSTANBUL PERSONEL YÖNETİM AŞ (İSPER AŞ.)",
+     "pozisyon": "Belirtilmemiş",
+     "kadroSayisi": null,
+     "bolumUygun": "Hayır (yalnız: Turizm Rehberliği, teknik lise bölümleri)",
+     "engelliBilgi": "Yok",
+     "basvuruBaslangic": "27 Kasım 2026",
+     "basvuruBitis": "30 Kasım 2026",
+     "degerlendirmeSekli": "Belirtilmemiş",
+     "kpssDurumu": "Belirtilmemiş",
+     "kpssTuru": "Belirtilmemiş",
+     "ekSinav": false,
+     "ekSinavDetay": "Yok",
+     "gorevYeri": "İSTANBUL",
+     "ikametSarti": "Belirtilmemiş",
+     "ekSartlar": "Yok",
+     "kisaOzet": "İstanbul Personel Yönetim A.Ş. tarafından çeşitli kadrolar (Arşiv Personeli, Rehber, Sayaç Okuma Personeli, Teknisyen, Usta) için 27-30 Kasım 2026 tarihleri arasında başvuru alınmaktadır. İlan anestezi teknisyeni veya engelli kontenjanı içermemektedir.",
+     "_model": "openai/gpt-oss-120b",
+     "_pv": 2,
+     "_kanit_ok": true
+    }
+   },
+   "analiz": {
+    "kategori": "ILGISIZ",
+    "kanit": "Arşiv Personeli; Tercihen Lise mezunu veya istisnai olarak benzer işlerde daha önce çalışmış...",
+    "kurum": "İSTANBUL PERSONEL YÖNETİM AŞ (İSPER AŞ.)",
+    "pozisyon": "Belirtilmemiş",
+    "kadroSayisi": null,
+    "basvuruBaslangic": "27 Kasım 2026",
+    "basvuruBitis": "30 Kasım 2026",
+    "degerlendirmeSekli": "belirtilmemiş",
+    "kpssDurumu": "Belirtilmemiş",
+    "kpssTuru": "belirtilmemiş",
+    "ekSinav": false,
+    "ekSinavDetay": "Yok",
+    "gorevYeri": "İSTANBUL",
+    "ikametSarti": "Belirtilmemiş",
+    "ekSartlar": "Lise mezunu, teknik lise mezunu, suçtan mahrum olmama",
+    "kisaOzet": "İstanbul Personel Yönetim A.Ş. tarafından çeşitli kadrolar için ilan verilmiştir. Bilgisayar mühendisliği mezunu adaylar bu ilanlarda belirtilen şartlar nedeniyle başvuramaz.",
+    "_model": "openai/gpt-oss-120b",
+    "_pv": 2,
+    "_kanit_ok": true
+   },
+   "bitti": true
+  },
+  "https://www.iskur.gov.tr/medya/xw4awua3/spila%C5%9F-27112026.pdf": {
+   "first_seen": "2026-11-26",
+   "kaynak": "İŞKUR Kurumdışı Kamu İşçi Alım İlanları",
+   "baslik": "SPİLAŞ YAPI ÇEVRE PLANLAMA PROJE ENERJİ İNŞAAT MÜŞAVİRLİK BASIN YAYIN İTH. İHR. SAN. VE TİC. A.Ş. 27.11.2026",
+   "kurum": "",
+   "last_seen": "2026-11-26",
+   "detail_level": "İŞKUR ilan PDF'si",
+   "detail_checked": true,
+   "metin_len": 3203,
+   "metin_hash": "177235a78037bf4b755cd9586d33ba7a337154c0a4cd1b5932745a40b8e73f50",
+   "p2": {
+    "v": 2,
+    "aday": false
+   },
+   "bitti": true,
+   "sonuc": "ADAY DEĞİL (anahtar kelime yok)"
+  },
+  "https://www.iskur.gov.tr/medya/pvre5o1g/ahbel-29112026.pdf": {
+   "first_seen": "2026-11-26",
+   "kaynak": "İŞKUR Kurumdışı Kamu İşçi Alım İlanları",
+   "baslik": "AHMETLİ BELEDİYESİ AHBEL ŞİRKETİ A.Ş 29.11.2026",
+   "kurum": "",
+   "last_seen": "2026-11-26",
+   "detail_level": "İŞKUR ilan PDF'si",
+   "detail_checked": true,
+   "metin_len": 3647,
+   "metin_hash": "34c18f25a8ee3dbb8e564b887a39f46c5cdb13c17ad42100b6ed59f3f0b90964",
+   "p2": {
+    "v": 2,
+    "aday": false
+   },
+   "bitti": true,
+   "sonuc": "ADAY DEĞİL (anahtar kelime yok)"
+  },
+  "https://www.iskur.gov.tr/medya/ojsbhtdu/ilan-kurum-d%C4%B1%C5%9F%C4%B1-kabata%C5%9F-beldperltd%C5%9Fti.pdf": {
+   "first_seen": "2026-11-26",
+   "kaynak": "İŞKUR Kurumdışı Kamu İşçi Alım İlanları",
+   "baslik": "Ordu Kabataş Belediyesi Personel Ltd. Şti. 30.11.2026",
+   "kurum": "",
+   "last_seen": "2026-11-26",
+   "detail_level": "İŞKUR ilan PDF'si",
+   "detail_checked": true,
+   "metin_len": 2981,
+   "metin_hash": "dad60b4162a4b5e07b8999f9d5c8944fb5beca98624c294135bbecc8278a6448",
    "p2": {
     "v": 2,
     "aday": false
